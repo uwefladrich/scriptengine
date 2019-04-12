@@ -1,0 +1,60 @@
+---
+config:
+
+    common:
+        rundir: /nobackup/foo/bar
+
+    ifs:
+        foo: 3
+        bar: 4
+
+    nemo:
+        foo: 5
+        baz: 'five'
+
+    ece_info: "{{ general.rundir }}/ece.info"
+
+jobs:
+
+    - name: Copy some good files
+      copy:
+        src: 1
+        dst: "{{ general.rundir }}/{{ item }}.copy"
+      when: foo is baz
+      loop: [1,2,3,4,5]
+
+    - name: We modify some files on the way...
+      template:
+        src: 'foo'
+        dst: 'bar'
+
+    - name: Some files will rather be linked
+      link:
+        src: 'big'
+        dst: 'small'
+      when: Monday > green
+
+    - name: Copy some bad files as well
+      copy:
+        src: 7
+        dst: 8
+      when: foo is not baz
+
+    - name: Execute an evil command
+      command:
+        name: 'cdo'
+        args: ['-f', '-s', '-v', '-t 1234']
+
+    - script: ifs-jobs.yml
+    - script: nemo-jobs.yml
+
+    - in_parallel:
+
+        - script: foo.yml
+        - script: bar.yml
+
+    - name: Execute another evil command in parallel
+      command:
+        name: 'cdo'
+        args: ['-f', '-s', '-v', '-t 1234']
+      parallel_loop: [1,2,3,4]
