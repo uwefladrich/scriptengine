@@ -1,0 +1,5 @@
+- implement read_eceinfo()
+- read config/tasks from YAML
+- nested loops
+- jobs of jobs
+- parallel context
