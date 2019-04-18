@@ -45,16 +45,20 @@ jobs:
         name: 'cdo'
         args: ['-f', '-s', '-v', '-t 1234']
 
-    - script: ifs-jobs.yml
-    - script: nemo-jobs.yml
+    - include: ifs-jobs.yml
+    - include: nemo-jobs.yml
 
-    - in_parallel:
+    - name: Execute some tasks/jobs in parallel
+      do:
 
-        - script: foo.yml
-        - script: bar.yml
+        - include: foo.yml
+        - include: bar.yml
 
-    - name: Execute another evil command in parallel
+      context: parallel
+
+    - name: Execute a loop in parallel
       command:
         name: 'cdo'
         args: ['-f', '-s', '-v', '-t 1234']
-      parallel_loop: [1,2,3,4]
+      loop: [1,2,3,4]
+      context: parallel
