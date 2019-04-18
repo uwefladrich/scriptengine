@@ -25,16 +25,20 @@ class Job(object):
         self.tasks.extend(tasks if type(tasks) is list else [tasks])
 
     def run(self, *, dryrun=False, **kwargs):
-        """ Run all tasks of a job, subject to it's when clause and repeated
-            for each loop item
+        """Run all tasks/jobs of this job. If this job has a where clause, run
+           only if it evaluates to true. If this job has a loop, run the
+           tasks/jobs repeatedly for each loop item.
         """
-        when = self.when or 'true'
-        assert (type(when) is str), 'Tasks "when" argument is not a string'
+        # If job has a when clause, evaluate it
+        if self.when and not eval_when_clause(self.when, **kwargs):
+            return
 
-        loop = self.loop or [None]
-        assert (type(loop) is list), 'Tasks "loop" argument is not a list'
-
-        if eval_when_clause(when, **kwargs):
-            for item in loop:
+        if self.loop:
+            if 'item' in kwargs:
+                raise NotImplementedError('Nested loops are not yet supported')
+            for item in self.loop:
                 for task in self.tasks:
                     task.run(dryrun=dryrun, item=item, **kwargs)
+        else:
+            for task in self.tasks:
+                task.run(dryrun=dryrun, **kwargs)
