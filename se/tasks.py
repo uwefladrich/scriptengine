@@ -29,6 +29,22 @@ class Task(object):
         return '{}({})'.format(self. __class__.__name__, self.__dict__)
 
 
+class Echo(Task):
+
+    def __init__(self, dict):
+        super(Echo, self).__init__(dict)
+        assert ('msg' in self.__dict__), 'Echo task needs a "msg" attribute'
+
+    def __str__(self):
+        return 'Echo: {}'.format(self.msg)
+
+    def run(self, *, dryrun=False, **kwargs):
+        if dryrun:
+            print(render_string_recursive(str(self), **kwargs))
+        else:
+            print('{}'.format(render_string_recursive(self.msg, **kwargs)))
+
+
 class Copy(Task):
 
     def __init__(self, dict):
