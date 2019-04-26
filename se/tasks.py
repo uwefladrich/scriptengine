@@ -23,7 +23,7 @@ class Task(object):
         return '{}({})'.format(self. __class__.__name__, self.__dict__)
 
     def run(self, **kwargs):
-        raise NotImplementedError('Task.run() method called, which is an abstract method')
+        raise NotImplementedError('Task.run() method called, which is an abstract base class method')
 
 
 class Echo(Task):
