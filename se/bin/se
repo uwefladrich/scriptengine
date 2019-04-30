@@ -5,7 +5,7 @@ import argparse
 from yaml import safe_load
 
 from se.jobs import Job
-from se.tasks import Echo, Copy, Command
+from se.tasks import Echo, Copy, Command, Template
 from se.scripts import SimpleScriptEngine
 
 DRY_RUN = False
@@ -39,7 +39,7 @@ def read_se_yaml(file):
 def create_job_from_dict(dictionary):
 
     COMPOSITE_JOB = { 'do' }
-    SIMPLE_JOB_OR_TASK = { 'echo', 'copy', 'command' }
+    SIMPLE_JOB_OR_TASK = { 'echo', 'copy', 'command', 'template' }
     JOB_MODIFIER = { 'when', 'loop', 'context' }
 
     job = Job()
@@ -87,6 +87,10 @@ def create_job_from_dict(dictionary):
                 task = Copy(dictionary[job_name])
             elif job_name == 'command':
                 task = Command(dictionary[job_name])
+            elif job_name == 'template':
+                task = Template(dictionary[job_name])
+            else:
+                raise RuntimeError('Unknown task: {}'.format(job_name))
             job.append(task)
 
     return job
