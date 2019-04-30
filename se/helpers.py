@@ -28,4 +28,4 @@ def eval_when_clause(string, **kwargs):
     clause = ('{% if '
               + render_string_recursive(string, **kwargs)
               + ' %}1{% else %}0{% endif %}')
-    return bool(strtobool(render_string(clause)))
+    return bool(strtobool(render_string(clause, **kwargs)))
