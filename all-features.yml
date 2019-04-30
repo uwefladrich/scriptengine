@@ -1,5 +1,5 @@
 ---
-config:
+configuration:
 
     common:
         rundir: /nobackup/foo/bar
@@ -14,7 +14,7 @@ config:
 
     ece_info: "{{ general.rundir }}/ece.info"
 
-jobs:
+script:
 
     - name: Copy some good files
       copy:

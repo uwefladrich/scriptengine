@@ -34,7 +34,7 @@ def parse_command_line_arguments():
 
 def read_se_yaml(file):
     yaml = safe_load(file)
-    return yaml['configuration'], yaml['jobs']
+    return yaml['configuration'], yaml['script']
 
 def create_job_from_dict(dictionary):
 
@@ -117,4 +117,4 @@ if __name__ == '__main__':
     for j in script:
         job.append(create_job_from_dict(j))
 
-    SimpleScriptEngine().run(jobs=[job], **config, dryrun=DRY_RUN)
+    SimpleScriptEngine().run(script=[job], **config, dryrun=DRY_RUN)
