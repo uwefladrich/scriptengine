@@ -19,4 +19,8 @@ class Command(Task):
         else:
             cmd = [self.name] \
                 + [render_string_recursive(s, **kwargs) for s in getattr(self, 'args', [])]
-            subprocess.run(cmd)
+            if hasattr(self, 'cwd'):
+                cwd = render_string_recursive(self.cwd, **kwargs)
+            else:
+                cwd = None
+            subprocess.run(cmd, cwd=cwd)
