@@ -2,10 +2,10 @@
 
 import logging
 import argparse
-from yaml import safe_load
+import yaml
 
 from se.jobs import Job
-from se.tasks import Echo, Copy, Command, Template
+from se.tasks import Configuration, Echo, Copy, Command, Template
 from se.scripts import SimpleScriptEngine
 
 DRY_RUN = False
@@ -32,67 +32,54 @@ def parse_command_line_arguments():
 
     return args.file
 
-def read_se_yaml(file):
-    yaml = safe_load(file)
-    return yaml['configuration'], yaml['script']
-
 def create_job_from_dict(dictionary):
 
+    TASK_CLASSES = { 'echo': Echo,
+                     'copy': Copy,
+                     'command': Command,
+                     'template': Template,
+                     'config': Configuration }
+    SIMPLE_JOB = set(TASK_CLASSES.keys())
     COMPOSITE_JOB = { 'do' }
-    SIMPLE_JOB_OR_TASK = { 'echo', 'copy', 'command', 'template' }
-    JOB_MODIFIER = { 'when', 'loop', 'context' }
+    JOB_MODIFIERS = { 'when', 'loop', 'context' }
+
+    job_name = set(dictionary.keys()) & (COMPOSITE_JOB | SIMPLE_JOB)
+    if len(job_name) != 1:
+        raise RuntimeError('Missing, unknown or ambiguous job/task name')
+    else:
+        job_name = job_name.pop()
+
+    job_modifiers = set(dictionary.keys()) & JOB_MODIFIERS
+
+    if {job_name} | job_modifiers != set(dictionary.keys()):
+        raise RuntimeError('Unknown keywords in job description')
+
+    logging.debug('Creating "{}" job'.format(job_name))
 
     job = Job()
 
-    keys = set(dictionary.keys())
-
-    if len(keys & (COMPOSITE_JOB | SIMPLE_JOB_OR_TASK))>1:
-      raise RuntimeError('boo!')
-
-    job_name = (keys & (COMPOSITE_JOB | SIMPLE_JOB_OR_TASK)).pop()
-    logging.debug('Creating "%s" job' % job_name)
-
     if job_name in COMPOSITE_JOB:
         logging.debug('This is a composite job')
-        sub_job = Job()
+        sub_job = Job(tasks=None,
+                      when=dictionary.get('when', None),
+                      loop=dictionary.get('loop', None),
+                      context=dictionary.get('context', None))
         for j in dictionary[job_name]:
             sub_job.append(create_job_from_dict(j))
-        sub_job.when = dictionary.get('when', None)
-        sub_job.loop = dictionary.get('loop', None)
-        sub_job.context = dictionary.get('context', None)
         job.append(sub_job)
 
-    elif job_name in SIMPLE_JOB_OR_TASK:
+    elif job_name in SIMPLE_JOB:
 
-        if keys & JOB_MODIFIER:
+        task = TASK_CLASSES[job_name](dictionary[job_name])
+        if job_modifiers:
             logging.debug('This is a task with job modifiers')
-            sub_job = Job()
-            if job_name == 'echo':
-                task = Echo(dictionary[job_name])
-            elif job_name == 'copy':
-                task = Copy(dictionary[job_name])
-            elif job_name == 'command':
-                task = Command(dictionary[job_name])
-            sub_job.append(task)
-            sub_job.when = dictionary.get('when', None)
-            sub_job.loop = dictionary.get('loop', None)
-            sub_job.context = dictionary.get('context', None)
-            job.append(sub_job)
-
+            job.append(Job(tasks=task,
+                           when=dictionary.get('when', None),
+                           loop=dictionary.get('loop', None),
+                           context=dictionary.get('context', None)))
         else:
             logging.debug('This is a simple task')
-            if job_name == 'echo':
-                task = Echo(dictionary[job_name])
-            elif job_name == 'copy':
-                task = Copy(dictionary[job_name])
-            elif job_name == 'command':
-                task = Command(dictionary[job_name])
-            elif job_name == 'template':
-                task = Template(dictionary[job_name])
-            else:
-                raise RuntimeError('Unknown task: {}'.format(job_name))
             job.append(task)
-
     return job
 
 
@@ -103,18 +90,15 @@ if __name__ == '__main__':
     if DRY_RUN:
         logging.info('Running in dry-run mode')
 
-    config = {}
     script = []
-
     for file in files:
         logging.info('--> Processing file {}'.format(file))
         with open(file) as f:
-            cfg, scr = read_se_yaml(f)
-        config.update(cfg)
+            scr = yaml.safe_load(f)
         script.extend(scr)
 
     job = Job()
     for j in script:
         job.append(create_job_from_dict(j))
 
-    SimpleScriptEngine().run(script=[job], **config, dryrun=DRY_RUN)
+    SimpleScriptEngine().run(script=[job], dryrun=DRY_RUN)
