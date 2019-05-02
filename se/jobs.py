@@ -24,19 +24,23 @@ class Job(object):
         """
         self.tasks.extend(tasks if type(tasks) is list else [tasks])
 
-    def run(self, **kwargs):
+    def run(self, **config):
         """Run all tasks/jobs of this job.
            If this job has a where clause, run only if it evaluates to true. If
            this job has a list to loop over, run the tasks/jobs repeatedly for
            each loop item.
         """
-        if self.when is None or eval_when_clause(self.when, **kwargs):
-            if self.loop is not None:
-                if 'item' in kwargs:
-                    raise NotImplementedError('Nested loops are not yet supported')
-                for item in self.loop:
-                    for task in self.tasks:
-                        task.run(item=item, **kwargs)
-            else:
+        if self.when is None or eval_when_clause(self.when, **config):
+            non_loop = object()
+            config_updates = {}
+            for item in self.loop or [non_loop]:
                 for task in self.tasks:
-                    task.run(**kwargs)
+                    if item is non_loop:
+                        cfg = task.run(**{**config, **config_updates})
+                    else:
+                        cfg = task.run(item=item, **{**config, **config_updates})
+                    if cfg is not None:
+                        config_updates.update(cfg)
+            if config_updates is not {}:
+                return config_updates
+        return None
