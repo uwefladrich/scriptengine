@@ -12,11 +12,12 @@ class Copy(Task):
     def __str__(self):
         return 'Copy: {} --> {}'.format(self.src, self.dst)
 
-    def run(self, *, dryrun=False, **kwargs):
+    def run(self, *, dryrun=False, **config):
         if dryrun:
-            print(render_string_recursive(str(self), **kwargs))
+            print(render_string_recursive(str(self), **config))
         else:
-            shutil.copy(render_string_recursive(self.src, **kwargs), render_string_recursive(self.dst, **kwargs))
+            shutil.copy(render_string_recursive(self.src, **config), render_string_recursive(self.dst, **config))
+        return None
 
 
 class Link(Task):
@@ -27,5 +28,9 @@ class Link(Task):
     def __str__(self):
         return 'Link: {} --> {}'.format(self.src, self.dst)
 
-    def run(self):
-        print(self)
+    def run(self, *, dryrun=False, **config):
+        if dryrun:
+            print(render_string_recursive(str(self), **config))
+        else:
+            raise NotImplementedError('Link task not yet implemented (dry-run only)')
+        return None

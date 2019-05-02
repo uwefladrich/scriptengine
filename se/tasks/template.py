@@ -12,14 +12,15 @@ class Template(Task):
     def __str__(self):
         return 'Template: {} --> {}'.format(self.src, self.dst)
 
-    def run(self, *, dryrun=False, **kwargs):
+    def run(self, *, dryrun=False, **config):
         if dryrun:
-            print(render_string_recursive(str(self), **kwargs))
+            print(render_string_recursive(str(self), **config))
         else:
             template_loader = jinja2.FileSystemLoader(searchpath=['./', './templates'])
             template_env = jinja2.Environment(loader=template_loader)
-            template = template_env.get_template(render_string_recursive(self.src, **kwargs))
-            output_text = template.render(**kwargs)
+            template = template_env.get_template(render_string_recursive(self.src, **config))
+            output_text = template.render(**config)
 
-            with open(render_string_recursive(self.dst, **kwargs), 'w') as output_file:
+            with open(render_string_recursive(self.dst, **config), 'w') as output_file:
                 output_file.write(output_text + '\n')
+        return None

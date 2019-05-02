@@ -10,8 +10,9 @@ class Echo(Task):
     def __str__(self):
         return 'Echo: {}'.format(self.msg)
 
-    def run(self, *, dryrun=False, **kwargs):
+    def run(self, *, dryrun=False, **config):
         if dryrun:
-            print(render_string_recursive(str(self), **kwargs))
+            print(render_string_recursive(str(self), **config))
         else:
-            print('{}'.format(render_string_recursive(self.msg, **kwargs)))
+            print('ScriptEngineEcho: {}'.format(render_string_recursive(self.msg, **config)))
+        return None
