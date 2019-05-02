@@ -4,19 +4,21 @@ from se.helpers import eval_when_clause
 class Job(object):
     """A Job is ...
     """
-    def __init__(self, tasks=None, when=None, loop=None):
+    def __init__(self, tasks=None, when=None, loop=None, context=None):
         # Initialise task list
         self.tasks = []
         if tasks:
            self.append(tasks)
         self.when = when
         self.loop = loop
+        self.context = context
 
     def __str__(self):
         str_repr  = 'Task list:\n  '
         str_repr += '\n  '.join([str(task) for task in self.tasks])
         str_repr += '\nWhen: {}'.format(self.when)
         str_repr += '\nLoop: {}'.format(self.loop)
+        str_repr += '\nContext: {}'.format(self.context)
         return str_repr
 
     def append(self, tasks):
