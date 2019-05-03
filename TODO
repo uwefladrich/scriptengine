@@ -1,5 +1,5 @@
-- implement read_eceinfo()
-- read config/tasks from YAML
+- recursive substitutions
+- includes
+- read_eceinfo
 - nested loops
-- jobs of jobs
 - parallel context
