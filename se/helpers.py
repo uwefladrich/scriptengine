@@ -2,30 +2,22 @@ from jinja2 import Template
 from distutils.util import strtobool
 
 
-def read_yaml(path):
-    pass
+def render_string(string, **config):
+    return Template(string).render(**config)
 
 
-def read_eceinfo(path):
-    pass
-
-
-def render_string(string, **kwargs):
-    return Template(string).render(**kwargs)
-
-
-def render_string_recursive(string, **kwargs):
+def render_string_recursive(string, **config):
     prev = string
     while True:
-        curr = render_string(prev, **kwargs)
+        curr = render_string(prev, **config)
         if curr != prev:
             prev = curr
         else:
             return curr
 
 
-def eval_when_clause(string, **kwargs):
+def eval_when_clause(string, **config):
     clause = ('{% if '
-              + render_string_recursive(string, **kwargs)
+              + render_string_recursive(string, **config)
               + ' %}1{% else %}0{% endif %}')
-    return bool(strtobool(render_string(clause, **kwargs)))
+    return bool(strtobool(render_string(clause, **config)))

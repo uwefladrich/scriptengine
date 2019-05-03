@@ -22,7 +22,7 @@ class Task(object):
     def __repr__(self):
         return '{}({})'.format(self. __class__.__name__, self.__dict__)
 
-    def run(self, **kwargs):
+    def run(self, **config):
         raise NotImplementedError('Task.run() method called, which is an abstract base class method')
 
 
@@ -34,11 +34,11 @@ class Echo(Task):
     def __str__(self):
         return 'Echo: {}'.format(self.msg)
 
-    def run(self, *, dryrun=False, **kwargs):
+    def run(self, *, dryrun=False, **config):
         if dryrun:
-            print(render_string_recursive(str(self), **kwargs))
+            print(render_string_recursive(str(self), **config))
         else:
-            print('{}'.format(render_string_recursive(self.msg, **kwargs)))
+            print('{}'.format(render_string_recursive(self.msg, **config)))
 
 
 class Copy(Task):
@@ -49,11 +49,11 @@ class Copy(Task):
     def __str__(self):
         return 'Copy: {} --> {}'.format(self.src, self.dst)
 
-    def run(self, *, dryrun=False, **kwargs):
+    def run(self, *, dryrun=False, **config):
         if dryrun:
-            print(render_string_recursive(str(self), **kwargs))
+            print(render_string_recursive(str(self), **config))
         else:
-            shutil.copy(render_string_recursive(self.src, **kwargs), render_string_recursive(self.dst, **kwargs))
+            shutil.copy(render_string_recursive(self.src, **config), render_string_recursive(self.dst, **config))
 
 
 class Link(Task):
