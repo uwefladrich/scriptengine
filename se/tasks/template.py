@@ -19,7 +19,7 @@ class Template(Task):
             template_loader = jinja2.FileSystemLoader(searchpath=['./', './templates'])
             template_env = jinja2.Environment(loader=template_loader)
             template = template_env.get_template(render_string_recursive(self.src, **config))
-            output_text = template.render(**config)
+            output_text = render_string_recursive(template.render(**config), **config)
 
             with open(render_string_recursive(self.dst, **config), 'w') as output_file:
                 output_file.write(output_text + '\n')
