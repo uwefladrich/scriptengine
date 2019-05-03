@@ -15,6 +15,7 @@ class Echo(Task):
         if dryrun:
             print(render_string_recursive(str(self), **config))
         else:
-            print((tc.GREEN+tc.BOLD + 'ScriptEngineEcho:' + tc.RESET
-                   + tc.BOLD + ' {}' + tc.RESET).format(render_string_recursive(self.msg, **config)))
+            print((tc.GREEN+tc.BOLD+tc.DIM + 'ScriptEngineEcho:' + tc.RESET
+                   + tc.GREEN+tc.BOLD + ' {}'
+                   + tc.RESET).format(render_string_recursive(self.msg, **config)))
         return None
