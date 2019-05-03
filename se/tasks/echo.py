@@ -1,6 +1,7 @@
 from se.tasks import Task
 from se.helpers import render_string_recursive
 
+from se.helpers import TerminalColors as tc
 
 class Echo(Task):
 
@@ -14,5 +15,6 @@ class Echo(Task):
         if dryrun:
             print(render_string_recursive(str(self), **config))
         else:
-            print('ScriptEngineEcho: {}'.format(render_string_recursive(self.msg, **config)))
+            print((tc.GREEN+tc.BOLD + 'ScriptEngineEcho:' + tc.RESET
+                   + tc.BOLD + ' {}' + tc.RESET).format(render_string_recursive(self.msg, **config)))
         return None
