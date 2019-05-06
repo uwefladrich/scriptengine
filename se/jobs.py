@@ -1,3 +1,5 @@
+from deepmerge import always_merger
+
 from se.helpers import eval_when_clause
 
 
@@ -42,7 +44,7 @@ class Job(object):
                     else:
                         cfg = task.run(item=item, **{**config, **config_updates})
                     if cfg is not None:
-                        config_updates.update(cfg)
+                        always_merger.merge(config_updates, cfg)
             if config_updates is not {}:
                 return config_updates
         return None
