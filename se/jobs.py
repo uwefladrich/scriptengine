@@ -1,6 +1,8 @@
+import ast
+
 from deepmerge import always_merger
 
-from se.helpers import eval_when_clause
+from se.helpers import eval_when_clause, render_string_recursive
 
 
 class Job(object):
@@ -23,6 +25,9 @@ class Job(object):
         str_repr += '\nContext: {}'.format(self.context)
         return str_repr
 
+    def __repr__(self):
+        return 'Job: {} {}'.format(str([t.__class__.__name__ for t in self.tasks]), self.loop or '')
+
     def append(self, tasks):
         """ Append a single task or a list of tasks to a job
         """
@@ -37,6 +42,12 @@ class Job(object):
         if self.when is None or eval_when_clause(self.when, **config):
             non_loop = object()
             config_updates = {}
+            if type(self.loop) is str:
+                try:
+                    self.loop = ast.literal_eval(
+                                    render_string_recursive(self.loop, **config))
+                except ValueError:
+                    raise RuntimeError('Found invalid loop expression: {}'.format(self.loop))
             for item in self.loop or [non_loop]:
                 for task in self.tasks:
                     if item is non_loop:
