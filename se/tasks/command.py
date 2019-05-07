@@ -1,3 +1,4 @@
+import ast
 import subprocess
 
 from se.tasks import Task
@@ -17,11 +18,15 @@ class Command(Task):
         if dryrun:
             print(render_string_recursive(str(self), **config))
         else:
-            cmd = [self.name] \
-                + [render_string_recursive(s, **config) for s in getattr(self, 'args', [])]
+            args = getattr(self, 'args', [])
+            if type(args) is str:
+                try:
+                    args = ast.literal_eval(render_string_recursive(args, **config))
+                except ValueError:
+                    raise RuntimeError('Found invalid args expression: {}'.format(args))
             if hasattr(self, 'cwd'):
                 cwd = render_string_recursive(self.cwd, **config)
             else:
                 cwd = None
-            subprocess.run(cmd, cwd=cwd)
+            subprocess.run([self.name]+args, cwd=cwd)
         return None
