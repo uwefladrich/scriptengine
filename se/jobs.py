@@ -1,6 +1,5 @@
 import ast
-
-from deepmerge import always_merger
+import deepmerge
 
 from se.helpers import eval_when_clause, render_string_recursive
 
@@ -55,7 +54,7 @@ class Job(object):
                     else:
                         cfg = task.run(item=item, **{**config, **config_updates})
                     if cfg is not None:
-                        always_merger.merge(config_updates, cfg)
+                        deepmerge.always_merger.merge(config_updates, cfg)
             if config_updates is not {}:
                 return config_updates
         return None
