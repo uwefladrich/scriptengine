@@ -17,18 +17,20 @@ class Command(Task):
     def run(self, *, dryrun=False, **config):
         if dryrun:
             print(render_string_recursive(str(self), **config))
+            return None
+
+        command = render_string_recursive(self.name, **config)
+        arglist = getattr(self, 'args', [])
+        if type(arglist) is str:
+            try:
+                arglist = ast.literal_eval(render_string_recursive(arglist, **config)) or []
+            except ValueError:
+                raise RuntimeError('Command task: can''t parse "args": {}'.format(arglist))
         else:
-            command = render_string_recursive(self.name, **config)
-            arglist = getattr(self, 'args', [])
-            if type(arglist) is str:
-                try:
-                    arglist = ast.literal_eval(render_string_recursive(arglist, **config)) or []
-                except ValueError:
-                    raise RuntimeError('Command task: can''t parse "args": {}'.format(arglist))
             try:
                 arglist = [render_string_recursive(arg, **config) for arg in arglist]
             except TypeError:
                 raise RuntimeError('Command task: "args" not iterable: {}'.format(arglist))
-            cwd = render_string_recursive(self.cwd, **config) if hasattr(self, 'cwd') else None
-            subprocess.run([command]+arglist, cwd=cwd)
+        cwd = render_string_recursive(self.cwd, **config) if hasattr(self, 'cwd') else None
+        subprocess.run([command]+arglist, cwd=cwd)
         return None
