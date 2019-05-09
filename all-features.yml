@@ -1,6 +1,6 @@
 ---
-configuration:
 
+- config:
     common:
         rundir: /nobackup/foo/bar
 
@@ -12,53 +12,52 @@ configuration:
         foo: 5
         baz: 'five'
 
-    ece_info: "{{ general.rundir }}/ece.info"
+- read_ece_info:
+    src: "{{general.rundir}}/ece.info"
 
-script:
+- name: Copy some good files
+  copy:
+    src: 1
+    dst: "{{general.rundir}}/{{item}}.copy"
+  when: foo is baz
+  loop: [1,2,3,4,5]
 
-    - name: Copy some good files
-      copy:
-        src: 1
-        dst: "{{ general.rundir }}/{{ item }}.copy"
-      when: foo is baz
-      loop: [1,2,3,4,5]
+- name: We modify some files on the way...
+  template:
+    src: 'foo'
+    dst: 'bar'
 
-    - name: We modify some files on the way...
-      template:
-        src: 'foo'
-        dst: 'bar'
+- name: Some files will rather be linked
+  link:
+    src: 'big'
+    dst: 'small'
+  when: Monday > green
 
-    - name: Some files will rather be linked
-      link:
-        src: 'big'
-        dst: 'small'
-      when: Monday > green
+- name: Copy some bad files as well
+  copy:
+    src: 7
+    dst: 8
+  when: foo is not baz
 
-    - name: Copy some bad files as well
-      copy:
-        src: 7
-        dst: 8
-      when: foo is not baz
+- name: Execute an evil command
+  command:
+    name: 'cdo'
+    args: ['-f', '-s', '-v', '-t 1234']
 
-    - name: Execute an evil command
-      command:
-        name: 'cdo'
-        args: ['-f', '-s', '-v', '-t 1234']
+- include: ifs-jobs.yml
+- include: nemo-jobs.yml
 
-    - include: ifs-jobs.yml
-    - include: nemo-jobs.yml
+- name: Execute some tasks/jobs in parallel
+  do:
 
-    - name: Execute some tasks/jobs in parallel
-      do:
+    - include: foo.yml
+    - include: bar.yml
 
-        - include: foo.yml
-        - include: bar.yml
+  context: parallel
 
-      context: parallel
-
-    - name: Execute a loop in parallel
-      command:
-        name: 'cdo'
-        args: ['-f', '-s', '-v', '-t 1234']
-      loop: [1,2,3,4]
-      context: parallel
+- name: Execute a loop in parallel
+  command:
+    name: 'cdo'
+    args: ['-f', '-s', '-v', '-t 1234']
+  loop: [1,2,3,4]
+  context: parallel
