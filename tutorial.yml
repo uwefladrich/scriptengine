@@ -2,76 +2,114 @@
 
 # =================================================================================================
 # The ScriptEngine tutorial file
-#
-# Run this with the command 'se tutorial.yml'!
+# -------------------------------------------------------------------------------------------------
+# This tutorial file is about using the ScriptEngine via the 'se' command and Yaml files.
+# It explaines (most of) the features implemented in ScriptEngine/se. Read it, run it
+# ('se tutorial.yml'), play around with it and enjoy using ScriptEngine!
 # =================================================================================================
 
 
 # -------------------------------------------------------------------------------------------------
 # Some simple tasks:
 # -------------------------------------------------------------------------------------------------
-- echo:  # The echo task just writes out stuff
+
+- echo:  # The *echo* task just writes out stuff
     msg: Hello, world!
 
-- command:  # The command task runs commands
+  # Same, in compact YAML syntax
+- echo: {msg: "World, hello again!"}
+
+- command:  # The *command* task runs commands, in this case 'ls'
     name: ls
 
-- command:  # The command task can take argument lists
+- command:  # The *command* task can take argument lists
     name: mkdir
-    args:
-        - -p
-        - foo
+    args: [-p, foo]
 
-- command:  # The command task can change the current working directory
-            # Note that args still needs to be a list, even when it's just one item!
+- command:  # The *command* task can change the current working directory
+            # Note that *args* still needs to be a list, even when it's just one item!
     name: touch
     args: [bar.txt]
     cwd:  foo
 
-- copy:  # The copy task copies files
+- copy:  # The *copy* task copies files
     src: foo/bar.txt
     dst: foo/bar.txt.j2
 
-- template: # The template task renders Jinja2 template files
+- template: # The *template* task renders Jinja2 template files
     src: foo/bar.txt.j2
     dst: foo/bar.txt
 
-- command:  # Just cleaning up...
-    name: rm
-    args: [-fr, foo]
+  # Just cleaning up ...
+- command: {name: rm, args: [-fr, foo]}
 
 
 # -------------------------------------------------------------------------------------------------
 # Working with configurations
 # -------------------------------------------------------------------------------------------------
 
-- config:
+- config:  # A simple value stored under the name 'planet'
     planet: world
-
-- echo:
+- echo:    # Access the value stored above
     msg: "Hello, {{planet}}!"
+
+- config:  # Config values can be nested and may contain lists
+    countries:
+        nordic: [Sweden, Norway, Danmark, Finnland, Iceland]
+        other:  [foo, bar, baz]
+    people:
+        boss: Mary
+        workers: [Peter, Paul]
+    number: 5
 
 
 # -------------------------------------------------------------------------------------------------
 # Working with loops
 # -------------------------------------------------------------------------------------------------
 
-- echo:
+- echo:  # Tasks can be repeated by using *loop*s:
+         # - note correct indentation!
+         # - the *loop* index is {{item}}
+         # - *loop*s may not be nested
     msg: "Hello, {{item}}!"
   loop: [earth, mars]
 
-- config:
-    planets:
-        - earth
-        - mars
-- echo:
-    msg: "Hello, {{item}}!"
-  loop: "{{planets}}"
+- echo:  # *Loop* lists can be defined in config tasks
+    msg: "A nice country: {{item}}"
+  loop: "{{countries.nordic}}"
 
 
 # -------------------------------------------------------------------------------------------------
 # Working with 'when' clauses
 # -------------------------------------------------------------------------------------------------
 
+  # Jobs may contain a *when* clause (a conditional)
+  # - *when* clauses are evaluated by Jinja2
+  # - they may therefore access config variables
+- config:
+    i: 7
+- echo: {msg: "i is pretty big (it's {{i}})"}
+  when: i>5
+- echo: {msg: "i is not so big (just {{i}})"}
+  when: i<=5
+
+  # Loops and *when* clauses can be combined, however:
+  # - the *when* clause must not access {{item}}
+  # - the *when* clause is evaluated only once
+- echo: {msg: "i is not so big (just {{i}})"}
+  loop: [1,2,3]
+  when: i<=5
+
+
+# -------------------------------------------------------------------------------------------------
+# Composite jobs
+# -------------------------------------------------------------------------------------------------
+
+# Jobs can be grouped by using *do*, which is usefull when when you want to apply *loop*s or *when*
+# clauses to multiple tasks/jobs
+- do:
+    - echo: {msg: "We can do something with '{{item}}'"}
+    - echo: {msg: "Maybe we want to do something else with '{{item}}' as well"}
+  loop: [foo, bar, baz]
 
 ...
