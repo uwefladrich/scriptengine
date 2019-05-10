@@ -112,4 +112,11 @@
     - echo: {msg: "Maybe we want to do something else with '{{item}}' as well"}
   loop: [foo, bar, baz]
 
+- do: # With *do* jobs, you can combine *loop* and *when* AND access the *loop* index *item*
+    - echo: {msg: "Item is not so big (just {{item}}), but wait!"}
+      when: "item<5"
+    - echo: {msg: "Now item is pretty big! ({{item}})"}
+      when: "item>=5"
+  loop: [1,2,3,4,5,6,7,8,9]
+
 ...
