@@ -4,35 +4,40 @@ import logging
 import argparse
 import yaml
 
+import se.logging
+
 from se.jobs import Job
 from se.tasks import Configuration, Echo, Copy, Command, Template, Getenv
 from se.scripts import SimpleScriptEngine
 
 DRY_RUN = False
+DEBUG = False
+QUIET = False
 
 def parse_command_line_arguments():
+
+    global QUIET
+    global DEBUG
+    global DRY_RUN
+
     arg_parser = argparse.ArgumentParser(description='ScriptEngine command line tool')
 
     arg_parser.add_argument('--dry-run', help='Don\'t actually run any commands', action='store_true')
-    arg_parser.add_argument('-v', '--verbose', help='Be verbose', action='store_true')
+    arg_parser.add_argument('-q', '--quiet', help='Be quiet', action='store_true')
     arg_parser.add_argument('--debug', help='Debug output', action='store_true')
     arg_parser.add_argument('file', help='YAML files to read', nargs='+')
 
     args = arg_parser.parse_args()
 
-    if args.verbose:
-        logging.basicConfig(level=logging.INFO)
-
-    if args.debug:
-        logging.basicConfig(level=logging.DEBUG)
-
-    if args.dry_run:
-        global DRY_RUN
-        DRY_RUN = True
+    QUIET = args.quiet
+    DEBUG = args.debug
+    DRY_RUN = args.dry_run
 
     return args.file
 
 def create_job_from_dict(dictionary):
+
+    log = logging.getLogger('se.jobs')
 
     TASK_CLASSES = { 'echo': Echo,
                      'copy': Copy,
@@ -55,12 +60,11 @@ def create_job_from_dict(dictionary):
     if {job_name} | job_modifiers != set(dictionary.keys()):
         raise RuntimeError('Unknown keywords in job description')
 
-    logging.debug('Creating "{}" job'.format(job_name))
-
+    log.debug('Creating "{}" job'.format(job_name))
     job = Job()
 
     if job_name in COMPOSITE_JOB:
-        logging.debug('This is a composite job')
+        log.debug('It is a composite job')
         sub_job = Job(tasks=None,
                       when=dictionary.get('when', None),
                       loop=dictionary.get('loop', None),
@@ -71,15 +75,16 @@ def create_job_from_dict(dictionary):
 
     elif job_name in SIMPLE_JOB:
 
+        log.debug('Creating task')
         task = TASK_CLASSES[job_name](dictionary[job_name])
         if job_modifiers:
-            logging.debug('This is a task with job modifiers')
+            log.debug('Adding this task with job modifiers {}'.format(job_modifiers))
             job.append(Job(tasks=task,
                            when=dictionary.get('when', None),
                            loop=dictionary.get('loop', None),
                            context=dictionary.get('context', None)))
         else:
-            logging.debug('This is a simple task')
+            log.debug('Adding as simple task')
             job.append(task)
     return job
 
@@ -88,12 +93,19 @@ if __name__ == '__main__':
 
     files = parse_command_line_arguments()
 
+    if QUIET:
+        log = se.logging.app_logger('se', level=logging.WARN)
+    elif DEBUG:
+        log = se.logging.app_logger('se', level=logging.DEBUG)
+    else:
+        log = se.logging.app_logger('se', level=logging.INFO)
+
     if DRY_RUN:
-        logging.info('Running in dry-run mode')
+        log.info('Running in dry-run mode')
 
     script = []
     for file in files:
-        logging.info('--> Processing file {}'.format(file))
+        log.info('Processing file {}'.format(file))
         with open(file) as f:
             scr = yaml.safe_load(f)
         script.extend(scr)
