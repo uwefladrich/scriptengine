@@ -1,23 +1,21 @@
-import logging
 import jinja2
 
 from se.tasks import Task
 from se.helpers import render_string_recursive
 
-log = logging.getLogger(__name__)
 
 class Template(Task):
 
     def __init__(self, dict):
-        super(Template, self).__init__(dict, 'src', 'dst')
-        log.debug('Creating "{}"'.format(dict))
+        super(Template, self).__init__(__name__, dict, 'src', 'dst')
+        self.log.debug('Creating "{}"'.format(dict))
 
     def __str__(self):
         return 'Template: {} --> {}'.format(self.src, self.dst)
 
     def run(self, *, dryrun=False, **config):
-        log.info('{} --> {}'.format(render_string_recursive(self.src, **config),
-                                    render_string_recursive(self.dst, **config)))
+        self.log.info('{} --> {}'.format(render_string_recursive(self.src, **config),
+                                         render_string_recursive(self.dst, **config)))
         if dryrun:
             print(render_string_recursive(str(self), **config))
         else:

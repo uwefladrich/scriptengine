@@ -1,7 +1,9 @@
+import logging
+
 class Task(object):
     """ Base class for all tasks
     """
-    def __init__(self, dictionary, *required_args):
+    def __init__(self, log_name, dictionary, *required_args):
         try:
             # Make sure that 'run' is not a dictionary key, it's reserved for the run() method!
             if 'run' in dictionary:
@@ -14,6 +16,7 @@ class Task(object):
         for arg in required_args:
             if arg not in self.__dict__:
                 raise UnboundLocalError(self.__class__.__name__+' is missing the "'+str(arg)+'" argument')
+        self.log = logging.getLogger(log_name)
 
     def __repr__(self):
         return '{}({})'.format(self. __class__.__name__, self.__dict__)
