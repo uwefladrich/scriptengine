@@ -1,5 +1,6 @@
 class Task(object):
-
+    """ Base class for all tasks
+    """
     def __init__(self, dictionary, *required_args):
         try:
             # Make sure that 'run' is not a dictionary key, it's reserved for the run() method!
