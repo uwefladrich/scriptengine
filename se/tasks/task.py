@@ -15,7 +15,7 @@ class Task(object):
         # Make sure all required arguments are present
         for arg in required_args:
             if arg not in self.__dict__:
-                raise UnboundLocalError(self.__class__.__name__+' is missing the "'+str(arg)+'" argument')
+                raise UnboundLocalError('{} is missing the {} argument'.format(self.__class__.__name__, str(arg)))
         self.log = logging.getLogger(log_name)
 
     def __repr__(self):
