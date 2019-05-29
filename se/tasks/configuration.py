@@ -16,7 +16,7 @@ class Configuration(Task):
         return 'Configuration: {}'.format(self.__dict__)
 
     def run(self, *, dryrun=False, **config):
-        log.info('{}'.format(render_string_recursive(str(self.__dict__), **config)))
+        log.info('{}'.format(str(self.__dict__)))
         if dryrun:
             print(render_string_recursive(str(self), **config))
         return self.__dict__
