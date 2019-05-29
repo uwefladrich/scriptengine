@@ -19,7 +19,7 @@ class Command(Task):
 
     def run(self, *, dryrun=False, **config):
         log.info('{} {}'.format(render_string_recursive(str(self.name), **config),
-                                render_string_recursive(str(getattr(self, 'args', ''), **config))))
+                                render_string_recursive(str(getattr(self, 'args', '')), **config)))
         if dryrun:
             print(render_string_recursive(str(self), **config))
             return None
