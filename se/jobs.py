@@ -45,8 +45,8 @@ class Job(object):
                 try:
                     self.loop = ast.literal_eval(
                                     render_string_recursive(self.loop, **config))
-                except ValueError:
-                    raise RuntimeError('Found invalid loop expression: {}'.format(self.loop))
+                except (ValueError, SyntaxError):
+                    raise RuntimeError('Invalid or undefined loop expression: {}'.format(self.loop))
             for item in self.loop or [non_loop]:
                 for task in self.tasks:
                     if item is non_loop:
