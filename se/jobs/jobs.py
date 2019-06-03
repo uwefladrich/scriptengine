@@ -1,7 +1,7 @@
 import ast
 import deepmerge
 
-from se.helpers import eval_when_clause, render_string_recursive
+from se.helpers import render_string
 
 
 class Job(object):
@@ -38,13 +38,12 @@ class Job(object):
            this job has a list to loop over, run the tasks/jobs repeatedly for
            each loop item.
         """
-        if self.when is None or eval_when_clause(self.when, **config):
+        if self.when is None or render_string(self.when, boolean=True, **config):
             non_loop = object()
             config_updates = {}
             if type(self.loop) is str:
                 try:
-                    self.loop = ast.literal_eval(
-                                    render_string_recursive(self.loop, **config))
+                    self.loop = ast.literal_eval(render_string(self.loop, **config))
                 except (ValueError, SyntaxError):
                     raise RuntimeError('Invalid or undefined loop expression: {}'.format(self.loop))
             for item in self.loop or [non_loop]:

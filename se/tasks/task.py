@@ -16,10 +16,16 @@ class Task(object):
         for arg in required_args:
             if arg not in self.__dict__:
                 raise UnboundLocalError('{} is missing the {} argument'.format(self.__class__.__name__, str(arg)))
-        self.log = logging.getLogger(log_name)
+        self.__log = logging.getLogger(log_name)
 
     def __repr__(self):
         return '{}({})'.format(self. __class__.__name__, self.__dict__)
 
     def run(self, **config):
         raise NotImplementedError('Task.run() method called, which is an abstract base class method')
+
+    def log_info(self, msg):
+        self.__log.info(msg)
+
+    def log_debug(self, msg):
+        self.__log.debug(msg)

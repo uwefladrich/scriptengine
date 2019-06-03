@@ -4,7 +4,7 @@ import logging
 import argparse
 import yaml
 
-import se.logging
+import se.scripts.logging
 
 from se.jobs import Job
 from se.tasks import Configuration, Echo, Copy, Command, Template, Getenv
@@ -94,11 +94,11 @@ if __name__ == '__main__':
     files = parse_command_line_arguments()
 
     if QUIET:
-        log = se.logging.app_logger('se', level=logging.WARN)
+        log = se.scripts.logging.app_logger('se', level=logging.WARN)
     elif DEBUG:
-        log = se.logging.app_logger('se', level=logging.DEBUG)
+        log = se.scripts.logging.app_logger('se', level=logging.DEBUG)
     else:
-        log = se.logging.app_logger('se', level=logging.INFO)
+        log = se.scripts.logging.app_logger('se', level=logging.INFO)
 
     if DRY_RUN:
         log.info('Running in dry-run mode')
