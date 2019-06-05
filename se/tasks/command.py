@@ -1,3 +1,5 @@
+"""Command task for ScriptEngine."""
+
 import ast
 import subprocess
 
@@ -6,34 +8,32 @@ from se.helpers import render_string
 
 
 class Command(Task):
-
-    def __init__(self, dict):
-        super(Command, self).__init__(__name__, dict, 'name')
-        self.log_debug('Creating "{}"'.format(dict))
+    """Command task, executes a command in a shell.
+    """
+    def __init__(self, dictionary):
+        super().__init__(__name__, dictionary, 'name')
 
     def __str__(self):
-        return 'Running command "{}" with arguments "{}"'.format(self.name,
-                                                                 getattr(self, 'args', None))
+        return f'Command "{self.name}" with args "{getattr(self, "args", None)}"'
 
-    def run(self, *, dryrun=False, **config):
-        self.log_info('{} {}'.format(render_string(str(self.name), **config),
-                                     render_string(str(getattr(self, 'args', ''), **config))))
-        if dryrun:
-            print(render_string(str(self), **config))
-            return None
+    def run(self, **kwargs):
+        self.log_info(f'{render_string(self.name, **kwargs)} '
+                      f'{render_string(str(getattr(self, "args", "")), **kwargs)}')
 
-        command = render_string(self.name, **config)
-        arglist = getattr(self, 'args', [])
-        if type(arglist) is str:
-            try:
-                arglist = ast.literal_eval(render_string(arglist, **config)) or []
-            except ValueError:
-                raise RuntimeError('Command task: can''t parse "args": {}'.format(arglist))
+        if getattr(kwargs, 'dryrun', False):
+            print(render_string(str(self), **kwargs))
         else:
-            try:
-                arglist = [render_string(arg, **config) for arg in arglist]
-            except TypeError:
-                raise RuntimeError('Command task: "args" not iterable: {}'.format(arglist))
-        cwd = render_string(self.cwd, **config) if hasattr(self, 'cwd') else None
-        subprocess.run([command]+arglist, cwd=cwd)
-        return None
+            command = render_string(self.name, **kwargs)
+            arglist = getattr(self, 'args', [])
+            if isinstance(arglist, str):
+                try:
+                    arglist = ast.literal_eval(render_string(arglist, **kwargs)) or []
+                except ValueError:
+                    raise RuntimeError(f'Command task: can''t parse "args": {arglist!s}')
+            else:
+                try:
+                    arglist = [render_string(arg, **kwargs) for arg in arglist]
+                except TypeError:
+                    raise RuntimeError(f'Command task: "args" not iterable: {arglist!s}')
+            cwd = render_string(self.cwd, **kwargs) if hasattr(self, 'cwd') else None
+            subprocess.run([command]+arglist, cwd=cwd)

@@ -1,5 +1,7 @@
-from jinja2 import Template
+"""ScriptEngine helpers: Jinja2 rendering"""
+
 from distutils.util import strtobool
+from jinja2 import Template
 
 
 def render_string(string, recursive=True, boolean=False, **kwargs):
@@ -36,5 +38,4 @@ def render_string(string, recursive=True, boolean=False, **kwargs):
     if boolean:
         expr = '{% if '+rendered_string+' %}1{% else %}0{% endif %}'
         return bool(strtobool(Template(expr).render(**kwargs)))
-    else:
-        return rendered_string
+    return rendered_string

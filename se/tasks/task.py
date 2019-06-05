@@ -1,6 +1,11 @@
+"""ScriptEngine task module.
+
+Provides the base class for all tasks.
+"""
+
 import logging
 
-class Task(object):
+class Task:
     """Base class for all tasks in ScriptEngine.
 
     This class provides (parts of) the initialisation of task objects, set-up
@@ -89,9 +94,11 @@ class Task(object):
         # Make sure all required arguments are present
         for key in required_attributes:
             if key not in self.__dict__:
-                raise UnboundLocalError('{} is missing the {} argument'.format(self.__class__.__name__, str(key)))
+                raise UnboundLocalError(f'{self.__class__.__name__} is missing '
+                                        f'the {key!s} argument')
         # Associate this task with the given logger name
         self.__log = logging.getLogger(logger_name)
+        self.log_debug(f'Create task from "{dictionary!s}"')
 
     def __repr__(self):
         return '{}({})'.format(self.__class__.__name__, self.__dict__)
@@ -109,16 +116,37 @@ class Task(object):
             dict or None: If the task wants to add/update the
                 configuration, a dict is returned. None otherwise.
         """
-        raise NotImplementedError('Task.run() method called, which is an abstract base class method')
+        raise NotImplementedError('Task.run() method called, '
+                                  'which is an abstract base class method')
 
     def log_debug(self, msg):
+        """Logs to object logger with DEBUG level.
+
+        Args:
+            msg (str): the logging message
+        """
         self.__log.debug(msg)
 
     def log_info(self, msg):
+        """Logs to object logger with INFO level.
+
+        Args:
+            msg (str): the logging message
+        """
         self.__log.info(msg)
 
     def log_warning(self, msg):
+        """Logs to object logger with WARNING level.
+
+        Args:
+            msg (str): the logging message
+        """
         self.__log.warning(msg)
 
     def log_error(self, msg):
+        """Logs to object logger with ERROR level.
+
+        Args:
+            msg (str): the logging message
+        """
         self.__log.error(msg)

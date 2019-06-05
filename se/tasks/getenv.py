@@ -1,3 +1,5 @@
+"""Getenv task for ScriptEngine."""
+
 import os
 
 from se.tasks import Task
@@ -5,23 +7,30 @@ from se.helpers import render_string
 
 
 class Getenv(Task):
+    """ Getenv task, reads environment variable
 
-    def __init__(self, dict):
-        super(Getenv, self).__init__(__name__, dict, 'name', 'set_cfg')
-        self.log_debug('Creating "{}"'.format(dict))
+    The Getenv run() method reads an environmane variable and sets a
+    ScriptEngine configuration parameter.
+
+    Args:
+        dictionary (dict): Must at least contain the following keys:
+            - name: Name of the environment variable
+            - set_cfg: Name of the ScriptEngine config parameter that is set to
+                the value of the environment variable (if it exists)
+    """
+    def __init__(self, dictionary):
+        super().__init__(__name__, dictionary, 'name', 'set_cfg')
 
     def __str__(self):
-        return 'Get environment variable "{}" and set "{}" config'.format(self.name, self.set_cfg)
+        return f'Get environment variable "{self.name}" and set "{self.set_cfg}" config'
 
-    def run(self, *, dryrun=False, **config):
-        self.log_info('{} --> {}'.format(render_string(self.name, **config),
-                                         render_string(self.set_cfg, **config)))
-        if dryrun:
-            print(render_string(str(self), **config))
-            return None
-
-        env = os.environ.get(render_string(self.name, **config))
-        if env:
-            return {render_string(self.set_cfg, **config): env}
+    def run(self, **kwargs):
+        self.log_info(f'{render_string(self.name, **kwargs)} '
+                      f'--> {render_string(self.set_cfg, **kwargs)}')
+        if getattr(kwargs, 'dryrun', False):
+            print(render_string(str(self), **kwargs))
         else:
-            return None
+            env = os.environ.get(render_string(self.name, **kwargs))
+            if env:
+                return {render_string(self.set_cfg, **kwargs): env}
+        return None
