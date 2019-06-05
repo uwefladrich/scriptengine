@@ -49,13 +49,16 @@ def create_job_from_dict(dictionary):
 
     job_name = set(dictionary.keys()) & (all_composite_jobs | all_simple_jobs)
     if len(job_name) != 1:
+        LOG.error('Missing, unknown or ambiguous job or task name: %s', job_name)
         raise RuntimeError('Missing, unknown or ambiguous job/task name')
 
     job_name = job_name.pop()
     job_modifiers = set(dictionary.keys()) & all_job_modifiers
 
-    if {job_name} | job_modifiers != set(dictionary.keys()):
-        raise RuntimeError('Unknown keywords in job description')
+    if {job_name} | job_modifiers != dictionary.keys():
+        LOG.error('Unknown keyword(s) in job specification: %s',
+                  dictionary.keys() - ({job_name} | job_modifiers))
+        raise RuntimeError('Unknown keyword(s) in job specification')
 
     LOG.debug('Create job "%s"', job_name)
     job = Job()
@@ -107,15 +110,22 @@ if __name__ == '__main__':
         LOG.info(f'Processing file {file}')
         with open(file) as f:
             scr = yaml.safe_load(f)
-        script.extend(scr)
+        if isinstance(scr, list):
+            script.extend(scr)
+        elif isinstance(scr, dict):
+            script.append(scr)
+        else:
+            LOG.error('YAML parser returns unknown data type from file %s', file)
+            raise RuntimeError(f'YAML parser returns unknown data type from file {file}')
     LOG.debug('Finish processing files')
 
     LOG.debug('Start creating job list')
-    job = Job()
-    for j in script:
-        job.append(create_job_from_dict(j))
+    joblist = []
+    for job in script:
+        LOG.debug('Create job from %s', job)
+        joblist.append(create_job_from_dict(job))
     LOG.debug('Finish creating job list')
 
     LOG.debug('Start running jobs')
-    SimpleScriptEngine().run(script=[job], dryrun=cfg['dryrun'])
+    SimpleScriptEngine().run(script=joblist, dryrun=cfg['dryrun'])
     LOG.debug('Finish running jobs')
