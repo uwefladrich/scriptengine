@@ -62,7 +62,7 @@
         workers: [Peter, Paul]
     number: 5
 
-- getenv:
+- getenv: # The *getenv* task sets a configuration item from an environment variable
     name: HOME
     set_cfg: home
 - echo: {msg: "My home is at {{home}}"}
