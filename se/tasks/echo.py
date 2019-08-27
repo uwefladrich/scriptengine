@@ -7,17 +7,14 @@ from se.helpers import terminal_colors as tc
 
 
 class Echo(Task):
-    """Echo task, writes a message to stdout
+    """Echo task, writes a (coloured) message to stdout
     """
-    def __init__(self, dictionary):
-        super().__init__(__name__, dictionary, 'msg')
+    def __init__(self, parameters):
+        super().__init__(__name__, parameters, required_parameters=["msg"])
 
     def __str__(self):
-        return f'Echo: {self.msg}'
+        return f"Echo: {self.msg}"
 
-    def run(self, **kwargs):
-        self.log_info(f'{render_string(self.msg, **kwargs)}')
-        if getattr(kwargs, 'dryrun', False):
-            print(render_string(str(self), **kwargs))
-        else:
-            print(f'{tc.LIGHTBLUE}{render_string(self.msg, **kwargs)}{tc.RESET}')
+    def run(self, context):
+        self.log_info(f"{render_string(self.msg, context)}")
+        print(f"{tc.LIGHTBLUE}{render_string(self.msg, context)}{tc.RESET}")
