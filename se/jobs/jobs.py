@@ -20,7 +20,9 @@ class Job:
         self._loop = loop
 
         self._logger = logging.getLogger(__name__)
-        self.log_debug(f"Create Job")
+        self.log_debug(f"Create Job"
+                       f"{', when='+self._when if self._when else ''}"
+                       f"{', loop='+str(self._loop) if self._loop else ''}")
 
     @property
     def id(self):
