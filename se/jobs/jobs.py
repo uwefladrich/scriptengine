@@ -37,7 +37,7 @@ class Job:
 
     def loop(self, context):
         try:
-            rendered_loop_string = render_string(self._loop, context)
+            rendered_loop_string = render_string(str(self._loop), context)
         except TypeError:
             return None
         else:
