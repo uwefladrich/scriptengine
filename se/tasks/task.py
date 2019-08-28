@@ -18,10 +18,10 @@ class Task:
 
         for param in required_parameters:
             if param not in self.__dict__:
-                raise RuntimeError(f"Missing required parameter '{param}' while creating task")
-
+                raise RuntimeError(f"Missing required parameter '{param}' while creating "
+                                   f"'{type(self).__name__}' task from {parameters!s}")
         self._logger = logging.getLogger(logger_name)
-        self.log_debug(f"Created Task from {parameters!s}")
+        self.log_debug(f"Create '{type(self).__name__}' task from {parameters!s}")
 
     @property
     def id(self):
