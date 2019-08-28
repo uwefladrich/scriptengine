@@ -54,7 +54,10 @@ def from_yaml_file(filename):
     with open(filename) as file:
         data = yaml.safe_load(file)
 
-    job = Job()
-    for d in data if isinstance(data, list) else [data]:
-        job.append(from_dict(d))
-    return job
+    if isinstance(data, list):
+        job = Job()
+        for d in data:
+            job.append(from_dict(d))
+        return job
+    else:
+        return from_dict(data)
