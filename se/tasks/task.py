@@ -36,13 +36,13 @@ class Task:
         raise NotImplementedError(f"Base class function Task.run() must not be called")
 
     def log_debug(self, message):
-        self._logger.debug(message)
+        self._logger.debug(f"{message} ({self.id})")
 
     def log_info(self, message):
-        self._logger.info(message)
+        self._logger.info(f"{message} ({self.id})")
 
     def log_warning(self, message):
-        self._logger.warning(message)
+        self._logger.warning(f"{message} ({self.id})")
 
     def log_error(self, message):
-        self._logger.error(message)
+        self._logger.error(f"{message} ({self.id})")
