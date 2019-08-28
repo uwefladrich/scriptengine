@@ -17,7 +17,7 @@ def from_dict(data):
         the created job of type se.jobs.Job
     """
     tasks = {name.lower():obj for name,obj in inspect.getmembers(se.tasks, inspect.isclass)}
-    jobs  = {'do'}
+    jobs  = {"do"}
 
     next_keys = (set(tasks)|jobs).intersection(data)
 

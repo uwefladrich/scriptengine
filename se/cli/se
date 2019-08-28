@@ -17,41 +17,41 @@ from se.scripts import SimpleScriptEngine
 
 def parse_command_line_arguments():
 
-    arg_parser = argparse.ArgumentParser(description='ScriptEngine command line tool')
+    arg_parser = argparse.ArgumentParser(description="ScriptEngine command line tool")
 
-    arg_parser.add_argument('-q', '--quiet', help='be quiet, no extra output', action='store_true')
-    arg_parser.add_argument('--debug', help='lots of extra debug output', action='store_true')
-    arg_parser.add_argument('file', help='YAML file(s) to read', nargs='+')
+    arg_parser.add_argument("-q", "--quiet", help="be quiet, no extra output", action="store_true")
+    arg_parser.add_argument("--debug", help="lots of extra debug output", action="store_true")
+    arg_parser.add_argument("file", help="YAML file(s) to read", nargs="+")
 
     args = arg_parser.parse_args()
 
-    return {'files': args.file,
-            'quiet': args.quiet,
-            'debug': args.debug}
+    return {"files": args.file,
+            "quiet": args.quiet,
+            "debug": args.debug}
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     cfg = parse_command_line_arguments()
 
-    if cfg['quiet']:
-        LOG = se.scripts.logging.app_logger('se', level=logging.WARN)
-    elif cfg['debug']:
-        LOG = se.scripts.logging.app_logger('se', level=logging.DEBUG)
+    if cfg["quiet"]:
+        LOG = se.scripts.logging.app_logger("se", level=logging.WARN)
+    elif cfg["debug"]:
+        LOG = se.scripts.logging.app_logger("se", level=logging.DEBUG)
     else:
-        LOG = se.scripts.logging.app_logger('se', level=logging.INFO)
+        LOG = se.scripts.logging.app_logger("se", level=logging.INFO)
 
     LOG.debug("Start processing files")
-    if len(cfg['files'])==1:
-        job = se.jobs.parse.from_yaml_file(cfg['files'][0])
+    if len(cfg["files"])==1:
+        job = se.jobs.parse.from_yaml_file(cfg["files"][0])
     else:
         job = Job()
-        for file in cfg['files']:
+        for file in cfg["files"]:
             job.append(se.jobs.parse.from_yaml_file(file))
     LOG.debug("Finish processing files")
 
-    LOG.debug('Start running jobs')
+    LOG.debug("Start running jobs")
     script_engine = SimpleScriptEngine()
     context = {"_se_instance": script_engine}
     script_engine.run(job, context)
-    LOG.debug('Finish running jobs')
+    LOG.debug("Finish running jobs")

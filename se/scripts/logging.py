@@ -44,12 +44,12 @@ def _log_formatter(color=None):
         a logging.Formatter object
     """
     if color:
-        format_string = (f'%(asctime)s {color+tc.BOLD}%(levelname)s [%(name)s]: '
-                         f'{tc.RESET+color}%(message)s{tc.RESET}')
+        format_string = (f"%(asctime)s {color+tc.BOLD}%(levelname)s [%(name)s]: "
+                         f"{tc.RESET+color}%(message)s{tc.RESET}")
     else:
-        format_string = '%(asctime)s %(levelname)s [%(name)s] %(message)s'
+        format_string = "%(asctime)s %(levelname)s [%(name)s] %(message)s"
 
-    return logging.Formatter(format_string, datefmt='%Y-%m-%d %H:%M:%S')
+    return logging.Formatter(format_string, datefmt="%Y-%m-%d %H:%M:%S")
 
 def app_logger(name, level=logging.INFO):
     """ Returns a Logger
