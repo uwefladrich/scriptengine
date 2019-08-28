@@ -5,3 +5,4 @@ further documentation.
 """
 
 from .jobs import Job
+from .parse import from_yaml_file
