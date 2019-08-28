@@ -19,9 +19,9 @@ def parse_command_line_arguments():
 
     arg_parser = argparse.ArgumentParser(description='ScriptEngine command line tool')
 
-    arg_parser.add_argument('-q', '--quiet', help='Be quiet', action='store_true')
-    arg_parser.add_argument('--debug', help='Debug output', action='store_true')
-    arg_parser.add_argument('file', help='YAML files to read', nargs='+')
+    arg_parser.add_argument('-q', '--quiet', help='be quiet, no extra output', action='store_true')
+    arg_parser.add_argument('--debug', help='lots of extra debug output', action='store_true')
+    arg_parser.add_argument('file', help='YAML file(s) to read', nargs='+')
 
     args = arg_parser.parse_args()
 
