@@ -16,5 +16,5 @@ class Echo(Task):
         return f"Echo: {self.msg}"
 
     def run(self, context):
-        self.log_info(f"{render_string(self.msg, context)}")
+        self.log_info(self.msg)
         print(f"{tc.LIGHTBLUE}{render_string(self.msg, context)}{tc.RESET}")
