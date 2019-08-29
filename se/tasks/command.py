@@ -1,4 +1,10 @@
-"""Command task for ScriptEngine."""
+"""Command task for ScriptEngine
+
+   Example:
+      - command:
+            name: ls
+            args: [-l, -a]
+"""
 
 import ast
 import subprocess
@@ -8,32 +14,30 @@ from se.helpers import render_string
 
 
 class Command(Task):
-    """Command task, executes a command in a shell.
-    """
-    def __init__(self, dictionary):
-        super().__init__(__name__, dictionary, 'name')
+    """Command task, executes a command in a shell"""
+    def __init__(self, parameters):
+        super().__init__(__name__, parameters, ["name"])
 
     def __str__(self):
-        return f'Command "{self.name}" with args "{getattr(self, "args", None)}"'
+        return f"Command: {self.name} {getattr(self, 'args', '')}"
 
-    def run(self, **kwargs):
-        self.log_info(f'{render_string(self.name, **kwargs)} '
-                      f'{render_string(str(getattr(self, "args", "")), **kwargs)}')
+    def run(self, context):
+        self.log_info(f"{self.name} "
+                      f"args={getattr(self, 'args', 'none')} "
+                      f"cwd={getattr(self, 'cwd', 'none')}")
 
-        if getattr(kwargs, 'dryrun', False):
-            print(render_string(str(self), **kwargs))
-        else:
-            command = render_string(self.name, **kwargs)
-            arglist = getattr(self, 'args', [])
-            if isinstance(arglist, str):
-                try:
-                    arglist = ast.literal_eval(render_string(arglist, **kwargs)) or []
-                except ValueError:
-                    raise RuntimeError(f'Command task: can''t parse "args": {arglist!s}')
-            else:
-                try:
-                    arglist = [render_string(arg, **kwargs) for arg in arglist]
-                except TypeError:
-                    raise RuntimeError(f'Command task: "args" not iterable: {arglist!s}')
-            cwd = render_string(self.cwd, **kwargs) if hasattr(self, 'cwd') else None
-            subprocess.run([command]+arglist, cwd=cwd)
+        command = render_string(self.name, context)
+
+        args = render_string(str(getattr(self, "args", "")), context) or "[]"
+        try:
+            args = ast.literal_eval(args)
+        except ValueError:
+            args = ast.literal_eval(f'"{args}"')
+        args = args if isinstance(args, list) else [args]
+
+        cwd = render_string(getattr(self, "cwd", ''), context) or None
+
+        self.log_debug(f"{command} {' '.join(map(str,args))}"
+                       f"{' cwd='+cwd if cwd else ''}")
+
+        subprocess.run(map(str, [command]+args), cwd=cwd)
