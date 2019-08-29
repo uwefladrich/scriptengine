@@ -16,3 +16,4 @@ from se.tasks.copy import Copy
 from se.tasks.command import Command
 from se.tasks.template import Template
 from se.tasks.getenv import Getenv
+from se.tasks.include import Include
