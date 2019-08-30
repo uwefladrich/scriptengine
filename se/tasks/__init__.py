@@ -10,7 +10,7 @@ tasks.
 """
 
 from se.tasks.task import Task
-from se.tasks.configuration import Configuration
+from se.tasks.config import Config
 from se.tasks.echo import Echo
 from se.tasks.copy import Copy
 from se.tasks.command import Command
