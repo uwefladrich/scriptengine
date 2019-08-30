@@ -124,4 +124,17 @@
       when: "item>=5"
   loop: [1,2,3,4,5,6,7,8,9]
 
+
+# -------------------------------------------------------------------------------------------------
+# Include files
+# -------------------------------------------------------------------------------------------------
+
+# Other YAML files can be included.
+- include:
+    src: tutorial.inc.yml
+
+# Note that including files in ScriptEngine is done at run time! This means
+# that the include file is read, parsed, and executed at the time when the
+# Include task is run from the parent file.
+
 ...
