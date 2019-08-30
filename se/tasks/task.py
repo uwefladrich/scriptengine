@@ -29,7 +29,7 @@ class Task:
 
     def __repr__(self):
         my_params = {key: value for key, value in self.__dict__.items()
-                                                        if key[0]!="_"}
+                     if key[0] != "_"}
         return f"{self.__class__.__name__}({my_params})"
 
     def run(self, context):
