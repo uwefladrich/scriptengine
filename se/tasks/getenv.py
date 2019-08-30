@@ -18,19 +18,14 @@ class Getenv(Task):
             - set_cfg: Name of the ScriptEngine config parameter that is set to
                 the value of the environment variable (if it exists)
     """
-    def __init__(self, dictionary):
-        super().__init__(__name__, dictionary, 'name', 'set_cfg')
+    def __init__(self, parameters):
+        super().__init__(__name__, parameters, required_parameters=["name", "set_cfg"])
 
     def __str__(self):
-        return f'Get environment variable "{self.name}" and set "{self.set_cfg}" config'
+        return f"Getenv: ENV{self.name} --> {self.set_cfg}"
 
-    def run(self, **kwargs):
-        self.log_info(f'{render_string(self.name, **kwargs)} '
-                      f'--> {render_string(self.set_cfg, **kwargs)}')
-        if getattr(kwargs, 'dryrun', False):
-            print(render_string(str(self), **kwargs))
-        else:
-            env = os.environ.get(render_string(self.name, **kwargs))
-            if env:
-                return {render_string(self.set_cfg, **kwargs): env}
-        return None
+    def run(self, context):
+        self.log_info(f"ENV{self.name} --> {self.set_cfg}")
+        env = os.environ.get(render_string(self.name, context))
+        if env:
+            context[render_string(self.set_cfg, context)] = env

@@ -16,16 +16,12 @@ class Copy(Task):
             - src: Source file name
             - dst: Destination file or directory name
     """
-    def __init__(self, dictionary):
-        super().__init__(__name__, dictionary, 'src', 'dst')
+    def __init__(self, parameters):
+        super().__init__(__name__, parameters, required_parameters=["src", "dst"])
 
     def __str__(self):
-        return f'Copy: {self.src} --> {self.dst}'
+        return f"Copy: {self.src} --> {self.dst}"
 
-    def run(self, **kwargs):
-        self.log_info(f'{render_string(self.src, **kwargs)} '
-                      f'--> {render_string(self.dst, **kwargs)}')
-        if getattr(kwargs, 'dryrun', False):
-            print(render_string(str(self), **kwargs))
-        else:
-            shutil.copy(render_string(self.src, **kwargs), render_string(self.dst, **kwargs))
+    def run(self, context):
+        self.log_info(f"{self.src} --> {self.dst}")
+        shutil.copy(render_string(self.src, context), render_string(self.dst, context))

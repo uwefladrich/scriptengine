@@ -18,22 +18,19 @@ class Template(Task):
             - src: Source file name (a Jinja2 template)
             - dst: Destination file name
     """
-    def __init__(self, dictionary):
-        super().__init__(__name__, dictionary, 'src', 'dst')
+    def __init__(self, parameters):
+        super().__init__(__name__, parameters, required_parameters=["src", "dst"])
 
     def __str__(self):
-        return f'Template: {self.src} --> {self.dst}'
+        return f"Template: {self.src} --> {self.dst}"
 
-    def run(self, **kwargs):
-        self.log_info(f'{render_string(self.src, **kwargs)} '
-                      f'--> {render_string(self.dst, **kwargs)}')
-        if getattr(kwargs, 'dryrun', False):
-            print(render_string(str(self), **kwargs))
-        else:
-            template_loader = jinja2.FileSystemLoader(searchpath=['./', './templates'])
-            template_env = jinja2.Environment(loader=template_loader)
-            template = template_env.get_template(render_string(self.src, **kwargs))
-            output_text = render_string(template.render(**kwargs), **kwargs)
+    def run(self, context):
+        self.log_info(f"{self.src} --> {self.dst}")
 
-            with open(render_string(self.dst, **kwargs), 'w') as output_file:
-                output_file.write(f'{output_text}\n')
+        template_loader = jinja2.FileSystemLoader(searchpath=["./", "./templates"])
+        template_env = jinja2.Environment(loader=template_loader)
+        template = template_env.get_template(render_string(self.src, context))
+        output_text = render_string(template.render(context), context)
+
+        with open(render_string(self.dst, context), "w") as output_file:
+            output_file.write(f"{output_text}\n")
