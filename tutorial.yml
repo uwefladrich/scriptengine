@@ -129,12 +129,23 @@
 # Include files
 # -------------------------------------------------------------------------------------------------
 
+# Create some include files
+- copy:
+    src: tutorial.inc.yml
+    dst: "tutorial-{{item}}.inc.yml"
+  loop: [1,2,3]
+
 # Other YAML files can be included.
 - include:
-    src: tutorial.inc.yml
+    src: "tutorial-{{item}}.inc.yml"
+  loop: [1,2,3]
 
 # Note that including files in ScriptEngine is done at run time! This means
 # that the include file is read, parsed, and executed at the time when the
 # Include task is run from the parent file.
+
+# Clean up include files
+- command: {name: rm, args: ["tutorial-{{item}}.inc.yml"]}
+  loop: [1,2,3]
 
 ...

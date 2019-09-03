@@ -1,6 +1,9 @@
 ---
 
 - echo:
-    msg: Hello from the include file!
+    msg: "Hello from include file {{se.script.name}}!"
+
+- echo:
+    msg: "My full path is '{{se.script.abspath}}'"
 
 ...
