@@ -1,7 +1,6 @@
 """ScriptEngine job parser.
 """
 
-import os.path
 import inspect
 import yaml
 
@@ -55,9 +54,10 @@ def from_yaml_file(filename):
     with open(filename) as file:
         data = yaml.safe_load(file)
 
-    job = Job()
-    job.append(se.tasks.Config({'se': {'script': {'name': filename,
-                                                  'abspath': os.path.abspath(filename)}}}))
-    for d in data if isinstance(data, list) else [data]:
-        job.append(from_dict(d))
-    return job
+    if isinstance(data, list):
+        job = Job()
+        for d in data:
+            job.append(from_dict(d))
+        return job
+    else:
+        return from_dict(data)
