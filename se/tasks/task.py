@@ -8,15 +8,15 @@ import uuid
 
 class Task:
 
-    def __init__(self, logger_name, parameters, required_parameters=[]):
+    def __init__(self, logger_name, parameters=None, required_parameters=None):
 
         self._identifier = uuid.uuid4()
 
-        if "run" in parameters:
+        if "run" in (parameters or []):
             raise RuntimeError(f"Reserved identifier 'run' used as parameter while creating task")
-        self.__dict__.update(parameters)
+        self.__dict__.update(parameters or {})
 
-        for param in required_parameters:
+        for param in (required_parameters or []):
             if param not in self.__dict__:
                 raise RuntimeError(f"Missing required parameter '{param}' while creating "
                                    f"'{type(self).__name__}' task from {parameters!s}")
