@@ -1,7 +1,7 @@
 """Include task for ScriptEngine
 
    The Include task reads a YAML file, parses the content to create a
-   se.jobs.Job and lets the active ScriptEngine instance execute it.
+   ScriptEngine script and lets the active ScriptEngine instance execute it.
 """
 
 import se.scripts
@@ -18,13 +18,13 @@ class Include(Task):
 
     def run(self, context):
         self.log_info(self.src)
-        self.log_debug(f"Parsing job from '{render_string(self.src, context)}'")
-        job = se.scripts.parse_yaml_file(render_string(self.src, context))
+        self.log_debug(f"Parsing script from '{render_string(self.src, context)}'")
+        script = se.scripts.parse_yaml_file(render_string(self.src, context))
         try:
             se_instance = context['_se_instance']
         except KeyError:
             raise RuntimeError(f"ScriptEngine instance not found")
         else:
             self.log_debug(f"Executing todos from '{render_string(self.src, context)}'")
-            se_instance.run(job, context)
+            se_instance.run(script, context)
             self.log_debug(f"Finished executing todos from '{render_string(self.src, context)}'")
