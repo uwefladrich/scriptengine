@@ -1,0 +1,1 @@
+from se.exceptions.stop_exception import ScriptEngineStopException

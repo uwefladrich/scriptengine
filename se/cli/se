@@ -10,10 +10,9 @@ SimpleScriptEngine.
 import logging
 import argparse
 
-import se.scripts.logging
-
-from se.jobs import Job, from_yaml_file
-from se.scripts import SimpleScriptEngine
+from se.jobs import Job
+from se.scripts import SimpleScriptEngine, parse_yaml_file
+from se.scripts.logging import app_logger
 
 def parse_command_line_arguments():
 
@@ -35,23 +34,27 @@ if __name__ == "__main__":
     cfg = parse_command_line_arguments()
 
     if cfg["quiet"]:
-        LOG = se.scripts.logging.app_logger("se", level=logging.WARN)
+        LOG = app_logger("se", level=logging.WARN)
     elif cfg["debug"]:
-        LOG = se.scripts.logging.app_logger("se", level=logging.DEBUG)
+        LOG = app_logger("se", level=logging.DEBUG)
     else:
-        LOG = se.scripts.logging.app_logger("se", level=logging.INFO)
+        LOG = app_logger("se", level=logging.INFO)
 
     LOG.debug("Start processing files")
     if len(cfg["files"])==1:
-        job = se.jobs.parse.from_yaml_file(cfg["files"][0])
+        script = parse_yaml_file(cfg["files"][0])
     else:
-        job = Job()
+        script = []
         for file in cfg["files"]:
-            job.append(se.jobs.parse.from_yaml_file(file))
+            new_script = parse_yaml_file(files)
+            if isinstance(new_script, list):
+                script.extend(new_script)
+            else:
+                script.append(new_script)
     LOG.debug("Finish processing files")
 
     LOG.debug("Start running jobs")
-    script_engine = SimpleScriptEngine()
+    script_engine = SimpleScriptEngine(log_level=LOG.level)
     context = {"_se_instance": script_engine}
-    script_engine.run(job, context)
+    script_engine.run(script, context)
     LOG.debug("Finish running jobs")

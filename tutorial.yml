@@ -137,4 +137,18 @@
 # that the include file is read, parsed, and executed at the time when the
 # Include task is run from the parent file.
 
+
+
+# -------------------------------------------------------------------------------------------------
+# Exit task
+# -------------------------------------------------------------------------------------------------
+
+# The exit task requests the ScriptEngine instance to stop execution. It takes
+# an *optional* message ('msg') parameter.
+- exit:
+    msg: This is the end of the tutorial!
+
+# The SimpleScriptEngine will just stop the execution via sys.exit()
+# Other (e.g. parallel) ScriptEngines may do some clean-up first.
+
 ...
