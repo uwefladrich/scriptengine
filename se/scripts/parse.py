@@ -8,56 +8,65 @@ import se.tasks
 from se.jobs import Job
 
 
-def from_dict(data):
+def parse(data):
     """
     Args:
-        data (dict): a dictionary holding the job specs
+        data (dict or list of dicts): Data structure that holds the script
+            description, i.e. job and task specifications. See the simple
+            ScriptEngine grammar in the documentation.
 
     Returns:
-        the created job of type se.jobs.Job
+        A se.task.Task, a se.jobs.Job, or a list of tasks/jobs.
     """
     tasks = {name.lower():obj for name,obj in inspect.getmembers(se.tasks, inspect.isclass)}
     jobs  = {"do"}
 
-    next_keys = (set(tasks)|jobs).intersection(data)
+    if not data:
+        return []
 
-    if not next_keys:
-        raise RuntimeError(f"Unknown key in {data}")
+    if isinstance(data, list):
+        result = []
+        for item in data:
+            result.append(parse(item))
+        return result
 
-    if len(next_keys)>1:
-        raise RuntimeError(f"Ambiguous keys in {data}")
+    # Parse and return a single task or job
+    try:
+        keys = (jobs|tasks.keys()) & data.keys()
+    except AttributeError:
+        raise RuntimeError(f"Expected dictionary, got {type(data).__name__}: {data}")
 
-    key = next_keys.pop()
+    if not keys:
+        raise RuntimeError(f"Unknown key: {list(data.keys())}")
+
+    if len(keys)>1:
+        raise RuntimeError(f"Ambiguous keys in {list(data.keys())}")
+
+    key = keys.pop()
 
     if key in tasks:
-        if len(data)==1: # Simple task
+        if len(data)==1: # Simple task (no when clause or loop)
             return tasks[key](data[key])
-        else:            # Job made of a single task
+        else:            # Job made from single task with when/loop
             job = Job(when=data.get("when"), loop=data.get("loop"))
-            job.append(from_dict({key: data[key]}))
+            job.append(parse({key: data[key]}))
             return job
     else:
         job = Job(when=data.get("when"), loop=data.get("loop"))
-        for j in data[key]:
-            job.append(from_dict(j))
+        for item in data[key]:
+            job.append(parse(item))
         return job
 
-def from_yaml_file(filename):
-    """Reads jobs from YAML file.
+
+def parse_yaml_file(filename):
+    """Reads a ScriptEngine script from a YAML file.
 
     Args:
         filename (str): Path to YAML file
 
     Returns:
-        job or list of jobs
+        A se.task.Task, a se.jobs.Job, or a list of tasks/jobs.
     """
     with open(filename) as file:
         data = yaml.safe_load(file)
-
-    if isinstance(data, list):
-        job = Job()
-        for d in data:
-            job.append(from_dict(d))
-        return job
-    else:
-        return from_dict(data)
+    return parse(data)
