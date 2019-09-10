@@ -4,7 +4,7 @@
    se.jobs.Job and lets the active ScriptEngine instance execute it.
 """
 
-import se.jobs
+import se.scripts
 from se.tasks import Task
 from se.helpers import render_string
 
@@ -19,7 +19,7 @@ class Include(Task):
     def run(self, context):
         self.log_info(self.src)
         self.log_debug(f"Parsing job from '{render_string(self.src, context)}'")
-        job = se.jobs.parse.from_yaml_file(render_string(self.src, context))
+        job = se.scripts.parse_yaml_file(render_string(self.src, context))
         try:
             se_instance = context['_se_instance']
         except KeyError:
