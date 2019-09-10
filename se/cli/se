@@ -54,7 +54,7 @@ if __name__ == "__main__":
     LOG.debug("Finish processing files")
 
     LOG.debug("Start running jobs")
-    script_engine = SimpleScriptEngine()
+    script_engine = SimpleScriptEngine(log_level=LOG.level)
     context = {"_se_instance": script_engine}
     script_engine.run(script, context)
     LOG.debug("Finish running jobs")
