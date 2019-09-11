@@ -18,3 +18,4 @@ from se.tasks.template import Template
 from se.tasks.getenv import Getenv
 from se.tasks.include import Include
 from se.tasks.exit import Exit
+from se.tasks.slurm_submit import SlurmSubmit
