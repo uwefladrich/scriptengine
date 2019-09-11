@@ -1,11 +1,24 @@
 """ScriptEngine job parser.
 """
 
+import re
 import inspect
 import yaml
 
 import se.tasks
 from se.jobs import Job
+
+def camel_to_snake(string):
+    """A small function that converts CamelCase strings to snake_case strings.
+    Needed to convert class names to names used in the YAML syntax for ScriptEngine.
+
+    See https://stackoverflow.com/questions/1175208 or
+    https://gist.github.com/jaytaylor/3660565
+
+    Could be performance-enhanced by storing the pre-compiled regexps.
+    """
+    string = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", string)
+    return re.sub("([a-z0-9])([A-Z])", r"\1_\2", string).lower()
 
 
 def parse(data):
@@ -18,7 +31,7 @@ def parse(data):
     Returns:
         A se.task.Task, a se.jobs.Job, or a list of tasks/jobs.
     """
-    tasks = {name.lower():obj for name,obj in inspect.getmembers(se.tasks, inspect.isclass)}
+    tasks = {camel_to_snake(name):obj for name,obj in inspect.getmembers(se.tasks, inspect.isclass)}
     jobs  = {"do"}
 
     if not data:
