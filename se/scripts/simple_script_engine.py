@@ -7,6 +7,8 @@ on the local machine, without consideration of job contexts.
 import sys
 import logging
 
+from se.tasks import Task
+from se.jobs import Job
 from se.scripts.logging import app_logger
 from se.exceptions import ScriptEngineStopException
 
@@ -26,19 +28,22 @@ class SimpleScriptEngine:
 
     def run(self, script, context):
         for script_item in script if isinstance(script, list) else [script]:
-            try:
-                # Assume script_item is a task (i.e. has a run() method)
+            if isinstance(script_item, Task):
                 self._guarded_run(script_item, context)
-            except AttributeError: # script_item is a job, not a task
+            elif isinstance(script_item, Job):
                 if script_item.when(context):
-                    none_loop = object() # just make sure none_loop is unique
+                    none_loop = object() # just create a unique object
                     for loop_item in script_item.loop(context) or [none_loop]:
                         if loop_item is not none_loop:
                             context["item"] = loop_item
                         for todo in script_item.todo:
-                            try:
-                                # Same as above, assume task ...
+                            if isinstance(todo, Task):
                                 self._guarded_run(todo, context)
-                            except AttributeError:
-                                # ... otherwise, recurse for job
+                            elif isinstance(todo, Job):
+                                # recurse for jobs
                                 self.run(todo, context)
+                            else:
+                                raise RuntimeError(f"Can only run Tasks or Jobs, "
+                                                   f"found: {type(script_item)}")
+            else:
+                raise RuntimeError(f"Can only run Tasks or Jobs, found: {type(script_item)}")
