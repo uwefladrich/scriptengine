@@ -26,12 +26,14 @@ class SlurmSubmit(Task):
             context[getattr(self, "set_context", None) or "slurm"] = True
             return
 
-        batch_cmd = ["sbatch", f"--account={self.account}",
-                               f"--nodes={self.nodes}",
-                               f"--time={self.time}"]
-        batch_cmd.extend(getattr(self, "sbatch_args", []))
+        batch_cmd = ["sbatch", f"--account={render_string(self.account, context)}",
+                               f"--nodes={render_string(self.nodes, context)}",
+                               f"--time={render_string(self.time, context)}"]
+        for arg in self.sbatch_args:
+            batch_cmd.append(render_string(arg, context))
         batch_cmd.append("se")
-        batch_cmd.extend(self.scripts)
+        for script in self.scripts:
+            batch_cmd.append(render_string(script, context))
 
         self.log_info("Submit ScriptEngine job to SLURM")
         self.log_debug(batch_cmd)
