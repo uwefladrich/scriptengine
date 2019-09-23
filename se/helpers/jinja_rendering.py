@@ -7,12 +7,14 @@ from jinja2 import Template, TemplateSyntaxError
 def render_string(arg, context, recursive=True, boolean=False):
     """ Renders a string with Jinja2.
 
-    The string is rendered via jinja2.Template().render(), either once or
+    The argument is rendered via jinja2.Template().render() if it is a string,
+    or returned unchanged otherwise. Rendering is done either once or
     recursively until no further variables can be substituted. The result is
     returned either as string, or converted into a bool (True/False).
 
     Args:
-        string (str): The string to be rendered
+        arg: The string to be rendered. If it is not a string, arg is returned
+            without changes.
         recursive (bool): If true (default), the string is rendered
             recursively, i.e. until it's value doesn't change anymore. If
             false, the string is rendered once.
