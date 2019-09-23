@@ -4,7 +4,7 @@ from distutils.util import strtobool
 from jinja2 import Template, TemplateSyntaxError
 
 
-def render_string(string, context, recursive=True, boolean=False):
+def render_string(arg, context, recursive=True, boolean=False):
     """ Renders a string with Jinja2.
 
     The string is rendered via jinja2.Template().render(), either once or
@@ -35,13 +35,16 @@ def render_string(string, context, recursive=True, boolean=False):
             raise RuntimeError(f"Syntax error while rendering template string '{string}'"
                                f"{' in boolean context' if boolean else ''}")
 
-    rendered_string = render_with_context(string)
-    if recursive:
-        next_rendered_string = render_with_context(rendered_string)
-        while rendered_string != next_rendered_string:
-            rendered_string = next_rendered_string
+    if isinstance(arg, str):
+        rendered_string = render_with_context(arg)
+        if recursive:
             next_rendered_string = render_with_context(rendered_string)
-    if boolean:
-        expr = f"{{% if {rendered_string} %}}1{{% else %}}0{{% endif %}}"
-        return bool(strtobool(render_with_context(expr)))
-    return rendered_string
+            while rendered_string != next_rendered_string:
+                rendered_string = next_rendered_string
+                next_rendered_string = render_with_context(rendered_string)
+        if boolean:
+            expr = f"{{% if {rendered_string} %}}1{{% else %}}0{{% endif %}}"
+            return bool(strtobool(render_with_context(expr)))
+        return rendered_string
+    else:
+        return arg
