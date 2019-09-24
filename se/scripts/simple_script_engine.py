@@ -27,15 +27,28 @@ class SimpleScriptEngine:
             sys.exit()
 
     def run(self, script, context):
+
         for script_item in script if isinstance(script, list) else [script]:
+
             if isinstance(script_item, Task):
                 self._guarded_run(script_item, context)
             elif isinstance(script_item, Job):
                 if script_item.when(context):
-                    none_loop = object() # just create a unique object
-                    for loop_item in script_item.loop(context) or [none_loop]:
+
+                    # Loop setup with loop var collision detection
+                    none_loop = object() # just a unique object
+                    loop_var, loop_iter = script_item.loop(context)
+                    old_loop_var = context.get(loop_var, None)
+                    if old_loop_var:
+                        self._logger.warn(f"Loop variable collision for '{loop_var}'")
+
+                    # Run loop (at least once)
+                    for loop_item in loop_iter or [none_loop]:
+
                         if loop_item is not none_loop:
-                            context["item"] = loop_item
+                            context[loop_var] = loop_item
+
+                        # Run task/job for one loop iteration
                         for todo in script_item.todo:
                             if isinstance(todo, Task):
                                 self._guarded_run(todo, context)
@@ -45,5 +58,10 @@ class SimpleScriptEngine:
                             else:
                                 raise RuntimeError(f"Can only run Tasks or Jobs, "
                                                    f"found: {type(script_item)}")
+                    # Remove or restore loop var
+                    if old_loop_var:
+                        context[loop_var] = old_loop_var
+                    else:
+                        context.pop(loop_var, None)
             else:
                 raise RuntimeError(f"Can only run Tasks or Jobs, found: {type(script_item)}")

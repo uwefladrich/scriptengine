@@ -17,12 +17,22 @@ class Job:
         self._identifier = uuid.uuid4()
         self._todo = []
         self._when = when
-        self._loop = loop
+
+        if loop is None:
+            self._loop_var  = None
+            self._loop_iter = None
+        elif isinstance(loop, dict):
+            self._loop_var  = loop.get("with", "item")
+            self._loop_iter = loop.get("in", None)
+        else: # loop is assumed list
+            self._loop_var  = "item"
+            self._loop_iter = loop
 
         self._logger = logging.getLogger(__name__)
         self.log_debug(f"Create Job"
-                       f"{', when='+self._when if self._when else ''}"
-                       f"{', loop='+str(self._loop) if self._loop else ''}")
+                       f"{' when '+self._when if self._when else ''}"
+                       f"{' with '+str(self._loop_var) if self._loop_var else ''}"
+                       f"{' in '+str(self._loop_iter) if self._loop_iter else ''}")
 
     @property
     def id(self):
@@ -36,12 +46,10 @@ class Job:
         return self._when is None or render_string(self._when, context, boolean=True)
 
     def loop(self, context):
-        try:
-            rendered_loop_string = render_string(str(self._loop), context)
-        except TypeError:
-            return None
-        else:
-            return ast.literal_eval(rendered_loop_string)
+        loop_iter = render_string(self._loop_iter, context)
+        if isinstance(loop_iter, str):
+            loop_iter = ast.literal_eval(loop_iter)
+        return self._loop_var, loop_iter
 
     def append(self, todo):
         todo_as_list = todo if isinstance(todo, list) else [todo]
