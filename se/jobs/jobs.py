@@ -48,7 +48,11 @@ class Job:
     def loop(self, context):
         loop_iter = render_string(self._loop_iter, context)
         if isinstance(loop_iter, str):
-            loop_iter = ast.literal_eval(loop_iter)
+            try:
+                loop_iter = ast.literal_eval(loop_iter)
+            except SyntaxError:
+                raise RuntimeError(f"Syntax error while evaluating loop expression '{loop_iter}'"
+                                   f" in job with id {self.id}")
         return self._loop_var, loop_iter
 
     def append(self, todo):
