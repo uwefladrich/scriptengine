@@ -42,15 +42,18 @@ if __name__ == "__main__":
 
     LOG.debug("Start processing files")
     if len(cfg["files"])==1:
-        script = parse_yaml_file(cfg["files"][0])
+        file = cfg["files"][0]
+        LOG.debug(f"Parsing file '{file}'")
+        script = parse_yaml_file(file)
     else:
         script = []
         for file in cfg["files"]:
-            new_script = parse_yaml_file(files)
-            if isinstance(new_script, list):
-                script.extend(new_script)
+            LOG.debug(f"Parsing file '{file}'")
+            next_script = parse_yaml_file(file)
+            if isinstance(next_script, list):
+                script.extend(next_script)
             else:
-                script.append(new_script)
+                script.append(next_script)
     LOG.debug("Finish processing files")
 
     LOG.debug("Start running jobs")
