@@ -26,9 +26,10 @@ class SlurmSubmit(Task):
             context[getattr(self, "set_context", None) or "slurm"] = True
             return
 
-        batch_cmd = ["sbatch", f"--account={render_string(self.account, context)}",
-                               f"--nodes={render_string(self.nodes, context)}",
-                               f"--time={render_string(self.time, context)}"]
+        batch_cmd = ["sbatch",
+                     f"--account={render_string(self.account, context)}",
+                     f"--nodes={render_string(self.nodes, context)}",
+                     f"--time={render_string(self.time, context)}"]
         for arg in self.sbatch_args:
             batch_cmd.append(render_string(arg, context))
         batch_cmd.append("se")
@@ -39,4 +40,5 @@ class SlurmSubmit(Task):
         self.log_debug(batch_cmd)
 
         subprocess.run(map(str, batch_cmd))
-        raise ScriptEngineStopException("SlurmSubmit task requests stop after submitting batch job")
+        raise ScriptEngineStopException("SlurmSubmit task requests stop "
+                                        "after submitting batch job")

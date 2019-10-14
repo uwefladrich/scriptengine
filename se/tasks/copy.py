@@ -5,6 +5,7 @@ import shutil
 from se.tasks import Task
 from se.helpers import render_string
 
+
 class Copy(Task):
     """Copy task, copies a file.
 

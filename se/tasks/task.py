@@ -6,6 +6,7 @@ Provides the base class for all tasks.
 import logging
 import uuid
 
+
 class Task:
 
     def __init__(self, logger_name, parameters=None, required_parameters=None):
