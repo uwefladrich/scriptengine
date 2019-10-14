@@ -10,9 +10,10 @@ tasks.
 """
 
 from se.tasks.task import Task
+
 from se.tasks.config import Config
 from se.tasks.echo import Echo
-from se.tasks.copy import Copy
+from se.tasks.file import Copy, Move, Link, Remove, MakeDir
 from se.tasks.command import Command
 from se.tasks.template import Template
 from se.tasks.getenv import Getenv
