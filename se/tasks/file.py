@@ -1,4 +1,6 @@
-"""ScriptEngine file tasks"""
+"""ScriptEngine file tasks
+Provides Copy, Move, Link, Remove and MakeDir tasks
+"""
 
 import os
 import shutil
