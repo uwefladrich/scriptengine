@@ -8,7 +8,11 @@ from se.helpers import render_string
 
 
 class Copy(Task):
-
+    """ScriptEngine Copy task: Copies files or directories. It needs 'src' and
+    'dst' parameters when it is created, providing the source and destination
+    paths for the copy operation. Directories are copied recursively,
+    maintaining symlinks.
+    """
     def __init__(self, parameters):
         super().__init__(__name__+".copy", parameters, required_parameters=["src", "dst"])
 
@@ -28,7 +32,10 @@ class Copy(Task):
 
 
 class Move(Task):
-
+    """ScriptEngine Move task: Moves files or directories. It needs 'src' and
+    'dst' parameters when it is created, providing the source and destination
+    paths for the move operation.
+    """
     def __init__(self, parameters):
         super().__init__(__name__+".move", parameters, required_parameters=["src", "dst"])
 
@@ -39,7 +46,10 @@ class Move(Task):
 
 
 class Link(Task):
-
+    """ScriptEngine Link task: Creates symlinks. It needs 'src' and 'dst'
+    parameters when it is created, providing the source and destination paths
+    for the link.
+    """
     def __init__(self, parameters):
         super().__init__(__name__+".link", parameters, required_parameters=["src", "dst"])
 
@@ -52,7 +62,10 @@ class Link(Task):
 
 
 class Remove(Task):
-
+    """ScriptEngine Remove task: Removes (deletes) files or directories.
+    Directories are removed recursively. It needs the 'src' parameter when it
+    is created, providing the paths that is to be removed.
+    """
     def __init__(self, parameters):
         super().__init__(__name__+".remove", parameters, required_parameters=["src"])
 
@@ -70,7 +83,9 @@ class Remove(Task):
 
 
 class MakeDir(Task):
-
+    """ScriptEngine MakeDir task: Creates a directory. It needs the 'dst'
+    parameter when it is created, providing the path of the new directory
+    """
     def __init__(self, parameters):
         super().__init__(__name__+".make_dir", parameters, required_parameters=["dst"])
 
