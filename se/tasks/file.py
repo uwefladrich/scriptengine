@@ -70,7 +70,7 @@ class Remove(Task):
         super().__init__(__name__+".remove", parameters, required_parameters=["path"])
 
     def run(self, context):
-        path = render_string(self.src, context)
+        path = render_string(self.path, context)
         if os.path.exists(path):
             if os.path.isdir(path):
                 self.log_info(f"Removing directory '{path}'")
@@ -90,7 +90,7 @@ class MakeDir(Task):
         super().__init__(__name__+".make_dir", parameters, required_parameters=["path"])
 
     def run(self, context):
-        path = render_string(self.dst, context)
+        path = render_string(self.path, context)
         if os.path.isdir(path):
             self.log_info(f"Directory '{path}' exists already.")
         elif os.path.isfile(path):
