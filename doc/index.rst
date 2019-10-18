@@ -13,6 +13,7 @@ Welcome to ScriptEngine Documentation's documentation!
    intro
    loops
    file-tasks
+   ecearth-tasks
 
 
 
