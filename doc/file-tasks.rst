@@ -80,3 +80,13 @@ Usage::
 
 If ``path`` already exists, an info message is displayed (no warning or error).
 When ``path`` is a file or symbolic link, a ``RuntimeError`` is raised.
+
+
+Template task
+-------------
+
+Usage::
+
+    - template:
+        src: <PATH>
+        dst: <PATH>

@@ -12,7 +12,10 @@ Welcome to the ScriptEngine Documentation
 
    intro
    loops
+   basic-tasks
+   system-tasks
    file-tasks
+   other-tasks
    ecearth-tasks
 
 
