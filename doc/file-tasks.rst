@@ -8,11 +8,11 @@ symbolic links) on the file system.
 Copy task
 ---------
 
-This task copies the file or directory given by `src` to `dst`. If `src` is a
-file and `dst` is a directory, the `src` file is copied into the `dst/`
-directory. If `src` is a directory, `dst` must be a directory as well and `src`
-is copied recursively into `dst/`. When a directory is copied, symbolic links
-are preserved.
+This task copies the file or directory given by ``src`` to ``dst``. If ``src``
+is a file and ``dst`` is a directory, the ``src`` file is copied into the
+``dst/`` directory. If ``src`` is a directory, ``dst`` must be a directory as
+well and ``src`` is copied recursively into ``dst/``. When a directory is
+copied, symbolic links are preserved.
 
 Usage::
 
@@ -20,9 +20,9 @@ Usage::
         src: <PATH>
         dst: <PATH>
 
-When copying a file and the `dst` exists already, it is overwritten and a
-waring is issued. When copying a directory and the `dst` exists already, an
-`RuntimeError` is raised.
+When copying a file and the ``dst`` exists already, it is overwritten and a
+waring is issued. When copying a directory and the ``dst`` exists already, an
+``RuntimeError`` is raised.
 
 
 Move task
@@ -38,8 +38,8 @@ Usage::
 Link task
 ---------
 
-Creates a symbolic link with name given by `dst`, which is pointing to the path
-given by `src`.
+Creates a symbolic link with name given by ``dst``, which is pointing to the
+path given by ``src``.
 
 Usage::
 
@@ -47,7 +47,7 @@ Usage::
         src: <PATH>
         dst: <PATH>
 
-When the `dst` path (i.e. the link target) does not exist, the link is still
+When the ``dst`` path (i.e. the link target) does not exist, the link is still
 created and a warning is issued.
 
 
@@ -62,14 +62,15 @@ Usage::
     - remove:
         path: <PATH>
 
-When `path` does not exist, an info message is displayed (no warning or error).
+When ``path`` does not exist, an info message is displayed (no warning or
+error).
 
 
 
 MakeDir task
 ------------
 
-Creates a new directory at the given `path`.
+Creates a new directory at the given ``path``.
 
 
 Usage::
@@ -77,5 +78,5 @@ Usage::
     - make_dir:
         path: <PATH>
 
-If `path` already exists, an info message is displayed (no warning or error).
-When `path` is a file or symbolic link, a `RuntimeError` is raised.
+If ``path`` already exists, an info message is displayed (no warning or error).
+When ``path`` is a file or symbolic link, a ``RuntimeError`` is raised.
