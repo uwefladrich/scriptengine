@@ -50,9 +50,9 @@ class WriteEceinfo(Task):
         if "eceinfo" in context:
             self.log_debug(f"Attempt to write eceinfo to {eceinfo_path}")
             with open(eceinfo_path, "a+") as file:
-                file.write("# ---\r\n")
+                file.write("# ---\n")
                 for key, value in context["eceinfo"].items():
-                    file.write(f"{key}={value}\r\n")
+                    file.write(f"{key}={value}\n")
             self.log_debug(f"Writing eceinfo to {eceinfo_path} completed")
         else:
             self.log_warning("No eceinfo in context, file not updated!")
