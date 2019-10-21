@@ -32,7 +32,7 @@ class UpdateEceinfo(Task):
                     key, value = line_without_comment.partition("=")[::2]
                     eceinfo_in_file[key.strip()] = value.strip()
         except FileNotFoundError:
-            self.log_debug("No ece.info file found, create eceinfo from scratch")
+            self.log_warning(f"No ece.info file found at '{eceinfo_path}', assuming new run")
 
         eceinfo_in_context = context.setdefault("eceinfo", {})
         eceinfo_in_context["leg"] = int(eceinfo_in_file.get("leg", 0)) + 1
