@@ -1,5 +1,7 @@
 """Template task for ScriptEngine."""
 
+import os
+from itertools import chain
 import jinja2
 
 from se.tasks import Task
@@ -25,12 +27,24 @@ class Template(Task):
         return f"Template: {self.src} --> {self.dst}"
 
     def run(self, context):
-        self.log_info(f"{self.src} --> {self.dst}")
+        src_path = render_string(self.src, context)
+        dst_path = render_string(self.dst, context)
+        self.log_info(f"Render {src_path} --> {dst_path}")
 
-        template_loader = jinja2.FileSystemLoader(searchpath=["./", "./templates"])
-        template_env = jinja2.Environment(loader=template_loader)
-        template = template_env.get_template(render_string(self.src, context))
+        # Build search path for template:
+        #   1.) a "path" key in task spec
+        search_path = render_string(getattr(self, "path", ""), context) or []
+        #   2.) everything in the _se_filepath context
+        search_path.extend(context.get("_se_filepath", []))
+        #   3.) everything above, but with "/templates" appended
+        search_path = list(chain.from_iterable(((p, os.path.join(p, "templates"))
+                                                for p in search_path)))
+        self.log_debug(f"Search path for template: {search_path}")
+
+        loader = jinja2.FileSystemLoader(search_path)
+        environment = jinja2.Environment(loader=loader)
+        template = environment.get_template(src_path)
         output_text = render_string(template.render(context), context)
 
-        with open(render_string(self.dst, context), "w") as output_file:
+        with open(dst_path, "w") as output_file:
             output_file.write(f"{output_text}\n")
