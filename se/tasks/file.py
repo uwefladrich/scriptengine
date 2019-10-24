@@ -44,6 +44,7 @@ class Move(Task):
     def run(self, context):
         src_path = render_string(self.src, context)
         dst_path = render_string(self.dst, context)
+        self.log_info(f"Move file: {src_path} --> {dst_path}")
         shutil.move(src_path, dst_path)
 
 
@@ -58,6 +59,7 @@ class Link(Task):
     def run(self, context):
         src_path = render_string(self.src, context)
         dst_path = render_string(self.dst, context)
+        self.log_info(f"Create link: {src_path} --> {dst_path}")
         os.symlink(src_path, dst_path)
         if not os.path.exists(dst_path):
             self.log_warning(f"Created dangling symlink: '{dst_path}-->{src_path}'")
