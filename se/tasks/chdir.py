@@ -1,5 +1,7 @@
 """Chdir task for ScriptEngine."""
 
+import os
+
 from se.tasks import Task
 from se.helpers import render_string
 
@@ -14,5 +16,6 @@ class Chdir(Task):
         return f"Chdir: {self.path}"
 
     def run(self, context):
-        self.log_info(f"Change path to {self.path}")
-        os.chdir(render_string(self.path, context))
+        path = render_string(self.path, context)
+        self.log_info(f"Change path to {path}")
+        os.chdir(path)
