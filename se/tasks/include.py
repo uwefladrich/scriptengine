@@ -4,6 +4,8 @@
    ScriptEngine script and lets the active ScriptEngine instance execute it.
 """
 
+import os
+
 import se.scripts
 from se.tasks import Task
 from se.helpers import render_string
@@ -18,14 +20,31 @@ class Include(Task):
         return f"Include: {self.src}"
 
     def run(self, context):
-        self.log_info(self.src)
-        self.log_debug(f"Parsing script from '{render_string(self.src, context)}'")
-        script = se.scripts.parse_yaml_file(render_string(self.src, context))
+        inc_file = render_string(self.src, context)
+        self.log_info(f"Include script from {inc_file}")
+
+        search_path = [".", context.get("_se_ocwd", "")] + context.get("_se_filepath", [])
+        self.log_debug(f"Searching in path: {search_path}")
+        for directory in search_path:
+            inc_file_path = os.path.join(directory, inc_file)
+            self.log_debug(f"Seraching for include file at '{inc_file_path}'")
+            if os.path.isfile(inc_file_path):
+                self.log_debug(f"Found include file at '{inc_file_path}'")
+                break
+        else:
+            raise RuntimeError(f"Include file '{inc_file}' not found")
+
+        script = se.scripts.parse_yaml_file(inc_file_path)
+
+        inc_file_dir = os.path.dirname(os.path.abspath(inc_file_path))
+        if inc_file_dir not in context.get("_se_filepath", []):
+            context.setdefault("_se_filepath", []).append(inc_file_dir)
+
         try:
             se_instance = context['_se_instance']
         except KeyError:
             raise RuntimeError(f"ScriptEngine instance not found")
         else:
-            self.log_debug(f"Executing todos from '{render_string(self.src, context)}'")
+            self.log_debug(f"Execute script from '{inc_file}'")
             se_instance.run(script, context)
-            self.log_debug(f"Finished executing todos from '{render_string(self.src, context)}'")
+            self.log_debug(f"Finished executing script from '{inc_file}'")
