@@ -56,6 +56,15 @@ and stored in the ScriptEngine context, for example::
     - echo:
         msg: "Command returned: {{message}}"
 
+Note that the standard output is always returned as a list of lines, even if
+there is only one line (as in the above example). This is often desired, for
+example when using the command output in a loop. However, if one wanted to
+extract the first (and only) line in the example above, Jinja2 syntax could be
+used::
+
+    - echo:
+        msg: "Command returned: {{message[0]}}"
+
 If the command returns a non-zero exit code, ScriptEngine issues an error and
 stops.  However, if ``ignore_error`` is set to true and the command returns a
 non-zero exit code, a warning is issued and ScriptEngine continues. Note that
