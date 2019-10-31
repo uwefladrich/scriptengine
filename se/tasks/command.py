@@ -11,6 +11,7 @@ import subprocess
 
 from se.tasks import Task
 from se.helpers import render_string
+from se.exceptions import ScriptEngineStopException
 
 
 class Command(Task):
@@ -40,4 +41,19 @@ class Command(Task):
         self.log_debug(f"{command} {' '.join(map(str,args))}"
                        f"{' cwd='+cwd if cwd else ''}")
 
-        subprocess.run(map(str, [command]+args), cwd=cwd)
+        stdout = getattr(self, "stdout", None)
+        try:
+            result = subprocess.run(map(str, [command]+args),
+                                    stdout=subprocess.PIPE if stdout is not None else None,
+                                    cwd=cwd,
+                                    check=True)
+        except subprocess.CalledProcessError as error:
+            if getattr(self, "ignore_error", False) is True:
+                self.log_warning(f"{self.name} returned error code {error.returncode}")
+            else:
+                self.log_error(f"{self.name} returned error code {error.returncode}")
+                raise ScriptEngineStopException("Stopping ScriptEngine after nonzero "
+                                                "exit code in command task")
+        else:
+            if stdout is not None:
+                context[stdout] = [binary.decode("UTF-8") for binary in result.stdout.splitlines()]

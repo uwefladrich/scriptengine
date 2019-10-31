@@ -27,7 +27,7 @@ Example::
 Command task
 ------------
 
-Executes a command, optionally with arguments and possibly after changing the directory.
+Executes a command, with optional arguments.
 
 Usage::
 
@@ -35,14 +35,32 @@ Usage::
         name: <COMMAND_NAME>
         args: <LIST_OF_ARGS> # optional
         cwd: <PATH> # optional
+        stdout: <STRING> # optional
+        ignore_error: [true|false] # optional
 
-Example::
+When ``cwd`` (current work directory) is specified, the command is executed in
+the given directory::
 
     - command:
         name: ls
         args: [-l]
         cwd: /tmp
 
+When the ``stdout`` is given, the standard output of the command is captured
+and stored in the ScriptEngine context, for example::
+
+    - command:
+        name: echo
+        args: [ Hello, World! ]
+        stdout: message
+    - echo:
+        msg: "Command returned: {{message}}"
+
+If the command returns a non-zero exit code, ScriptEngine issues an error and
+stops.  However, if ``ignore_error`` is set to true and the command returns a
+non-zero exit code, a warning is issued and ScriptEngine continues. Note that
+YAML accepts, for example, the strings ``true``, ``True``, ``Yes``, ``ON`` as
+true.
 
 
 Exit task
