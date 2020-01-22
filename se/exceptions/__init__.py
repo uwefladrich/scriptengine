@@ -1,1 +1,1 @@
-from se.exceptions.stop_exception import ScriptEngineStopException
+from .stop_exception import ScriptEngineStopException

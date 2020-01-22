@@ -9,16 +9,16 @@ This module provides the base class as well as derived classes for specific
 tasks.
 """
 
-from se.tasks.task import Task
+from .task import Task
 
-from se.tasks.config import Config
-from se.tasks.echo import Echo
-from se.tasks.file import Copy, Move, Link, Remove, MakeDir
-from se.tasks.command import Command
-from se.tasks.template import Template
-from se.tasks.getenv import Getenv
-from se.tasks.include import Include
-from se.tasks.exit import Exit
-from se.tasks.chdir import Chdir
-from se.tasks.slurm_submit import SlurmSubmit
-from se.tasks.eceinfo import UpdateEceinfo, WriteEceinfo
+from .config import Config
+from .echo import Echo
+from .file import Copy, Move, Link, Remove, MakeDir
+from .command import Command
+from .template import Template
+from .getenv import Getenv
+from .include import Include
+from .exit import Exit
+from .chdir import Chdir
+from .slurm_submit import SlurmSubmit
+from .eceinfo import UpdateEceinfo, WriteEceinfo
