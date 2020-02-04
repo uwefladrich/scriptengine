@@ -5,10 +5,10 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="scriptengine",
-    version="0.3.1",
+    version="0.3.2",
     author="Uwe Fladrich",
     author_email="uwe.fladrich@protonmail.com",
-    description="A funny package for configuring and running tasks",
+    description="A better way to configure and run things that usually go into shell scripts",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/uwefladrich/scriptengine",
