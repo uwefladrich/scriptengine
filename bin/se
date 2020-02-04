@@ -57,11 +57,11 @@ if __name__ == "__main__":
     cfg = parse_command_line_arguments()
 
     if cfg["quiet"]:
-        LOG = app_logger("se", level=logging.WARN)
+        LOG = app_logger("scriptengine", level=logging.WARN)
     elif cfg["debug"]:
-        LOG = app_logger("se", level=logging.DEBUG)
+        LOG = app_logger("scriptengine", level=logging.DEBUG)
     else:
-        LOG = app_logger("se", level=logging.INFO)
+        LOG = app_logger("scriptengine", level=logging.INFO)
 
     LOG.debug("Start processing files")
     if len(cfg["files"])==1:
