@@ -9,7 +9,7 @@ import logging
 import uuid
 import ast
 
-from se.helpers import render_string
+from scriptengine.helpers import render_string
 
 class Job:
 

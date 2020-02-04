@@ -5,8 +5,8 @@ import re
 import inspect
 import yaml
 
-import se.tasks
-from se.jobs import Job
+import scriptengine.tasks
+from scriptengine.jobs import Job
 
 def camel_to_snake(string):
     """A small function that converts CamelCase strings to snake_case strings.
@@ -29,9 +29,9 @@ def parse(data):
             ScriptEngine grammar in the documentation.
 
     Returns:
-        A se.task.Task, a se.jobs.Job, or a list of tasks/jobs.
+        A scriptengine.task.Task, a scriptengine.jobs.Job, or a list of tasks/jobs.
     """
-    tasks = {camel_to_snake(name):obj for name,obj in inspect.getmembers(se.tasks, inspect.isclass)}
+    tasks = {camel_to_snake(name):obj for name,obj in inspect.getmembers(scriptengine.tasks, inspect.isclass)}
     jobs  = {"do"}
 
     if not data:
@@ -78,7 +78,7 @@ def parse_yaml_file(filename):
         filename (str): Path to YAML file
 
     Returns:
-        A se.task.Task, a se.jobs.Job, or a list of tasks/jobs.
+        A scriptengine.task.Task, a scriptengine.jobs.Job, or a list of tasks/jobs.
     """
     with open(filename) as file:
         data = yaml.safe_load(file)

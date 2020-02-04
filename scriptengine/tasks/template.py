@@ -4,8 +4,8 @@ import os
 from itertools import chain
 import jinja2
 
-from se.tasks import Task
-from se.helpers import render_string
+from scriptengine.tasks import Task
+from scriptengine.helpers import render_string
 
 
 class Template(Task):

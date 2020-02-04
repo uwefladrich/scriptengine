@@ -7,10 +7,10 @@ on the local machine, without consideration of job contexts.
 import sys
 import logging
 
-from se.tasks import Task
-from se.jobs import Job
-from se.scripts.logging import app_logger
-from se.exceptions import ScriptEngineStopException
+from scriptengine.tasks import Task
+from scriptengine.jobs import Job
+from scriptengine.scripts.logging import app_logger
+from scriptengine.exceptions import ScriptEngineStopException
 
 class SimpleScriptEngine:
     """Simplistic script engine for ScriptEngine.

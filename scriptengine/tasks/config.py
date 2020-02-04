@@ -2,7 +2,7 @@
 
 from deepmerge import always_merger
 
-from se.tasks import Task
+from scriptengine.tasks import Task
 
 
 class Config(Task):

@@ -6,9 +6,9 @@
 
 import os
 
-import se.scripts
-from se.tasks import Task
-from se.helpers import render_string
+import scriptengine.scripts
+from scriptengine.tasks import Task
+from scriptengine.helpers import render_string
 
 
 class Include(Task):
@@ -34,7 +34,7 @@ class Include(Task):
         else:
             raise RuntimeError(f"Include file '{inc_file}' not found")
 
-        script = se.scripts.parse_yaml_file(inc_file_path)
+        script = scriptengine.scripts.parse_yaml_file(inc_file_path)
 
         inc_file_dir = os.path.dirname(os.path.abspath(inc_file_path))
         if inc_file_dir not in context.get("_se_filepath", []):

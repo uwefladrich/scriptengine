@@ -1,8 +1,8 @@
 """ScriptEngine tasks for handling the EC-Earth ece.info file
 """
 
-from se.tasks import Task
-from se.helpers import render_string
+from scriptengine.tasks import Task
+from scriptengine.helpers import render_string
 
 # #
 # # Finished leg at 2019-01-07 14:45:20 after 01:59:13 (hh:mm:ss)

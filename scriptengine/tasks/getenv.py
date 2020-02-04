@@ -2,8 +2,8 @@
 
 import os
 
-from se.tasks import Task
-from se.helpers import render_string
+from scriptengine.tasks import Task
+from scriptengine.helpers import render_string
 
 
 class Getenv(Task):

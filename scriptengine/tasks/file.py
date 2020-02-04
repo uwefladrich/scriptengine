@@ -5,8 +5,8 @@ Provides Copy, Move, Link, Remove and MakeDir tasks
 import os
 import shutil
 
-from se.tasks import Task
-from se.helpers import render_string
+from scriptengine.tasks import Task
+from scriptengine.helpers import render_string
 
 
 class Copy(Task):

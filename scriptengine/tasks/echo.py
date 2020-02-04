@@ -1,9 +1,9 @@
 """Echo task for ScriptEngine."""
 
-from se.tasks import Task
-from se.helpers import render_string
+from scriptengine.tasks import Task
+from scriptengine.helpers import render_string
 
-from se.helpers import terminal_colors as tc
+from scriptengine.helpers import terminal_colors as tc
 
 
 class Echo(Task):

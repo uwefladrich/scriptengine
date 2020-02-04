@@ -3,7 +3,7 @@
 
 import logging
 
-from se.helpers import terminal_colors as tc
+from scriptengine.helpers import terminal_colors as tc
 
 class DispatchingFormatter:
     """Dispatch formatter for logger and it's sub logger."""
@@ -38,7 +38,7 @@ class DispatchingFormatter:
 def _log_formatter(color=None):
     """Sets the format string and returns a logging.Formatter object.
     Args:
-        color: a color value from se.helpers.terminal_colors
+        color: a color value from scriptengine.helpers.terminal_colors
 
     Returns:
         a logging.Formatter object
@@ -55,8 +55,7 @@ def app_logger(name, level=logging.INFO):
     """ Returns a Logger
 
     Args:
-        name (str): The logger name. Should start with 'se.' for ScriptEngine
-            modules.
+        name (str): The logger name. Use class name for ScriptEngine modules.
         level: a logging level (one of logging.DEBUG, logging.INFO,
             logging.WARNING, logging.ERROR)
     Returns:

@@ -3,9 +3,9 @@
 import os
 import subprocess
 
-from se.tasks import Task
-from se.helpers import render_string
-from se.exceptions import ScriptEngineStopException
+from scriptengine.tasks import Task
+from scriptengine.helpers import render_string
+from scriptengine.exceptions import ScriptEngineStopException
 
 
 class SlurmSubmit(Task):

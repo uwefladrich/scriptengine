@@ -2,8 +2,8 @@
 
 import sys
 
-from se.tasks import Task
-from se.exceptions import ScriptEngineStopException
+from scriptengine.tasks import Task
+from scriptengine.exceptions import ScriptEngineStopException
 
 
 class Exit(Task):
