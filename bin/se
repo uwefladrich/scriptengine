@@ -11,9 +11,9 @@ import os
 import logging
 import argparse
 
-from se.jobs import Job
-from se.scripts import SimpleScriptEngine, parse_yaml_file
-from se.scripts.logging import app_logger
+from scriptengine.jobs import Job
+from scriptengine.scripts import SimpleScriptEngine, parse_yaml_file
+from scriptengine.scripts.logging import app_logger
 
 def parse_command_line_arguments():
 
