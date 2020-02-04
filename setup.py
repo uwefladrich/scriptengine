@@ -4,10 +4,10 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="scriptengine-uwefladrich",
-    version="0.1",
+    name="scriptengine",
+    version="0.3.1",
     author="Uwe Fladrich",
-    author_email="uwe.fladrich@smhi.se",
+    author_email="uwe.fladrich@protonmail.com",
     description="A funny package for configuring and running tasks",
     long_description=long_description,
     long_description_content_type="text/markdown",
