@@ -32,7 +32,11 @@ class Include(Task):
                 self.log_debug(f"Found include file at '{inc_file_path}'")
                 break
         else:
-            raise RuntimeError(f"Include file '{inc_file}' not found")
+            if getattr(self, "ignore_not_found", False):
+                self.log_warning(f"Include file {inc_file} not found.")
+                return
+            else:
+                raise RuntimeError(f"Include file '{inc_file}' not found")
 
         script = scriptengine.scripts.parse_yaml_file(inc_file_path)
 
