@@ -85,8 +85,29 @@ When ``path`` is a file or symbolic link, a ``RuntimeError`` is raised.
 Template task
 -------------
 
+Runs the template file given by ``src`` through the `Jinja2 Template Engine
+<http://jinja.pocoo.org/>`_ and saves the result as a file at ``dst``.
+
 Usage::
 
     - template:
         src: <PATH>
         dst: <PATH>
+
+ScriptEngine searches for the template file (``src``) in the following
+directories, at the given order:
+
+#. ``.``
+#. ``./templates``
+#. ``<OCWD>``
+#. ``<OCWD>/templates``
+
+where ``.`` is the current directory at the time when the ``template`` task is
+executed and ``<OCWD>`` is the original working directory, the working
+directory at the time when the ScriptEngine command line tool was called.
+
+It is important to note that ``src`` may contain a relative path, but absolute
+paths will not work.
+
+The template file may refer to any of the configurations set by ``config``
+tasks.

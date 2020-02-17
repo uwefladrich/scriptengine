@@ -31,14 +31,16 @@ class Template(Task):
         dst_path = render_string(self.dst, context)
         self.log_info(f"Render {src_path} --> {dst_path}")
 
-        # Build search path for template:
-        #   1.) a "path" key in task spec
-        search_path = render_string(getattr(self, "path", ""), context) or []
-        #   2.) everything in the _se_filepath context
-        search_path.extend(context.get("_se_filepath", []))
-        #   3.) everything above, but with "/templates" appended
-        search_path = list(chain.from_iterable(((p, os.path.join(p, "templates"))
-                                                for p in search_path)))
+        # The template search path:
+        #   1. .
+        #   2. ./templates
+        #   3. <ocwd>
+        #   4. <ocwd>/templates
+        # where <ocwd> is the original working directory at the time when the se script was called
+        search_path = [ '.', 'templates' ]
+        if "_se_ocwd" in context:
+            search_path.extend([context["_se_ocwd"],
+                                os.path.join(context["_se_ocwd"], "templates")])
         self.log_debug(f"Search path for template: {search_path}")
 
         loader = jinja2.FileSystemLoader(search_path)
