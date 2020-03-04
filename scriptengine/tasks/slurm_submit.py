@@ -4,7 +4,7 @@ import os
 import subprocess
 
 from scriptengine.tasks import Task
-from scriptengine.helpers import render_string
+from scriptengine.jinja import render as j2render
 from scriptengine.exceptions import ScriptEngineStopException
 
 
@@ -27,14 +27,14 @@ class SlurmSubmit(Task):
             return
 
         batch_cmd = ["sbatch",
-                     f"--account={render_string(self.account, context)}",
-                     f"--nodes={render_string(self.nodes, context)}",
-                     f"--time={render_string(self.time, context)}"]
+                     f"--account={j2render(self.account, context)}",
+                     f"--nodes={j2render(self.nodes, context)}",
+                     f"--time={j2render(self.time, context)}"]
         for arg in self.sbatch_args:
-            batch_cmd.append(render_string(arg, context))
+            batch_cmd.append(j2render(arg, context))
         batch_cmd.append("se")
         for script in self.scripts:
-            batch_cmd.append(render_string(script, context))
+            batch_cmd.append(j2render(script, context))
 
         self.log_info("Submit ScriptEngine job to SLURM")
         self.log_debug(batch_cmd)

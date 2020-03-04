@@ -6,7 +6,7 @@ import os
 import shutil
 
 from scriptengine.tasks import Task
-from scriptengine.helpers import render_string
+from scriptengine.jinja import render as j2render
 
 
 class Copy(Task):
@@ -19,8 +19,8 @@ class Copy(Task):
         super().__init__(__name__+".copy", parameters, required_parameters=["src", "dst"])
 
     def run(self, context):
-        src_path = render_string(self.src, context)
-        dst_path = render_string(self.dst, context)
+        src_path = j2render(self.src, context)
+        dst_path = j2render(self.dst, context)
         if os.path.isfile(src_path):
             self.log_info(f"Copy file: {src_path} --> {dst_path}")
             if os.path.isfile(dst_path):
@@ -42,8 +42,8 @@ class Move(Task):
         super().__init__(__name__+".move", parameters, required_parameters=["src", "dst"])
 
     def run(self, context):
-        src_path = render_string(self.src, context)
-        dst_path = render_string(self.dst, context)
+        src_path = j2render(self.src, context)
+        dst_path = j2render(self.dst, context)
         self.log_info(f"Move file: {src_path} --> {dst_path}")
         shutil.move(src_path, dst_path)
 
@@ -57,8 +57,8 @@ class Link(Task):
         super().__init__(__name__+".link", parameters, required_parameters=["src", "dst"])
 
     def run(self, context):
-        src_path = render_string(self.src, context)
-        dst_path = render_string(self.dst, context)
+        src_path = j2render(self.src, context)
+        dst_path = j2render(self.dst, context)
         self.log_info(f"Create link: {src_path} --> {dst_path}")
         os.symlink(src_path, dst_path)
         if not os.path.exists(dst_path):
@@ -74,7 +74,7 @@ class Remove(Task):
         super().__init__(__name__+".remove", parameters, required_parameters=["path"])
 
     def run(self, context):
-        path = render_string(self.path, context)
+        path = j2render(self.path, context)
         if os.path.exists(path):
             if os.path.isdir(path):
                 self.log_info(f"Removing directory '{path}'")
@@ -94,7 +94,7 @@ class MakeDir(Task):
         super().__init__(__name__+".make_dir", parameters, required_parameters=["path"])
 
     def run(self, context):
-        path = render_string(self.path, context)
+        path = j2render(self.path, context)
         if os.path.isdir(path):
             self.log_info(f"Directory '{path}' exists already.")
         elif os.path.isfile(path):

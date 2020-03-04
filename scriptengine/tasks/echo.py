@@ -1,7 +1,7 @@
 """Echo task for ScriptEngine."""
 
 from scriptengine.tasks import Task
-from scriptengine.helpers import render_string
+from scriptengine.jinja import render as j2render
 
 from scriptengine.helpers import terminal_colors as tc
 
@@ -17,4 +17,4 @@ class Echo(Task):
 
     def run(self, context):
         self.log_info(self.msg)
-        print(f"{tc.LIGHTBLUE}{render_string(self.msg, context)}{tc.RESET}")
+        print(f"{tc.LIGHTBLUE}{j2render(self.msg, context)}{tc.RESET}")

@@ -3,7 +3,7 @@
 import os
 
 from scriptengine.tasks import Task
-from scriptengine.helpers import render_string
+from scriptengine.jinja import render as j2render
 
 
 class Chdir(Task):
@@ -16,6 +16,6 @@ class Chdir(Task):
         return f"Chdir: {self.path}"
 
     def run(self, context):
-        path = render_string(self.path, context)
+        path = j2render(self.path, context)
         self.log_info(f"Change path to {path}")
         os.chdir(path)

@@ -10,7 +10,7 @@ import ast
 import subprocess
 
 from scriptengine.tasks import Task
-from scriptengine.helpers import render_string
+from scriptengine.jinja import render as j2render
 from scriptengine.exceptions import ScriptEngineStopException
 
 
@@ -27,16 +27,16 @@ class Command(Task):
                       f"args={getattr(self, 'args', 'none')} "
                       f"cwd={getattr(self, 'cwd', 'none')}")
 
-        command = render_string(self.name, context)
+        command = j2render(self.name, context)
 
-        args = render_string(str(getattr(self, "args", "")), context) or "[]"
+        args = j2render(str(getattr(self, "args", "")), context) or "[]"
         try:
             args = ast.literal_eval(args)
         except ValueError:
             args = ast.literal_eval(f'"{args}"')
         args = args if isinstance(args, list) else [args]
 
-        cwd = render_string(getattr(self, "cwd", ''), context) or None
+        cwd = j2render(getattr(self, "cwd", ''), context) or None
 
         self.log_debug(f"{command} {' '.join(map(str,args))}"
                        f"{' cwd='+cwd if cwd else ''}")

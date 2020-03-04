@@ -2,7 +2,7 @@
 """
 
 from scriptengine.tasks import Task
-from scriptengine.helpers import render_string
+from scriptengine.jinja import render as j2render
 
 # #
 # # Finished leg at 2019-01-07 14:45:20 after 01:59:13 (hh:mm:ss)
@@ -20,7 +20,7 @@ class UpdateEceinfo(Task):
         super().__init__(__name__+".update", parameters, required_parameters=["path"])
 
     def run(self, context):
-        eceinfo_path = render_string(self.path, context)
+        eceinfo_path = j2render(self.path, context)
         self.log_info(f"Updating eceinfo from {eceinfo_path}")
 
         eceinfo_in_file = {}
@@ -45,7 +45,7 @@ class WriteEceinfo(Task):
         super().__init__(__name__+".write", parameters, required_parameters=["path"])
 
     def run(self, context):
-        eceinfo_path = render_string(self.path, context)
+        eceinfo_path = j2render(self.path, context)
         self.log_info(f"Wrinting eceinfo to {eceinfo_path}")
         if "eceinfo" in context:
             self.log_debug(f"Attempt to write eceinfo to {eceinfo_path}")

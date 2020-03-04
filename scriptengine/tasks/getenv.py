@@ -3,7 +3,7 @@
 import os
 
 from scriptengine.tasks import Task
-from scriptengine.helpers import render_string
+from scriptengine.jinja import render as j2render
 
 
 class Getenv(Task):
@@ -26,6 +26,6 @@ class Getenv(Task):
 
     def run(self, context):
         self.log_info(f"ENV{self.name} --> {self.set_cfg}")
-        env = os.environ.get(render_string(self.name, context))
+        env = os.environ.get(j2render(self.name, context))
         if env:
-            context[render_string(self.set_cfg, context)] = env
+            context[j2render(self.set_cfg, context)] = env

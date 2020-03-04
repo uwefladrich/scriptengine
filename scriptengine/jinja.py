@@ -4,7 +4,7 @@ from distutils.util import strtobool
 from jinja2 import Template, TemplateSyntaxError
 
 
-def render_string(arg, context, recursive=True, boolean=False):
+def render(arg, context, recursive=True, boolean=False):
     """ Renders a string with Jinja2.
 
     The argument is rendered via jinja2.Template().render() if it is a string,

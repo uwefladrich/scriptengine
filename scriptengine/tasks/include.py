@@ -9,7 +9,7 @@ import os
 import scriptengine.yaml
 
 from scriptengine.tasks import Task
-from scriptengine.helpers import render_string
+from scriptengine.jinja import render as j2render
 
 
 class Include(Task):
@@ -21,7 +21,7 @@ class Include(Task):
         return f"Include: {self.src}"
 
     def run(self, context):
-        inc_file = render_string(self.src, context)
+        inc_file = j2render(self.src, context)
         self.log_info(f"Include script from {inc_file}")
 
         search_path = [".", context.get("_se_ocwd", "")] + context.get("_se_filepath", [])

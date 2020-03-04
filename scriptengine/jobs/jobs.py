@@ -9,7 +9,7 @@ import logging
 import uuid
 import ast
 
-from scriptengine.helpers import render_string
+from scriptengine.jinja import render as j2render
 
 class Job:
 
@@ -43,10 +43,10 @@ class Job:
         return iter(self._todo)
 
     def when(self, context):
-        return self._when is None or render_string(self._when, context, boolean=True)
+        return self._when is None or j2render(self._when, context, boolean=True)
 
     def loop(self, context):
-        loop_iter = render_string(self._loop_iter, context)
+        loop_iter = j2render(self._loop_iter, context)
         if isinstance(loop_iter, str):
             try:
                 loop_iter = ast.literal_eval(loop_iter)

@@ -5,7 +5,7 @@ from itertools import chain
 import jinja2
 
 from scriptengine.tasks import Task
-from scriptengine.helpers import render_string
+from scriptengine.jinja import render as j2render
 
 
 class Template(Task):
@@ -27,8 +27,8 @@ class Template(Task):
         return f"Template: {self.src} --> {self.dst}"
 
     def run(self, context):
-        src_path = render_string(self.src, context)
-        dst_path = render_string(self.dst, context)
+        src_path = j2render(self.src, context)
+        dst_path = j2render(self.dst, context)
         self.log_info(f"Render {src_path} --> {dst_path}")
 
         # The template search path:
@@ -46,7 +46,7 @@ class Template(Task):
         loader = jinja2.FileSystemLoader(search_path)
         environment = jinja2.Environment(loader=loader)
         template = environment.get_template(src_path)
-        output_text = render_string(template.render(context), context)
+        output_text = j2render(template.render(context), context)
 
         with open(dst_path, "w") as output_file:
             output_file.write(f"{output_text}\n")
