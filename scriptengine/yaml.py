@@ -1,4 +1,4 @@
-"""ScriptEngine job parser.
+"""ScriptEngine YAML parsing
 """
 
 import re
@@ -71,7 +71,7 @@ def parse(data):
         return job
 
 
-def parse_yaml_file(filename):
+def parse_file(filename):
     """Reads a ScriptEngine script from a YAML file.
 
     Args:

@@ -31,9 +31,11 @@ import os
 import logging
 import argparse
 
+import scriptengine.logging
+import scriptengine.yaml
+
 from scriptengine.jobs import Job
-from scriptengine.scripts import SimpleScriptEngine, parse_yaml_file
-from scriptengine.scripts.logging import app_logger
+from scriptengine.scripts import SimpleScriptEngine
 
 def parse_command_line_arguments():
 
@@ -57,22 +59,22 @@ if __name__ == "__main__":
     cfg = parse_command_line_arguments()
 
     if cfg["quiet"]:
-        LOG = app_logger("scriptengine", level=logging.WARN)
+        LOG = scriptengine.logging.logger("scriptengine", level=logging.WARN)
     elif cfg["debug"]:
-        LOG = app_logger("scriptengine", level=logging.DEBUG)
+        LOG = scriptengine.logging.logger("scriptengine", level=logging.DEBUG)
     else:
-        LOG = app_logger("scriptengine", level=logging.INFO)
+        LOG = scriptengine.logging.logger("scriptengine", level=logging.INFO)
 
     LOG.debug("Start processing files")
     if len(cfg["files"])==1:
         file = cfg["files"][0]
         LOG.debug(f"Parsing file '{file}'")
-        script = parse_yaml_file(file)
+        script = scriptengine.yaml.parse_file(file)
     else:
         script = []
         for file in cfg["files"]:
             LOG.debug(f"Parsing file '{file}'")
-            next_script = parse_yaml_file(file)
+            next_script = scriptengine.yaml.parse_file(file)
             if isinstance(next_script, list):
                 script.extend(next_script)
             else:

@@ -7,9 +7,10 @@ on the local machine, without consideration of job contexts.
 import sys
 import logging
 
+import scriptengine.logging
+
 from scriptengine.tasks import Task
 from scriptengine.jobs import Job
-from scriptengine.scripts.logging import app_logger
 from scriptengine.exceptions import ScriptEngineStopException
 
 class SimpleScriptEngine:
@@ -17,7 +18,7 @@ class SimpleScriptEngine:
     """
 
     def __init__(self, log_level=logging.INFO):
-        self._logger = app_logger(self.__class__.__name__, level=log_level)
+        self._logger = scriptengine.logging.logger(self.__class__.__name__, level=log_level)
 
     def _guarded_run(self, item, context):
         try:

@@ -51,7 +51,7 @@ def _log_formatter(color=None):
 
     return logging.Formatter(format_string, datefmt="%Y-%m-%d %H:%M:%S")
 
-def app_logger(name, level=logging.INFO):
+def logger(name, level=logging.INFO):
     """ Returns a Logger
 
     Args:
