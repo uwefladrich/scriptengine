@@ -4,9 +4,24 @@
 import re
 import inspect
 import yaml
+import dateutil.rrule
 
 import scriptengine.tasks
 from scriptengine.jobs import Job
+
+
+def construct_eval_string(loader, node):
+    value = loader.construct_scalar(node)
+    return f"_eval_{str(value)}"
+yaml.add_constructor(u"!eval", construct_eval_string)
+
+
+def construct_rrule(loader, node):
+    value = loader.construct_scalar(node)
+    rrule = dateutil.rrule.rrulestr(value)
+    return rrule
+yaml.add_constructor(u"!rrule", construct_rrule)
+
 
 def camel_to_snake(string):
     """A small function that converts CamelCase strings to snake_case strings.
@@ -81,5 +96,5 @@ def parse_file(filename):
         A scriptengine.task.Task, a scriptengine.jobs.Job, or a list of tasks/jobs.
     """
     with open(filename) as file:
-        data = yaml.safe_load(file)
+        data = yaml.load(file, Loader=yaml.FullLoader)
     return parse(data)
