@@ -20,8 +20,9 @@ setuptools.setup(
     ],
     python_requires='>=3.6',
     install_requires=[
+          'python-dateutil',
           'deepmerge',
-          'pyaml',
+          'PyYAML',
           'jinja2',
       ],
     scripts=['bin/se'],
