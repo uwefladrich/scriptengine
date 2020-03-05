@@ -3,6 +3,7 @@
 from deepmerge import always_merger
 
 from scriptengine.tasks import Task
+from scriptengine.jinja import render as j2render
 
 
 class Config(Task):
@@ -18,6 +19,11 @@ class Config(Task):
         return f"Config: {self.__dict__}"
 
     def run(self, context):
-        parameters = {key: value for key, value in self.__dict__.items() if key[0] != "_"}
+        parameters = {}
+        for key, value in self.__dict__.items():
+            if not key.startswith("_"):
+                if isinstance(value, str) and value.startswith("_eval_"):
+                    value = j2render(value[6:], context)
+                parameters[key] = value
         self.log_info(f"{parameters}")
         always_merger.merge(context, parameters)
