@@ -1,13 +1,12 @@
 """ScriptEngine YAML parsing
 """
 
-import re
-import inspect
 import yaml
 import dateutil.rrule
 
 import scriptengine.tasks
 from scriptengine.jobs import Job
+from scriptengine.exceptions import ScriptEngineStopException
 
 
 def construct_eval_string(loader, node):
@@ -23,19 +22,6 @@ def construct_rrule(loader, node):
 yaml.add_constructor(u"!rrule", construct_rrule)
 
 
-def camel_to_snake(string):
-    """A small function that converts CamelCase strings to snake_case strings.
-    Needed to convert class names to names used in the YAML syntax for ScriptEngine.
-
-    See https://stackoverflow.com/questions/1175208 or
-    https://gist.github.com/jaytaylor/3660565
-
-    Could be performance-enhanced by storing the pre-compiled regexps.
-    """
-    string = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", string)
-    return re.sub("([a-z0-9])([A-Z])", r"\1_\2", string).lower()
-
-
 def parse(data):
     """
     Args:
@@ -46,7 +32,7 @@ def parse(data):
     Returns:
         A scriptengine.task.Task, a scriptengine.jobs.Job, or a list of tasks/jobs.
     """
-    tasks = {camel_to_snake(name):obj for name,obj in inspect.getmembers(scriptengine.tasks, inspect.isclass)}
+    tasks = scriptengine.tasks.loader.loaded
     jobs  = {"do"}
 
     if not data:
@@ -62,13 +48,14 @@ def parse(data):
     try:
         keys = (jobs|tasks.keys()) & data.keys()
     except AttributeError:
-        raise RuntimeError(f"Expected dictionary, got {type(data).__name__}: {data}")
-
+        raise ScriptEngineStopException(f"Expected dictionary, got "
+                                        f"{type(data).__name__}: {data}")
     if not keys:
-        raise RuntimeError(f"Unknown key: {list(data.keys())}")
-
+        raise ScriptEngineStopException(f"Unknown task name in: "
+                                        f"{list(data.keys())}")
     if len(keys)>1:
-        raise RuntimeError(f"Ambiguous keys in {list(data.keys())}")
+        raise ScriptEngineStopException(f"Ambiguous keys in "
+                                        f"{list(data.keys())}")
 
     key = keys.pop()
 

@@ -33,6 +33,7 @@ import argparse
 
 import scriptengine.logging
 import scriptengine.yaml
+import scriptengine.tasks
 
 from scriptengine.jobs import Job
 from scriptengine.scripts import SimpleScriptEngine
@@ -64,6 +65,10 @@ if __name__ == "__main__":
         LOG = scriptengine.logging.logger("scriptengine", level=logging.DEBUG)
     else:
         LOG = scriptengine.logging.logger("scriptengine", level=logging.INFO)
+
+    scriptengine.tasks.load(['scriptengine.tasks.base',
+                             'scriptengine.tasks.ecearth'])
+    LOG.debug(f"Loaded tasks: {', '.join(scriptengine.tasks.loaded.keys())}")
 
     LOG.debug("Start processing files")
     if len(cfg["files"])==1:
