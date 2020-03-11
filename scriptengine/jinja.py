@@ -59,7 +59,7 @@ def render(arg, context, recursive=True, boolean=False):
             # Render string in parameter environment using context
             return _param_env.from_string(string_arg).render(context)
         except jinja2.TemplateSyntaxError:
-            raise RuntimeError(f"Syntax error while rendering template string '{string}'"
+            raise RuntimeError(f"Syntax error while rendering template string '{string_arg}'"
                                f"{' in boolean context' if boolean else ''}")
 
     if isinstance(arg, str):
