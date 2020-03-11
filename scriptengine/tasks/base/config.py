@@ -1,5 +1,6 @@
 """Config task for ScriptEngine."""
 
+import yaml
 from deepmerge import always_merger
 
 from scriptengine.tasks import Task
@@ -23,7 +24,7 @@ class Config(Task):
         for key, value in self.__dict__.items():
             if not key.startswith("_"):
                 if isinstance(value, str) and value.startswith("_eval_"):
-                    value = j2render(value[6:], context)
+                    value = yaml.full_load(j2render(value[6:], context))
                 parameters[key] = value
         self.log_info(f"{parameters}")
         always_merger.merge(context, parameters)
