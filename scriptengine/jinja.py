@@ -1,7 +1,31 @@
 """ScriptEngine helpers: Jinja2 rendering"""
 
+import jinja2
+from datetime import datetime
 from distutils.util import strtobool
-from jinja2 import Template, TemplateSyntaxError
+
+
+def string_to_datetime(string, format="%Y-%m-%d %H:%M:%S"):
+    """Jinja2 filter to convert a string to datetime.datetime"""
+    return datetime.strptime(string, format)
+
+
+def string_to_date(string, format="%Y-%m-%d %H:%M:%S"):
+    """Jinja2 filter to convert a string to datetime.date"""
+    return datetime.strptime(string, format).date()
+
+
+def filters():
+    """Return all defined Jinja2 filters by their name and corresponding function
+    """
+    return {'datetime': string_to_datetime,
+            'date': string_to_date}
+
+
+# Jinja2 Environment to be used for rendering of parameters in the YAML files
+_param_env = jinja2.Environment(loader=jinja2.BaseLoader)
+for name, function in filters().items():
+    _param_env.filters[name] = function
 
 
 def render(arg, context, recursive=True, boolean=False):
@@ -32,8 +56,9 @@ def render(arg, context, recursive=True, boolean=False):
 
     def render_with_context(string_arg):
         try:
-            return Template(string_arg).render(context)
-        except TemplateSyntaxError:
+            # Render string in parameter environment using context
+            return _param_env.from_string(string_arg).render(context)
+        except jinja2.TemplateSyntaxError:
             raise RuntimeError(f"Syntax error while rendering template string '{string}'"
                                f"{' in boolean context' if boolean else ''}")
 

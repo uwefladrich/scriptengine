@@ -6,6 +6,7 @@ import jinja2
 
 from scriptengine.tasks import Task
 from scriptengine.jinja import render as j2render
+from scriptengine.jinja import filters as j2filters
 
 
 class Template(Task):
@@ -45,6 +46,8 @@ class Template(Task):
 
         loader = jinja2.FileSystemLoader(search_path)
         environment = jinja2.Environment(loader=loader)
+        for name, function in j2filters().items():
+            environment.filters[name] = function
         template = environment.get_template(src_path)
         output_text = j2render(template.render(context), context)
 
