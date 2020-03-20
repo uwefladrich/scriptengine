@@ -63,15 +63,18 @@ def render(arg, context, recursive=True, boolean=False):
                                f"{' in boolean context' if boolean else ''}")
 
     if isinstance(arg, str):
-        rendered_string = render_with_context(arg)
-        if recursive:
-            next_rendered_string = render_with_context(rendered_string)
-            while rendered_string != next_rendered_string:
-                rendered_string = next_rendered_string
+        if arg.startswith("_noeval_"):
+            return arg[8:]
+        else:
+            rendered_string = render_with_context(arg)
+            if recursive:
                 next_rendered_string = render_with_context(rendered_string)
-        if boolean:
-            expr = f"{{% if {rendered_string} %}}1{{% else %}}0{{% endif %}}"
-            return bool(strtobool(render_with_context(expr)))
-        return rendered_string
+                while rendered_string != next_rendered_string:
+                    rendered_string = next_rendered_string
+                    next_rendered_string = render_with_context(rendered_string)
+            if boolean:
+                expr = f"{{% if {rendered_string} %}}1{{% else %}}0{{% endif %}}"
+                return bool(strtobool(render_with_context(expr)))
+            return rendered_string
     else:
         return arg

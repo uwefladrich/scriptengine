@@ -9,10 +9,10 @@ from scriptengine.jobs import Job
 from scriptengine.exceptions import ScriptEngineStopException
 
 
-def construct_eval_string(loader, node):
+def construct_noeval_string(loader, node):
     value = loader.construct_scalar(node)
-    return f"_eval_{str(value)}"
-yaml.add_constructor(u"!eval", construct_eval_string)
+    return f"_noeval_{str(value)}"
+yaml.add_constructor(u"!noeval", construct_noeval_string)
 
 
 def construct_rrule(loader, node):
