@@ -11,11 +11,11 @@ class Find(Task):
     """Find task, finds files or directories by name patterns
     """
     def __init__(self, parameters):
-        super().__init__(__name__, parameters, required_parameters=["path", "pattern"])
+        super().__init__(__name__, parameters, required_parameters=["path"])
 
     def run(self, context):
         path = j2render(self.path, context)
-        pattern = j2render(self.pattern, context)
+        pattern = j2render(getattr(self, "pattern", "*"), context)
         find_type = j2render(getattr(self, "type", "file"), context)
 
         if find_type not in ("file", "dir"):
@@ -40,4 +40,4 @@ class Find(Task):
             self.log_debug(f"Nothing found")
         result_key = getattr(self, "set_context", "result")
         self.log_debug(f"Store result under context key '{result_key}'")
-        context[result_key]= result
+        context[result_key] = result
