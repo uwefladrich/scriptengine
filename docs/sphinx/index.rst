@@ -11,6 +11,8 @@ Welcome to the ScriptEngine Documentation
    :caption: Contents:
 
    intro
+   concepts
+   scripts
    loops
    basic-tasks
    system-tasks
