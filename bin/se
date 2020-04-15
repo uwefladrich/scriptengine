@@ -35,6 +35,7 @@ import scriptengine.logging
 import scriptengine.yaml
 import scriptengine.tasks
 
+from scriptengine import __version__ as se_version
 from scriptengine.jobs import Job
 from scriptengine.scripts import SimpleScriptEngine
 
@@ -42,6 +43,8 @@ def parse_command_line_arguments():
 
     arg_parser = argparse.ArgumentParser(description="ScriptEngine command line tool")
 
+    arg_parser.add_argument("-V", "--version", help="show ScriptEngine version and exit",
+                            action="version", version=se_version)
     arg_parser.add_argument("-q", "--quiet", help="be quiet, no extra output", action="store_true")
     arg_parser.add_argument("--debug", help="lots of extra debug output", action="store_true")
     arg_parser.add_argument("file", help="YAML file(s) to read", nargs="+")
