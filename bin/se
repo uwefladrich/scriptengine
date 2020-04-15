@@ -36,7 +36,6 @@ import scriptengine.yaml
 import scriptengine.tasks
 
 from scriptengine import __version__ as se_version
-from scriptengine.jobs import Job
 from scriptengine.scripts import SimpleScriptEngine
 
 def parse_command_line_arguments():
@@ -74,7 +73,7 @@ if __name__ == "__main__":
     LOG.debug(f"Loaded tasks: {', '.join(scriptengine.tasks.loaded.keys())}")
 
     LOG.debug("Start processing files")
-    if len(cfg["files"])==1:
+    if len(cfg["files"]) == 1:
         file = cfg["files"][0]
         LOG.debug(f"Parsing file '{file}'")
         script = scriptengine.yaml.parse_file(file)
