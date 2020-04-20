@@ -1,0 +1,32 @@
+ScriptEngine 0.4.0 (d2b26d230cb4, Thu Apr 16 16:23:12 2020 +0200)
+==================
+
+Features
+--------
+- Add 'submit_from_batch_job' argument for 'sbatch task'
+- Implement '--version' for SE command line (fix #6)
+- Some more documentation
+- Implement 'find' task (with 'depth' arg, #10)
+- Make 'config' task evaluate it's arguments
+- Add '!noeval' YAML constructor
+- Introduce Jinja 'date' and 'datetime' custom filters
+- Replace 'SlurmSubmit' task by improved 'Sbatch'
+- Add '!rrule' for RFC5545 reccurence rules
+- Add 'ignore_not_found' for 'include' task
+
+Internal changes
+----------------
+- Implement dynamic task loader
+- Restructure Jinja2 code
+- Update package dependencies
+
+Fixes
+-----
+- Bugfix: wrong variable name in error message
+- Fix search paths for 'template' task
+
+
+ScriptEngine 0.3.2 (b1491eb43dba, Tue Feb 4 21:36:24 2020 +0100)
+==================
+
+- First released version
