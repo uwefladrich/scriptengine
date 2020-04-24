@@ -36,14 +36,17 @@ class Task:
     def run(self, context):
         raise NotImplementedError(f"Base class function Task.run() must not be called")
 
+    def _log_message(self, message):
+        return f"{message} [{str(self.id).split('-')[-1]}]"
+
     def log_debug(self, message):
         self._logger.debug(f"{message} ({self.id})")
 
     def log_info(self, message):
-        self._logger.info(f"{message} ({self.id})")
+        self._logger.info(self._log_message(message))
 
     def log_warning(self, message):
-        self._logger.warning(f"{message} ({self.id})")
+        self._logger.warning(self._log_message(message))
 
     def log_error(self, message):
-        self._logger.error(f"{message} ({self.id})")
+        self._logger.error(self._log_message(message))

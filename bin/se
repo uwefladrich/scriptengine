@@ -38,6 +38,8 @@ import scriptengine.tasks
 from scriptengine import __version__ as se_version
 from scriptengine.scripts import SimpleScriptEngine
 
+from scriptengine.helpers import terminal_colors as tc
+
 def parse_command_line_arguments():
 
     arg_parser = argparse.ArgumentParser(description="ScriptEngine command line tool")
@@ -46,13 +48,16 @@ def parse_command_line_arguments():
                             action="version", version=se_version)
     arg_parser.add_argument("-q", "--quiet", help="be quiet, no extra output", action="store_true")
     arg_parser.add_argument("--debug", help="lots of extra debug output", action="store_true")
+    arg_parser.add_argument("--nocolor", help="do not use colored terminal output",
+                            action="store_true")
     arg_parser.add_argument("file", help="YAML file(s) to read", nargs="+")
 
     args = arg_parser.parse_args()
 
     return {"files": args.file,
             "quiet": args.quiet,
-            "debug": args.debug}
+            "debug": args.debug,
+            "nocolor": args.nocolor}
 
 
 if __name__ == "__main__":
@@ -60,6 +65,9 @@ if __name__ == "__main__":
     context = {"_se_ocwd": os.getcwd()}
 
     cfg = parse_command_line_arguments()
+
+    if cfg["nocolor"]:
+        tc.set_theme("none")
 
     if cfg["quiet"]:
         LOG = scriptengine.logging.logger("scriptengine", level=logging.WARN)
