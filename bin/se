@@ -48,6 +48,7 @@ def parse_command_line_arguments():
 
     arg_parser.add_argument("-V", "--version", help="show ScriptEngine version and exit",
                             action="version", version=__version__)
+    arg_parser.add_argument("-t", "--taskset", help="load taskset", action="append")
     arg_parser.add_argument("-q", "--quiet", help="be quiet, no extra output", action="store_true")
     arg_parser.add_argument("--debug", help="lots of extra debug output", action="store_true")
     arg_parser.add_argument("--nocolor", help="do not use colored terminal output",
@@ -57,6 +58,7 @@ def parse_command_line_arguments():
     args = arg_parser.parse_args()
 
     return {"files": args.file,
+            "taskset": args.taskset,
             "quiet": args.quiet,
             "debug": args.debug,
             "nocolor": args.nocolor}
@@ -78,8 +80,8 @@ if __name__ == "__main__":
     else:
         LOG = scriptengine.logging.logger("scriptengine", level=logging.INFO)
 
-    scriptengine.tasks.base.load(['scriptengine.tasks.base',
-                                  'scriptengine.tasks.ecearth'])
+    taskset = ["scriptengine.tasks.base"] + [f"scriptengine.tasks.{tasks}" for tasks in cfg["taskset"] or []]
+    scriptengine.tasks.base.load(taskset)
     LOG.debug(f"Loaded tasks: {', '.join(scriptengine.tasks.base.loaded_tasks().keys())}")
 
     LOG.debug("Start processing files")

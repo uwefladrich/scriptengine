@@ -10,7 +10,10 @@ def loaded_tasks():
 
 def load(modules):
     for mod_name in modules:
-        module = import_module(mod_name)
+        try:
+            module = import_module(mod_name)
+        except ModuleNotFoundError:
+            raise ScriptEngineStopException(f'Taskset module {mod_name} not found')
         for task_name, task_class in module.task_loader_map().items():
             if task_name not in _loaded_tasks:
                 _loaded_tasks[task_name] = task_class
