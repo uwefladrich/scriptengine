@@ -3,7 +3,7 @@
 import yaml
 from deepmerge import always_merger
 
-from scriptengine.tasks import Task
+from scriptengine.tasks.base import Task
 from scriptengine.jinja import render as j2render
 
 

@@ -31,21 +31,23 @@ import os
 import logging
 import argparse
 
+import scriptengine.version
 import scriptengine.logging
 import scriptengine.yaml
-import scriptengine.tasks
+import scriptengine.tasks.base
 
-from scriptengine import __version__ as se_version
 from scriptengine.scripts import SimpleScriptEngine
 
 from scriptengine.helpers import terminal_colors as tc
+
+__version__ = scriptengine.version.__version__
 
 def parse_command_line_arguments():
 
     arg_parser = argparse.ArgumentParser(description="ScriptEngine command line tool")
 
     arg_parser.add_argument("-V", "--version", help="show ScriptEngine version and exit",
-                            action="version", version=se_version)
+                            action="version", version=__version__)
     arg_parser.add_argument("-q", "--quiet", help="be quiet, no extra output", action="store_true")
     arg_parser.add_argument("--debug", help="lots of extra debug output", action="store_true")
     arg_parser.add_argument("--nocolor", help="do not use colored terminal output",
@@ -76,9 +78,9 @@ if __name__ == "__main__":
     else:
         LOG = scriptengine.logging.logger("scriptengine", level=logging.INFO)
 
-    scriptengine.tasks.load(['scriptengine.tasks.base',
-                             'scriptengine.tasks.ecearth'])
-    LOG.debug(f"Loaded tasks: {', '.join(scriptengine.tasks.loaded.keys())}")
+    scriptengine.tasks.base.load(['scriptengine.tasks.base',
+                                  'scriptengine.tasks.ecearth'])
+    LOG.debug(f"Loaded tasks: {', '.join(scriptengine.tasks.base.loaded_tasks().keys())}")
 
     LOG.debug("Start processing files")
     if len(cfg["files"]) == 1:

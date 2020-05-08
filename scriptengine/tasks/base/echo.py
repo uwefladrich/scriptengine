@@ -1,6 +1,6 @@
 """Echo task for ScriptEngine."""
 
-from scriptengine.tasks import Task
+from scriptengine.tasks.base import Task
 from scriptengine.jinja import render as j2render
 
 from scriptengine.helpers import terminal_colors as tc

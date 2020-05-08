@@ -1,7 +1,18 @@
-""" ScriptEngine base tasks
+""" ScriptEngine task handling and base tasks
 
-This module provides basic SE tasks.
+Tasks are the basic units or work in ScriptEngine. A task serves a single,
+specific limited purpose and should require a limited amount or work. Tasks
+must have a well defined set of input parameters and be rather independent of
+the execution context (e.g. parallel execution).
+
+This module provides
+  - the Task base class
+  - the dynamic task loader
+  - a set of basic tasks
 """
+
+from .task import Task
+from .loader import load, loaded_tasks
 
 from .include import Include
 from .config import Config
@@ -15,7 +26,7 @@ from .find import Find
 from .template import Template
 
 
-def taskmap():
+def task_loader_map():
     return {'include': Include,
             'config': Config,
             'echo': Echo,

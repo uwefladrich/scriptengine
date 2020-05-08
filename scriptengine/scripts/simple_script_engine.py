@@ -9,7 +9,7 @@ import logging
 
 import scriptengine.logging
 
-from scriptengine.tasks import Task
+from scriptengine.tasks.base import Task
 from scriptengine.jobs import Job
 from scriptengine.exceptions import ScriptEngineStopException
 

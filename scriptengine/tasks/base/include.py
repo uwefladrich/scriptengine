@@ -8,7 +8,7 @@ import os
 
 import scriptengine.yaml
 
-from scriptengine.tasks import Task
+from scriptengine.tasks.base import Task
 from scriptengine.jinja import render as j2render
 
 

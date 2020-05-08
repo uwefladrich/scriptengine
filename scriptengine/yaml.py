@@ -4,7 +4,7 @@
 import yaml
 import dateutil.rrule
 
-import scriptengine.tasks
+from scriptengine.tasks.base import loaded_tasks
 from scriptengine.jobs import Job
 from scriptengine.exceptions import ScriptEngineStopException
 
@@ -32,7 +32,7 @@ def parse(data):
     Returns:
         A scriptengine.task.Task, a scriptengine.jobs.Job, or a list of tasks/jobs.
     """
-    tasks = scriptengine.tasks.loader.loaded
+    tasks = loaded_tasks()
     jobs  = {"do"}
 
     if not data:

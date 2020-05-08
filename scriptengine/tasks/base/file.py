@@ -5,7 +5,7 @@ Provides Copy, Move, Link, Remove and MakeDir tasks
 import os
 import shutil
 
-from scriptengine.tasks import Task
+from scriptengine.tasks.base import Task
 from scriptengine.jinja import render as j2render
 
 

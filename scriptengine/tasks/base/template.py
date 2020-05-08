@@ -4,7 +4,7 @@ import os
 from itertools import chain
 import jinja2
 
-from scriptengine.tasks import Task
+from scriptengine.tasks.base import Task
 from scriptengine.jinja import render as j2render
 from scriptengine.jinja import filters as j2filters
 
