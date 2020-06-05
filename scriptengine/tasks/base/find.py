@@ -4,7 +4,6 @@ import os
 import fnmatch
 
 from scriptengine.tasks.base import Task
-from scriptengine.jinja import render as j2render
 from scriptengine.exceptions import ScriptEngineStopException
 
 class Find(Task):
@@ -14,23 +13,23 @@ class Find(Task):
         super().__init__(__name__, parameters, required_parameters=["path"])
 
     def run(self, context):
-        path = os.path.normpath(j2render(self.path, context))
+        path = os.path.normpath(self.getarg('path', context))
         path_depth = path.count(os.path.sep)
 
-        pattern = j2render(getattr(self, "pattern", "*"), context)
+        pattern = self.getarg('pattern', context, default='*')
 
-        find_type = j2render(getattr(self, "type", "file"), context)
+        find_type = self.getarg('type', context, default='file')
         if find_type not in ("file", "dir"):
             self.log_error(f"Invalid 'type': {find_type} "
                            "(must be either 'file' or 'dir')")
-            raise ScriptEngineStopException(f"Invalid 'type' argument in find task")
+            raise ScriptEngineStopException("Invalid 'type' argument in find task")
 
-        max_depth = j2render(getattr(self, "depth", "-1"), context)
+        max_depth = self.getarg('depth', context, default=-1)
         try:
             max_depth = max(-1, int(max_depth))
         except (ValueError, TypeError):
             self.log_error(f"Invalid 'depth': {max_depth} (must be an integer)")
-            raise ScriptEngineStopException(f"Invalid 'depth' argument in find task")
+            raise ScriptEngineStopException("Invalid 'depth' argument in find task")
 
         self.log_info(f"Find {find_type} with pattern '{pattern}' "
                       f"in {path} (with max depth={max_depth})")
@@ -48,7 +47,7 @@ class Find(Task):
         if result:
             self.log_debug(f"Found: {result}")
         else:
-            self.log_debug(f"Nothing found")
-        result_key = getattr(self, "set_context", "result")
+            self.log_debug("Nothing found")
+        result_key = self.getarg('set', context, default='result')
         self.log_debug(f"Store result under context key '{result_key}'")
         context[result_key] = result

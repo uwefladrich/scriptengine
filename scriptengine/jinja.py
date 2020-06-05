@@ -63,6 +63,9 @@ def render(arg, context, recursive=True, boolean=False):
                                f"{' in boolean context' if boolean else ''}")
 
     if isinstance(arg, str):
+        # Deprecated!
+        # The use of !noeval is deprecated. Use !noparse or the specific versions
+        # !noparse_jinja/!noparse_yaml instead!
         if arg.startswith("_noeval_"):
             return arg[8:]
         else:

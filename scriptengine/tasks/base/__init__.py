@@ -16,6 +16,7 @@ from .loader import load, loaded_tasks
 
 from .include import Include
 from .config import Config
+from .context import Context
 from .echo import Echo
 from .chdir import Chdir
 from .command import Command
@@ -29,6 +30,7 @@ from .template import Template
 def task_loader_map():
     return {'include': Include,
             'config': Config,
+            'context': Context,
             'echo': Echo,
             'chdir': Chdir,
             'command': Command,
@@ -40,4 +42,5 @@ def task_loader_map():
             'remove': Remove,
             'make_dir': MakeDir,
             'find': Find,
-            'template': Template}
+            'template': Template,
+           }

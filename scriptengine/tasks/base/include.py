@@ -9,7 +9,6 @@ import os
 import scriptengine.yaml
 
 from scriptengine.tasks.base import Task
-from scriptengine.jinja import render as j2render
 
 
 class Include(Task):
@@ -21,7 +20,7 @@ class Include(Task):
         return f"Include: {self.src}"
 
     def run(self, context):
-        inc_file = j2render(self.src, context)
+        inc_file = self.getarg('src', context)
         self.log_info(f"Include script from {inc_file}")
 
         search_path = [".", context.get("_se_ocwd", "")] + context.get("_se_filepath", [])
@@ -33,11 +32,10 @@ class Include(Task):
                 self.log_debug(f"Found include file at '{inc_file_path}'")
                 break
         else:
-            if getattr(self, "ignore_not_found", False):
+            if self.getarg('ignore_not_found', False):
                 self.log_warning(f"Include file {inc_file} not found.")
                 return
-            else:
-                raise RuntimeError(f"Include file '{inc_file}' not found")
+            raise RuntimeError(f"Include file '{inc_file}' not found")
 
         script = scriptengine.yaml.parse_file(inc_file_path)
 
@@ -48,7 +46,7 @@ class Include(Task):
         try:
             se_instance = context['_se_instance']
         except KeyError:
-            raise RuntimeError(f"ScriptEngine instance not found")
+            raise RuntimeError("ScriptEngine instance not found")
         else:
             self.log_debug(f"Execute script from '{inc_file}'")
             se_instance.run(script, context)

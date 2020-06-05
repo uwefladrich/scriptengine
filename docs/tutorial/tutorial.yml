@@ -64,7 +64,7 @@
 
 - getenv: # The *getenv* task sets a configuration item from an environment variable
     name: HOME
-    set_cfg: home
+    set: home
 - echo: {msg: "My home is at {{home}}"}
 
 
@@ -137,6 +137,17 @@
 # that the include file is read, parsed, and executed at the time when the
 # Include task is run from the parent file.
 
+
+# -------------------------------------------------------------------------------------------------
+# Find task
+# -------------------------------------------------------------------------------------------------
+
+- find:
+    path: .
+    pattern: '*.yml'
+    set: found_files
+- echo:
+    msg: "Files found -- {{found_files}}"
 
 
 # -------------------------------------------------------------------------------------------------

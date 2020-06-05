@@ -1,7 +1,6 @@
 """Template task for ScriptEngine."""
 
 import os
-from itertools import chain
 import jinja2
 
 from scriptengine.tasks.base import Task
@@ -28,9 +27,9 @@ class Template(Task):
         return f"Template: {self.src} --> {self.dst}"
 
     def run(self, context):
-        src_path = j2render(self.src, context)
-        dst_path = j2render(self.dst, context)
-        self.log_info(f"Render {src_path} --> {dst_path}")
+        src = self.getarg('src', context)
+        dst = self.getarg('dst', context)
+        self.log_info(f"Render {src} --> {dst}")
 
         # The template search path:
         #   1. .
@@ -38,7 +37,7 @@ class Template(Task):
         #   3. <ocwd>
         #   4. <ocwd>/templates
         # where <ocwd> is the original working directory at the time when the se script was called
-        search_path = [ '.', 'templates' ]
+        search_path = ['.', 'templates']
         if "_se_ocwd" in context:
             search_path.extend([context["_se_ocwd"],
                                 os.path.join(context["_se_ocwd"], "templates")])
@@ -48,8 +47,8 @@ class Template(Task):
         environment = jinja2.Environment(loader=loader)
         for name, function in j2filters().items():
             environment.filters[name] = function
-        template = environment.get_template(src_path)
+        template = environment.get_template(src)
         output_text = j2render(template.render(context), context)
 
-        with open(dst_path, "w") as output_file:
+        with open(dst, "w") as output_file:
             output_file.write(f"{output_text}\n")

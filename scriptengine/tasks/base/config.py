@@ -17,6 +17,7 @@ class Config(Task):
     """
     def __init__(self, parameters):
         super().__init__(__name__, parameters)
+        self.log_warning('The use of the Config task is deprecated! Use Context instead.')
 
     def __str__(self):
         return f"Config: {self.__dict__}"
