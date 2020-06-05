@@ -11,8 +11,9 @@ This module provides
   - a set of basic tasks
 """
 
-from .task import Task
 from .loader import load, loaded_tasks
+
+from .task import Task
 
 from .include import Include
 from .config import Config

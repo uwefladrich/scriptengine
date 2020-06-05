@@ -27,23 +27,58 @@ along with ScriptEngine. If not, see <https://www.gnu.org/licenses/>.
 """
 __license__ = "GPLv3+"
 
+
+import sys
 import os
-import logging
 import argparse
+import logging
 
 import scriptengine.version
-import scriptengine.logging
-import scriptengine.yaml
-import scriptengine.tasks.base
 
+from scriptengine.helpers import terminal_colors
 from scriptengine.scripts import SimpleScriptEngine
-
-from scriptengine.helpers import terminal_colors as tc
 
 __version__ = scriptengine.version.__version__
 
-def parse_command_line_arguments():
+def init_context(ctx):
+    """Initialise context as dict with some defaults
+    """
+    ctx['_se_cmd_cwd'] = os.getcwd()
+    ctx['_se_cmd_args'] = sys.argv
 
+def init_config(cfg):
+    """Initialise se config as dict with some defaults
+    """
+    cfg['se_instance_type'] = SimpleScriptEngine
+
+
+def parse_config_file(cfg):
+    """Parse ScriptEngine configuration files.
+       Overwrite current values in config
+    """
+
+
+def configure_logger(cfg, ctx):
+    """Configures logging according to 'cfg':
+       - sets color scheme (side effect!)
+       - creates logger with appropriate log leve
+       - saves a reference to the logger in the context
+    """
+    if cfg["nocolor"]:
+        terminal_colors.set_theme("none")
+    if cfg["quiet"]:
+        log = scriptengine.logging.logger("scriptengine", level=logging.WARN)
+    elif cfg["debug"]:
+        log = scriptengine.logging.logger("scriptengine", level=logging.DEBUG)
+    else:
+        log = scriptengine.logging.logger("scriptengine", level=logging.INFO)
+    ctx['_se_logger'] = log
+    log.info('Logging configured')
+
+
+def process_cmd_line_args(cfg):
+    """Parses the command line arguments and modifies the confuguration accordingly
+    """
     arg_parser = argparse.ArgumentParser(description="ScriptEngine command line tool")
 
     arg_parser.add_argument("-V", "--version", help="show ScriptEngine version and exit",
@@ -57,55 +92,99 @@ def parse_command_line_arguments():
 
     args = arg_parser.parse_args()
 
-    return {"files": args.file,
-            "taskset": args.taskset,
-            "quiet": args.quiet,
-            "debug": args.debug,
-            "nocolor": args.nocolor}
+    cfg['files'] = args.file
+    cfg['taskset'] = args.taskset
+    cfg['quiet'] = args.quiet
+    cfg['debug'] = args.debug
+    cfg['nocolor'] = args.nocolor
 
 
-if __name__ == "__main__":
+def load_tasks(cfg, ctx):
+    """Loads tasks from scriptengine.tasks.base, plus whatever is in the config
+    """
+    taskset = ["base"] + (cfg["taskset"] or [])
+    scriptengine.tasks.base.load([f"scriptengine.tasks.{ts}" for ts in taskset])
+    ctx['_se_logger'].debug("Loaded tasks: "
+                            f"{', '.join(scriptengine.tasks.base.loaded_tasks().keys())}")
 
-    context = {"_se_ocwd": os.getcwd()}
 
-    cfg = parse_command_line_arguments()
+def parse_files(cfg, ctx):
+    """Parses all files named in ctx['files'] and returns a script (list of tasks/jobs)
+       Add file dirnames to ctx['_se_filepath']
+    """
+    script = []
+    for fname in cfg['files']:
+        next_script = scriptengine.yaml.parse_file(fname) # task, job, list
+        if isinstance(next_script, list):
+            script.extend(next_script)
+        else:
+            script.append(next_script)
+        dname = os.path.dirname(os.path.abspath(fname))
+        if dname not in ctx.get('_se_filepath', []):
+            ctx.setdefault('_se_filepath', []).append(dname)
+    return script
 
-    if cfg["nocolor"]:
-        tc.set_theme("none")
 
-    if cfg["quiet"]:
-        LOG = scriptengine.logging.logger("scriptengine", level=logging.WARN)
-    elif cfg["debug"]:
-        LOG = scriptengine.logging.logger("scriptengine", level=logging.DEBUG)
-    else:
-        LOG = scriptengine.logging.logger("scriptengine", level=logging.INFO)
+def configure_scriptengine(cfg, ctx):
+    """Configure the ScriptEngine instance in the context.
+       Use values from configuration dict.
+    """
+    ctx['_se_instance_type'] = cfg['se_instance_type']
+    ctx['_se_instance'] = cfg['se_instance_type'](log_level=ctx['_se_logger'].level)
 
-    taskset = ["scriptengine.tasks.base"] + [f"scriptengine.tasks.{tasks}" for tasks in cfg["taskset"] or []]
-    scriptengine.tasks.base.load(taskset)
-    LOG.debug(f"Loaded tasks: {', '.join(scriptengine.tasks.base.loaded_tasks().keys())}")
 
-    LOG.debug("Start processing files")
-    if len(cfg["files"]) == 1:
-        file = cfg["files"][0]
-        LOG.debug(f"Parsing file '{file}'")
-        script = scriptengine.yaml.parse_file(file)
-    else:
-        script = []
-        for file in cfg["files"]:
-            LOG.debug(f"Parsing file '{file}'")
-            next_script = scriptengine.yaml.parse_file(file)
-            if isinstance(next_script, list):
-                script.extend(next_script)
-            else:
-                script.append(next_script)
-    for file in cfg["files"]:
-        dirname = os.path.dirname(os.path.abspath(file))
-        if dirname not in context.get("_se_filepath", []):
-            context.setdefault("_se_filepath", []).append(dirname)
-    LOG.debug("Finish processing files")
+def main():
+    """ScriptEngine command line tool
 
-    LOG.debug("Start running jobs")
-    script_engine = SimpleScriptEngine(log_level=LOG.level)
-    context["_se_instance"] = script_engine
-    script_engine.run(script, context)
-    LOG.debug("Finish running jobs")
+       Make sure to distinguish config and context!
+
+       "config" stores configuration for the se command line tool
+       The context is passed to the ScriptEngine instance and, later, to all
+       tasks. Some context information is already set here in the se command
+       line tool:
+         context['_se_cmd_cwd']   - the original working directory
+         context['_se_cmd_args']  - the list of arguments
+
+         context['_se_logger']    - the main logger
+         context['_se_instance']  - a reference to the ScriptEngine instance
+                                    that executes the task
+    """
+
+    config = {}
+    context = {}
+
+    # initialise context
+    init_context(context)
+
+    # initialise default config
+    init_config(config)
+
+    # parse config file
+    parse_config_file(config)
+
+    # parse command line arguments
+    process_cmd_line_args(config)
+
+    # set up logging
+    #   - log level
+    #   - color scheme
+    #   - sets context['_se_logger']
+    configure_logger(config, context)
+
+    # load tasks
+    load_tasks(config, context)
+
+    # create script by parsing the files given on the command line
+    script = parse_files(config, context)
+
+    # init scriptengine instance
+    #   sets context['_se_instance']
+    configure_scriptengine(config, context)
+
+    # call ScriptEngine instance to run the script
+    context['_se_instance'].run(script, context)
+
+    return 0
+
+if __name__ == '__main__':
+    sys.exit(main())

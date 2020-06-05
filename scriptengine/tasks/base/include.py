@@ -23,7 +23,7 @@ class Include(Task):
         inc_file = self.getarg('src', context)
         self.log_info(f"Include script from {inc_file}")
 
-        search_path = [".", context.get("_se_ocwd", "")] + context.get("_se_filepath", [])
+        search_path = [".", context.get("_se_cmd_cwd", "")] + context.get("_se_filepath", [])
         self.log_debug(f"Searching in path: {search_path}")
         for directory in search_path:
             inc_file_path = os.path.join(directory, inc_file)
