@@ -4,9 +4,9 @@ ScriptEngine is a lightweight and extensible framework for executing scripts
 written in YAML. The main purpose of ScriptEngine is to replace shell scripts
 in situations where highly configurable and modular scripts are needed.
 ScriptEngine relies on YAML and makes extensive use of Jinja2 templating to
-provide a rich scripting language. This allows the user to put focus on the
+provide a rich scripting language. This allows users to put focus on the
 description of tasks, rather than their implementation. The description of
-complext tasks should be nearly as short and clear as for simpler ones.
+complex tasks should be nearly as short and clear as for simpler ones.
 
 The ScriptEngine concept separates scripts (what to do) from the implementation
 of tasks (how to do things), and the actual execution environment (the script
