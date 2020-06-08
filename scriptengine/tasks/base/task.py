@@ -56,6 +56,32 @@ class Task:
            If argument 'name' does not exist, the function raises an
            AttributeError, unless a 'default' value is given.
            """
+
+        def parse(arg_):
+
+            # Recursively parse list items
+            if isinstance(arg_, list):
+                return [parse(item) for item in arg_]
+
+            if isinstance(arg_, str):
+                if parse_jinja and not isinstance(arg_, scriptengine.yaml.NoParseJinjaString):
+                    # Make sure that a NoParseString is still a NoParseString after this!
+                    arg_ = type(arg_)(scriptengine.jinja.render(arg_, context))
+
+                if parse_yaml and not isinstance(arg_, scriptengine.yaml.NoParseYamlString):
+                    try:
+                        return yaml.full_load(arg_)
+                    except (yaml.scanner.ScannerError,
+                            yaml.parser.ParserError,
+                            yaml.constructor.ConstructorError):
+                        self.log_debug(f'Reparsing argument "{arg_}" with YAML failed')
+
+                # Return plain strings, not NoParse*Strings
+                return str(arg_)
+
+            # If not a list or string, just return
+            return arg_
+
         try:
             arg = getattr(self, name)
 
@@ -65,22 +91,7 @@ class Task:
                                      f'in "{self.__class__.__name__}"')
             arg = default
 
-        if isinstance(arg, str):
-            if parse_jinja and not isinstance(arg, scriptengine.yaml.NoParseJinjaString):
-                # Make sure that a NoParseString is still a NoParseString after this!
-                arg = type(arg)(scriptengine.jinja.render(arg, context))
-
-            if parse_yaml and not isinstance(arg, scriptengine.yaml.NoParseYamlString):
-                try:
-                    arg = yaml.full_load(arg)
-                except (yaml.scanner.ScannerError, yaml.parser.ParserError, yaml.constructor.ConstructorError):
-                    self.log_debug(f'Reparsing argument "{arg}" with YAML failed')
-
-            # For consistency, we always return plain strings
-            if isinstance(arg, scriptengine.yaml.NoParseString):
-                arg = str(arg)
-
-        return arg
+        return parse(arg)
 
     def _log_message(self, message):
         return f'{message} [{str(self.id).split("-")[-1]}]'
