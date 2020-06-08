@@ -66,14 +66,20 @@ class Task:
             arg = default
 
         if isinstance(arg, str):
-            if not isinstance(arg, scriptengine.yaml.NoParseJinjaString):
+            if parse_jinja and not isinstance(arg, scriptengine.yaml.NoParseJinjaString):
+                # Make sure that a NoParseString is still a NoParseString after this!
                 arg = type(arg)(scriptengine.jinja.render(arg, context))
 
-            if not isinstance(arg, scriptengine.yaml.NoParseYamlString):
+            if parse_yaml and not isinstance(arg, scriptengine.yaml.NoParseYamlString):
                 try:
-                    arg = type(arg)(yaml.full_load(arg))
+                    arg = yaml.full_load(arg)
                 except (yaml.scanner.ScannerError, yaml.parser.ParserError, yaml.constructor.ConstructorError):
                     self.log_debug(f'Reparsing argument "{arg}" with YAML failed')
+
+            # For consistency, we always return plain strings
+            if isinstance(arg, scriptengine.yaml.NoParseString):
+                arg = str(arg)
+
         return arg
 
     def _log_message(self, message):

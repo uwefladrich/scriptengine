@@ -29,6 +29,7 @@ class Context(Task):
 
                 if isinstance(val, str):
                     if not isinstance(val, scriptengine.yaml.NoParseJinjaString):
+                        # Make sure that a NoParseString is still a NoParseString after this!
                         val = type(val)(scriptengine.jinja.render(val, context))
 
                     if not isinstance(val, scriptengine.yaml.NoParseYamlString):
@@ -36,10 +37,15 @@ class Context(Task):
                         # get the right type
                         # Otherwise, everything would be just a string
                         try:
-                            val = type(val)(yaml.full_load(val))
+                            val = yaml.full_load(val)
                         # However, it may really be a string that is no valid YAML!
                         except (yaml.parser.ParserError, yaml.constructor.ConstructorError):
                             self.log_debug(f'Reparsing argument "{val}" with YAML failed')
+
+                    # For consistency, we always return plain strings
+                    if isinstance(val, scriptengine.yaml.NoParseString):
+                        val = str(val)
+
                     evaluated_params[key] = val
 
                 elif isinstance(val, dict):
