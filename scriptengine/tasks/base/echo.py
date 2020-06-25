@@ -17,6 +17,9 @@ class Echo(Task):
 
     @timed_runner
     def run(self, context):
-        self.log_info(self.msg)
+
+        log_msg = self.msg.replace('\n', '')
+        self.log_info(log_msg[:15]+'...' if len(log_msg) > 18 else log_msg)
+
         msg = self.getarg('msg', context)
         print(tc.LIGHTBLUE + str(msg) + tc.RESET)

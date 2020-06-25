@@ -26,6 +26,7 @@ from .exit import Exit
 from .file import Copy, Move, Link, Remove, MakeDir
 from .find import Find
 from .template import Template
+from .time import Time
 
 
 def task_loader_map():
@@ -44,4 +45,5 @@ def task_loader_map():
             'make_dir': MakeDir,
             'find': Find,
             'template': Template,
+            'time': Time,
            }
