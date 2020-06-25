@@ -9,6 +9,7 @@ import os
 import scriptengine.yaml
 
 from scriptengine.tasks.base import Task
+from scriptengine.tasks.base.timing import timed_runner
 
 
 class Include(Task):
@@ -19,6 +20,7 @@ class Include(Task):
     def __str__(self):
         return f"Include: {self.src}"
 
+    @timed_runner
     def run(self, context):
         inc_file = self.getarg('src', context)
         self.log_info(f"Include script from {inc_file}")

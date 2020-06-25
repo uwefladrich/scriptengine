@@ -5,6 +5,7 @@ from deepmerge import always_merger
 
 import scriptengine.jinja
 from scriptengine.tasks.base import Task
+from scriptengine.tasks.base.timing import timed_runner
 
 
 class Context(Task):
@@ -18,6 +19,7 @@ class Context(Task):
     def __init__(self, parameters):
         super().__init__(__name__, parameters)
 
+    @timed_runner
     def run(self, context):
 
         def evaluate_params(parameters, context):

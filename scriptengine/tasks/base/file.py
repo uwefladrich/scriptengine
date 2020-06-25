@@ -6,6 +6,7 @@ import os
 import shutil
 
 from scriptengine.tasks.base import Task
+from scriptengine.tasks.base.timing import timed_runner
 
 
 class Copy(Task):
@@ -17,6 +18,7 @@ class Copy(Task):
     def __init__(self, parameters):
         super().__init__(__name__+".copy", parameters, required_parameters=["src", "dst"])
 
+    @timed_runner
     def run(self, context):
         src = self.getarg('src', context)
         dst = self.getarg('dst', context)
@@ -40,6 +42,7 @@ class Move(Task):
     def __init__(self, parameters):
         super().__init__(__name__+".move", parameters, required_parameters=["src", "dst"])
 
+    @timed_runner
     def run(self, context):
         src = self.getarg('src', context)
         dst = self.getarg('dst', context)
@@ -55,6 +58,7 @@ class Link(Task):
     def __init__(self, parameters):
         super().__init__(__name__+".link", parameters, required_parameters=["src", "dst"])
 
+    @timed_runner
     def run(self, context):
         src = self.getarg('src', context)
         dst = self.getarg('dst', context)
@@ -72,6 +76,7 @@ class Remove(Task):
     def __init__(self, parameters):
         super().__init__(__name__+".remove", parameters, required_parameters=["path"])
 
+    @timed_runner
     def run(self, context):
         path = self.getarg('path', context)
         if os.path.exists(path):
@@ -92,6 +97,7 @@ class MakeDir(Task):
     def __init__(self, parameters):
         super().__init__(__name__+".make_dir", parameters, required_parameters=["path"])
 
+    @timed_runner
     def run(self, context):
         path = self.getarg('path', context)
         if os.path.isdir(path):

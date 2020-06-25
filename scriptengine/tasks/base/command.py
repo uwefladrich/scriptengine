@@ -9,6 +9,7 @@
 import subprocess
 
 from scriptengine.tasks.base import Task
+from scriptengine.tasks.base.timing import timed_runner
 from scriptengine.exceptions import ScriptEngineStopException
 
 
@@ -17,6 +18,7 @@ class Command(Task):
     def __init__(self, parameters):
         super().__init__(__name__, parameters, ["name"])
 
+    @timed_runner
     def run(self, context):
         self.log_info(f"{self.name} "
                       f"args={getattr(self, 'args', 'none')} "

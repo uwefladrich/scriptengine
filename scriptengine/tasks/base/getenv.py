@@ -3,6 +3,7 @@
 import os
 
 from scriptengine.tasks.base import Task
+from scriptengine.tasks.base.timing import timed_runner
 
 
 class Getenv(Task):
@@ -23,6 +24,7 @@ class Getenv(Task):
     def __str__(self):
         return f"Getenv: ENV{self.name} --> {self.set}"
 
+    @timed_runner
     def run(self, context):
         self.log_info(f"ENV{self.name} --> {self.set}")
         env = os.environ.get(self.getarg('name', context))

@@ -4,6 +4,7 @@ import yaml
 from deepmerge import always_merger
 
 from scriptengine.tasks.base import Task
+from scriptengine.tasks.base.timing import timed_runner
 from scriptengine.jinja import render as j2render
 
 
@@ -22,6 +23,7 @@ class Config(Task):
     def __str__(self):
         return f"Config: {self.__dict__}"
 
+    @timed_runner
     def run(self, context):
 
         def eval_dict(arg_dict, context):

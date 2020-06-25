@@ -4,6 +4,7 @@ import os
 import fnmatch
 
 from scriptengine.tasks.base import Task
+from scriptengine.tasks.base.timing import timed_runner
 from scriptengine.exceptions import ScriptEngineStopException
 
 class Find(Task):
@@ -12,6 +13,7 @@ class Find(Task):
     def __init__(self, parameters):
         super().__init__(__name__, parameters, required_parameters=["path"])
 
+    @timed_runner
     def run(self, context):
         path = os.path.normpath(self.getarg('path', context))
         path_depth = path.count(os.path.sep)

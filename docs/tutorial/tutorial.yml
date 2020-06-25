@@ -10,6 +10,14 @@
 
 
 # -------------------------------------------------------------------------------------------------
+# Switch on ScriptEngine timing
+# -------------------------------------------------------------------------------------------------
+- context:
+    se_timing:
+        mode: instances
+
+
+# -------------------------------------------------------------------------------------------------
 # Some simple tasks:
 # -------------------------------------------------------------------------------------------------
 
@@ -148,6 +156,36 @@
     set: found_files
 - echo:
     msg: "Files found -- {{found_files}}"
+
+
+# -------------------------------------------------------------------------------------------------
+# Print timing results
+# -------------------------------------------------------------------------------------------------
+- echo:
+    msg: !noparse_yaml |
+
+        {% if 'timers' in se_timing -%}
+        ScriptEngine timings
+        ====================
+
+        {% if 'classes' in se_timing.timers -%}
+        Timing for task classes
+        -----------------------
+        {% for class, time in se_timing.timers.classes.items() -%}
+            {{class}}: {{'%0.3f' % time}} seconds
+        {% endfor %}
+        {% endif -%}
+
+        {% if 'instances' in se_timing.timers -%}
+        Timing for task instances
+        -------------------------
+        {% for uid, time in se_timing.timers.instances.items() -%}
+            {{(uid|string).split('-')[-1]}}: {{'%0.3f' % time}} seconds
+        {% endfor %}
+        {% endif %}
+        {% else -%}
+        No detailed Scriptengine timing activated
+        {% endif %}
 
 
 # -------------------------------------------------------------------------------------------------
