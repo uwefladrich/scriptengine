@@ -27,6 +27,7 @@ from .file import Copy, Move, Link, Remove, MakeDir
 from .find import Find
 from .template import Template
 from .time import Time
+from .task_timer import TaskTimer
 
 
 def task_loader_map():
@@ -46,4 +47,5 @@ def task_loader_map():
             'find': Find,
             'template': Template,
             'time': Time,
+            'task_timer': TaskTimer,
            }
