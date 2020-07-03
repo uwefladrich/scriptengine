@@ -1,32 +1,41 @@
 Introduction
 ============
 
-The main purpose of ScriptEngine is to replace shell scripts. ScriptEngine
-tries to put the user's focus on the description of common shell script tasks,
-rather than their implementation. Ideally, the description of a complex task
-should be nearly as short and clear as the description of a simpler one.
+ScriptEngine is a lightweight and extensible framework for executing scripts
+written in YAML. The main purpose of ScriptEngine is to replace shell scripts
+in situations where highly configurable and modular scripts are needed.
+ScriptEngine relies on YAML and makes extensive use of Jinja2 templating to
+provide a comprehensive scripting language. This allows users to put focus on
+the description of tasks, rather than their implementation. The description of
+complex tasks should be nearly as short and clear as for simpler ones.
 
 The ScriptEngine concept separates scripts (*what* to do) from the
-implementation of tasks (*how* to do things), and the actual execution
-environment (the script engine instances). This allows different execution
-models to be implemented. A simple script engine instance may execute tasks
-from a script as a simple sequential list, which is, in fact, the default
-behaviour in ScriptEngine. However, it is rather easy, within the ScriptEngine
-concept, to implement more advanced script engine instances, such as one that
-executes tasks in parallel or sends tasks to batch systems.
+implementation of tasks (*how* to do things), and also from the actual
+execution environment (the script engine instances). This modularity allows the
+provision of different execution models (e.g. sequential or parallel; local or
+remote) within the same framework.
 
-A major theme in the ScriptEngine implementation is to combine modern
-programming techniques, such as Python, YAML syntax, and Jinja2 templating, in
-clever ways such that as little as possible is left for actual implementation.
+ScriptEngine provides a concise set of basic tasks that users can use to write
+their scripts. However, extensibility is a fundamental principle for
+ScriptEngine. Complementary task sets are provided as Python packages that can
+be loaded into ScriptEngine at run time. Thus, the capabilities of ScriptEngine
+scripts is only limited by available task sets.
 
-ScriptEngine is heavily inspired by Ansible. However, there are some important differences:
+ScriptEngine tasks are simple Python classes with a `run()` method, which means
+that it is rather easy to build new tasks sets for particular needs. And
+because everything is based on Python3, there is a wide range of modules
+available to get the actual work done easily and efficiently.
 
-- ScriptEngine is made to run tasks locally. Or, to put it the other way
-  around, ScriptEngine is usually run on the same machine where tasks need to
-  be executed.
+ScriptEngine is strongly influenced by Ansible. In fact, ScriptEngine was
+developed because it met almost, but not quite, the needs of the author. Here
+are some important differences:
 
-- ScriptEngine scripts usually describe what is to be done, not a desired state
-  of things.
+- Tasks are executed on a single host, often the host where the ScriptEngine
+  command line tool is runnning. This is not an implication of any ScriptEngine
+  concept, though. It would be possible to implement ScriptEngine instances
+  that execute tasks remotely, or on multiple hosts.
+
+- Contrary to Ansible, ScriptEngine tasks specify actions, not states.
 
 - ScriptEngine is *not* focused on system administration. Although this is not
   part of the underlying concept, it will most probably reflect in the
