@@ -109,5 +109,5 @@ directory at the time when the ScriptEngine command line tool was called.
 It is important to note that ``src`` may contain a relative path, but absolute
 paths will not work.
 
-The template file may refer to any of the configurations set by ``config``
+The template file may refer to any of the configurations set by ``context``
 tasks.

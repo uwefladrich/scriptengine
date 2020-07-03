@@ -46,7 +46,7 @@ in the YAML language. Usually, a script is a YAML file that represents a list
 of tasks. How specific tasks are represented in YAML is usually intuitive, as
 shown in the following example::
 
-    - config:
+    - context:
         planet: Earth
     - echo:
         msg: "Hello, {{planet}}!"
@@ -81,7 +81,7 @@ instance in the new context. Then, it is passed to every task that is executed.
 Usually, the context will be populated with information as tasks are processed.
 
 We have already seen the usage of the context in the "Hello world" example
-above. The ``config`` task stored a parameter named ``planet`` in the context
+above. The ``context`` task stored a parameter named ``planet`` in the context
 and the ``echo`` task used the information from the context to display it's
 message.
 

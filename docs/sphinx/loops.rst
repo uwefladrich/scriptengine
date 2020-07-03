@@ -20,9 +20,9 @@ works just the same::
       - 2
       - 3
 
-The list can also be specified in a separate ``config`` task, as in::
+The list can also be specified in a separate ``context`` task, as in::
 
-  - config:
+  - context:
       list: [1,2,3]
   - echo:
       msg: "Looping over item, which is now {{item}}"
