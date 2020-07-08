@@ -1,3 +1,20 @@
+ScriptEngine 0.6.0 (350044f47b1d, Wed Jul 8 10:24:48 2020 +0200)
+==================
+
+Features
+--------
+- Documentation update (now also on scriptengine.readthedocs.io)
+- Task timer: get elapsed time for tasks on individual and class level
+- Introduce new YAML constructors, replacing !noeval (now deprecated)
+  (!noparse, !noparse_yaml, !noparse_jinja)
+- Update project README and fix typos
+
+Internal changes
+----------------
+- SE command line tool refactored
+- Introduce Task.getarg() for easier task development
+
+
 ScriptEngine 0.5.1 (8bd7a3649c27, Mon May 11 13:25:54 2020 +0200)
 ==================
 
