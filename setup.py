@@ -18,7 +18,7 @@ setuptools.setup(
     version=get_version("scriptengine/version.py"),
     author="Uwe Fladrich",
     author_email="uwe.fladrich@protonmail.com",
-    description="A better way to configure and run things that usually go into shell scripts",
+    description="A lightweight and extensible framework for executing scripts written in YAML",
     long_description=read("README.md"),
     long_description_content_type="text/markdown",
     url="https://github.com/uwefladrich/scriptengine",
