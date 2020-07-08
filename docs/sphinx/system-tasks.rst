@@ -12,13 +12,13 @@ Usage::
 
     - getenv:
         name: <VAR_NAME>
-        context: <NAME>
+        set: <NAME>
 
 Example::
 
     - getenv:
         name: HOME
-        context: home
+        set: home
     - echo:
         msg: "My {{home}} is my castle."
 

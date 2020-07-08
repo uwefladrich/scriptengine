@@ -106,7 +106,7 @@ where ``.`` is the current directory at the time when the ``template`` task is
 executed and ``<OCWD>`` is the original working directory, the working
 directory at the time when the ScriptEngine command line tool was called.
 
-It is important to note that ``src`` may contain a relative path, but absolute
+It is important to note that ``src`` must contain a relative path, absolute
 paths will not work.
 
 The template file may refer to any of the configurations set by ``context``
