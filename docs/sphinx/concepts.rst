@@ -63,17 +63,24 @@ provided the little YAML snippet was stored in a file called
 ScriptEngine Instances
 ----------------------
 
-Most of the time, the difference between the term ScriptEngine in general and
-a ScriptEngine instance in particular is not very important.
+Most of the time, the difference between the term ScriptEngine in general and a
+ScriptEngine instance in particular is not very important. However, technically,
+scripts are given to a particular ScriptEngine instance for execution. Different
+types of ScriptEngine instances could exist, allowing for different execution
+models to be implemented. For example, a ScriptEngine instance could allow tasks
+to be run in parallel, or to be submitted to remote hosts for execution.
+
+For now, ScriptEngine provides ``SimpleScriptEngine``, which takes scripts and
+executes tasks sequentially, on the local host.
 
 
 Task Context
 ------------
 
 An important concept in ScriptEngine is the task context, or short, the
-context. The context is, technically, a dictionary, i.e. a data structure of
-key, value pairs. ScriptEngine tasks can store and retrieve information from
-the context.
+*context*. The context is, technically, a dictionary, i.e. a data structure of
+key, value pairs. ScriptEngine tasks can store and retrieve information from the
+context.
 
 When a ScriptEngine instance is created, the context is initialised. Some
 information about the execution environment is stored by the ScriptEngine
