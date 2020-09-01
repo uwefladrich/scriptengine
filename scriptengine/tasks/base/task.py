@@ -63,6 +63,10 @@ class Task:
             if isinstance(arg_, list):
                 return [parse(item) for item in arg_]
 
+            # Recursively parse dict values (not keys!)
+            if isinstance(arg_, dict):
+                return dict((key, parse(val)) for key, val in arg_.items())
+
             if isinstance(arg_, str):
                 if parse_jinja and not isinstance(arg_, scriptengine.yaml.NoParseJinjaString):
                     # Make sure that a NoParseString is still a NoParseString after this!
@@ -79,7 +83,7 @@ class Task:
                 # Return plain strings, not NoParse*Strings
                 return str(arg_)
 
-            # If not a list or string, just return
+            # If not a list, dict or string, just return
             return arg_
 
         try:
