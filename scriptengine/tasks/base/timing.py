@@ -5,9 +5,6 @@ import time
 import functools
 
 
-TIMING_CONTEXT_KEY = "se_timing"
-
-
 def timed_runner(func):
     """Wrapper for run() functions of SE tasks. To be used as decorator as follows:
 
