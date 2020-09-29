@@ -149,11 +149,12 @@ YAML treats all terms as objects of no particular type. However, the Python YAML
 parser will convert terms into Python objects of the appropriate type, for
 example::
 
-    - number: 2
-    - another_number: 3.21
-    - string: This is a string
-    - another_string: "This is a quoted string"
-    - a_date: 2020-08-13
+    number: 2
+    another_number: 3.21
+    string: This is a string
+    another_string: "This is a quoted string"
+    a_date: 2020-08-13
+
 
 Jinja2 Templating
 -----------------

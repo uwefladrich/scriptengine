@@ -9,7 +9,8 @@ default Python installation, run::
 
     > python --version
 
-If the version is 3.6 or larger, everything is fine. If the default Python version is 2, check if Python3 is still avalable::
+If the version is 3.6 or larger, everything is fine. If the default Python
+version is 2, check if Python3 is still avalable::
 
     > python3 --version
 
@@ -20,27 +21,30 @@ explicitely in the installation below.
 Install in a Python Virtual Environment
 ---------------------------------------
 
-The ``virtualenv`` package is needed, usually available with the system's
-package manager. Create a Python virtual environment (if your default Python
-version is 3.6 or above)::
+ScriptEngine is preferably installed in a Python virtual environment. There are
+different ways to create virtual environments, for example with virtualenv_ or
+venv_. The ``venv`` module is part of the Python standard library and has been
+recommended for creating virtual environments since Python 3.5, Hence, it is
+used here to explain the ScriptEngine installation.
 
-    > virtualenv .se
+Load the ``venv`` module from the ``python`` executable (if your default Python
+is version 3, otherwise use ``python3``) to create a virtual environment for
+ScriptEngine::
 
-Note that ``.se`` is just an arbitrary name for the virtual environment and the
-corresponding directory. You can chose any name, but it is often convenient to
-chose a hidden directory.
+    > python -m venv .se
 
-If the default Python version is 2, but Python3 is available, use::
-
-    > virtualenv -p python3 .se
+The ``.se`` argument is just an arbitrary name for the virtual environment and
+the corresponding directory. You can chose any name, but it can be convenient
+to chose a hidden directory.
 
 Activate the created virtual environment::
 
     > source .se/bin/activate
 
-The ``virtualenv`` command will also install the ``pip`` package manager in the
-virtual environment. Use ``pip`` to install ScriptEngine, along with it's
-dependencies, from the Python Package Index (PyPI_)::
+The ``venv`` module will also install the ``pip`` package manager in the
+virtual environment. Once the virtual environment is activated, use ``pip`` to
+install ScriptEngine, along with it's dependencies, from the Python Package
+Index (PyPI_)::
 
     (.se)> pip install scriptengine
 
@@ -82,3 +86,5 @@ Test if ScriptEngine works in your ``conda`` environment::
 .. _PyPI: https://pypi.org
 .. _Anaconda: https://anaconda.com
 .. _conda: https://conda.io
+.. _venv: https://docs.python.org/3/library/venv.html
+.. _virtualenv: https://virtualenv.pypa.io/en/latest
