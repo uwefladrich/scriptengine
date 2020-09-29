@@ -101,6 +101,59 @@ data types for context information.
 YAML
 ----
 
+YAML syntax for lists::
+
+    - apple
+    - pear
+    - peach
+    - banana
+
+Compact list syntax::
+
+    [apple, pear, peach, banana]
+
+A YAML dictionary::
+
+    name: apple
+    color: green
+    price: 0.2
+
+Compact syntax::
+
+    {name: apple, color: green, price: 0.2}
+
+A list of dictionaries::
+
+    - name: apple
+      color: green
+      price: 0.2
+    - name: pear
+      color: pink
+      price: 0.4
+    - name: banana
+      color: yellow
+      price: 0.7
+
+A dictionary with lists::
+
+    name: apple
+    color: green
+    price: 0.2
+    vitamins:
+        - C
+        - B6
+        - B2
+        - K
+
+YAML treats all terms as objects of no particular type. However, the Python YAML
+parser will convert terms into Python objects of the appropriate type, for
+example::
+
+    - number: 2
+    - another_number: 3.21
+    - string: This is a string
+    - another_string: "This is a quoted string"
+    - a_date: 2020-08-13
 
 Jinja2 Templating
 -----------------
