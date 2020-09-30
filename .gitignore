@@ -1,9 +1,12 @@
 # Python virtual environment
-.python-3.6.
+.se-devel.
 .activate
 
 # Vim files
 .*.swp
+
+# VisualStudio Code
+.vscode
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -71,7 +74,7 @@ instance/
 .scrapy
 
 # Sphinx documentation
-docs/_build/
+docs/sphinx/_build/
 
 # PyBuilder
 target/
