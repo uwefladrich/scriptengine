@@ -10,25 +10,33 @@ import yaml
 import scriptengine.jinja
 import scriptengine.yaml
 
+from scriptengine.exceptions import ScriptEngineTaskArgumentInvalidError, \
+                                    ScriptEngineTaskArgumentMissingError
+
 
 _SENTINEL = object()
 
 
 class Task:
 
+    _invalid_arguments = ('run', 'id', )
+
     def __init__(self, logger_name, parameters=None, required_parameters=None):
 
         self._identifier = uuid.uuid4()
+        self._logger = logging.getLogger(logger_name)
 
-        if 'run' in (parameters or []):
-            raise RuntimeError('Reserved identifier "run" used as parameter while creating task')
+        for name in (parameters or ()):
+            if name in Task._invalid_arguments:
+                self.log_error(f'Invalid task argument: {name}')
+                raise ScriptEngineTaskArgumentInvalidError(
+                                            f'Invalid task argument: {name}')
         self.__dict__.update(parameters or {})
 
         for param in (required_parameters or []):
             if param not in self.__dict__:
                 raise RuntimeError(f"Missing required parameter '{param}' while creating "
                                    f"'{type(self).__name__}' task from {parameters!s}")
-        self._logger = logging.getLogger(logger_name)
         self.log_debug(f'Created task: {repr(self)}')
 
     @property
@@ -91,8 +99,9 @@ class Task:
 
         except AttributeError:
             if default is _SENTINEL:
-                raise AttributeError(f'Trying to access non-existing argument "{name}" '
-                                     f'in "{self.__class__.__name__}"')
+                self.log_error(f'Missing task argument: {name}')
+                raise ScriptEngineTaskArgumentMissingError(
+                                        f'Missing task argument: {name}')
             arg = default
 
         return parse(arg)
