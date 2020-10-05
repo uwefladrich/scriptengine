@@ -16,7 +16,7 @@ class Copy(Task):
     maintaining symlinks.
     """
     def __init__(self, parameters):
-        super().__init__(__name__+".copy", parameters, required_parameters=["src", "dst"])
+        super().__init__(parameters, required_parameters=["src", "dst"])
 
     @timed_runner
     def run(self, context):
@@ -40,7 +40,7 @@ class Move(Task):
     paths for the move operation.
     """
     def __init__(self, parameters):
-        super().__init__(__name__+".move", parameters, required_parameters=["src", "dst"])
+        super().__init__(parameters, required_parameters=["src", "dst"])
 
     @timed_runner
     def run(self, context):
@@ -56,7 +56,7 @@ class Link(Task):
     for the link.
     """
     def __init__(self, parameters):
-        super().__init__(__name__+".link", parameters, required_parameters=["src", "dst"])
+        super().__init__(parameters, required_parameters=["src", "dst"])
 
     @timed_runner
     def run(self, context):
@@ -74,7 +74,7 @@ class Remove(Task):
     is created, providing the path to the file or directory to be removed.
     """
     def __init__(self, parameters):
-        super().__init__(__name__+".remove", parameters, required_parameters=["path"])
+        super().__init__(parameters, required_parameters=["path"])
 
     @timed_runner
     def run(self, context):
@@ -95,7 +95,7 @@ class MakeDir(Task):
     parameter when it is created, providing the path of the new directory
     """
     def __init__(self, parameters):
-        super().__init__(__name__+".make_dir", parameters, required_parameters=["path"])
+        super().__init__(parameters, required_parameters=["path"])
 
     @timed_runner
     def run(self, context):

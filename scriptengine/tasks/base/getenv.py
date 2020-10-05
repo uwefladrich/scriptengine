@@ -19,7 +19,7 @@ class Getenv(Task):
                 the value of the environment variable (if it exists)
     """
     def __init__(self, parameters):
-        super().__init__(__name__, parameters, required_parameters=["name", "set"])
+        super().__init__(parameters, required_parameters=["name", "set"])
 
     def __str__(self):
         return f"Getenv: ENV{self.name} --> {self.set}"

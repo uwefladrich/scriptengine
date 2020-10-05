@@ -25,7 +25,7 @@ class TaskTimer(Task):
                             'debug': Logging to the debug logger.
     """
     def __init__(self, parameters):
-        super().__init__(__name__, parameters, required_parameters=['mode'])
+        super().__init__(parameters, required_parameters=['mode'])
 
     def run(self, context):
 

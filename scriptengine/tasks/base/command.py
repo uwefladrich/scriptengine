@@ -16,7 +16,7 @@ from scriptengine.exceptions import ScriptEngineStopException
 class Command(Task):
     """Command task, executes a command in a shell"""
     def __init__(self, parameters):
-        super().__init__(__name__, parameters, ["name"])
+        super().__init__(parameters, ["name"])
 
     @timed_runner
     def run(self, context):

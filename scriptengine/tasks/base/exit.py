@@ -8,7 +8,7 @@ class Exit(Task):
     """Exit task, stops by calling sys.exit
     """
     def __init__(self, parameters=None):
-        super().__init__(__name__, parameters)
+        super().__init__(parameters)
 
     def run(self, context):
         msg = self.getarg('msg', context, default='Requesting ScriptEngine to stop')

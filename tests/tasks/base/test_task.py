@@ -6,11 +6,11 @@ from scriptengine.exceptions import ScriptEngineTaskArgumentInvalidError, \
 
 
 def test_create_task():
-    assert type(Task('testing')) == Task
+    assert type(Task()) == Task
 
 
 def test_create_task_with_args():
-    assert type(Task('testing', parameters={'foo': 1, 'bar': 2})) == Task
+    assert type(Task(parameters={'foo': 1, 'bar': 2})) == Task
 
 
 def test_create_task_with_invalid_args():
@@ -22,9 +22,9 @@ def test_create_task_with_invalid_args():
 
     for task_class, parameters in tests:
         with pytest.raises(ScriptEngineTaskArgumentInvalidError):
-            task_class('testing', parameters)
+            task_class(parameters)
 
 
 def test_create_task_with_missing_args():
     with pytest.raises(ScriptEngineTaskArgumentMissingError):
-        Task('testing').getarg('foo')
+        Task().getarg('foo')

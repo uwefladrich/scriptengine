@@ -15,7 +15,7 @@ from scriptengine.tasks.base.timing import timed_runner
 class Include(Task):
 
     def __init__(self, parameters):
-        super().__init__(__name__, parameters, required_parameters=["src"])
+        super().__init__(parameters, required_parameters=["src"])
 
     def __str__(self):
         return f"Include: {self.src}"

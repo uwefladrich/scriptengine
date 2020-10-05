@@ -34,11 +34,16 @@ import argparse
 import logging
 
 import scriptengine.version
+import scriptengine.logging
 
 from scriptengine.helpers import terminal_colors
 from scriptengine.scripts import SimpleScriptEngine
 
 __version__ = scriptengine.version.__version__
+
+
+CLI_LOGGER = None
+
 
 def init_context(ctx):
     """Initialise context as dict with some defaults
@@ -61,19 +66,33 @@ def parse_config_file(cfg):
 def configure_logger(cfg, ctx):
     """Configures logging according to 'cfg':
        - sets color scheme (side effect!)
-       - creates logger with appropriate log leve
-       - saves a reference to the logger in the context
+       - creates cli, task, se instance loggers with appropriate levels
     """
     if cfg["nocolor"]:
         terminal_colors.set_theme("none")
+
     if cfg["quiet"]:
-        log = scriptengine.logging.logger("scriptengine", level=logging.WARN)
+        log_level = logging.WARNING
     elif cfg["debug"]:
-        log = scriptengine.logging.logger("scriptengine", level=logging.DEBUG)
+        log_level = logging.DEBUG
     else:
-        log = scriptengine.logging.logger("scriptengine", level=logging.INFO)
-    ctx['_se_logger'] = log
-    log.info('Logging configured')
+        log_level = logging.INFO
+
+    # Configure CLI logger
+    scriptengine.logging.configure_logger(
+            'se.cli', log_level, scriptengine.logging.cli_log_formatter)
+    global CLI_LOGGER
+    CLI_LOGGER = logging.getLogger('se.cli')
+
+    # Configure Task logger
+    scriptengine.logging.configure_logger(
+            'se.task', log_level, scriptengine.logging.task_log_formatter)
+
+    # Configure SE instance logger
+    scriptengine.logging.configure_logger(
+            'se.instance', log_level, scriptengine.logging.cli_log_formatter)
+
+    CLI_LOGGER.info('Logging configured and started')
 
 
 def process_cmd_line_args(cfg):
@@ -104,8 +123,9 @@ def load_tasks(cfg, ctx):
     """
     taskset = ["base"] + (cfg["taskset"] or [])
     scriptengine.tasks.base.load([f"scriptengine.tasks.{ts}" for ts in taskset])
-    ctx['_se_logger'].debug("Loaded tasks: "
-                            f"{', '.join(scriptengine.tasks.base.loaded_tasks().keys())}")
+    CLI_LOGGER.debug(
+        f"Loaded tasks: {', '.join(scriptengine.tasks.base.loaded_tasks().keys())}"
+    )
 
 
 def parse_files(cfg, ctx):
@@ -130,7 +150,7 @@ def configure_scriptengine(cfg, ctx):
        Use values from configuration dict.
     """
     ctx['_se_instance_type'] = cfg['se_instance_type']
-    ctx['_se_instance'] = cfg['se_instance_type'](log_level=ctx['_se_logger'].level)
+    ctx['_se_instance'] = cfg['se_instance_type']()
 
 
 def main():
@@ -144,8 +164,6 @@ def main():
        line tool:
          context['_se_cmd_cwd']   - the original working directory
          context['_se_cmd_args']  - the list of arguments
-
-         context['_se_logger']    - the main logger
          context['_se_instance']  - a reference to the ScriptEngine instance
                                     that executes the task
     """
@@ -166,9 +184,8 @@ def main():
     process_cmd_line_args(config)
 
     # set up logging
-    #   - log level
+    #   - logs for cli, tasks, se instances
     #   - color scheme
-    #   - sets context['_se_logger']
     configure_logger(config, context)
 
     # load tasks

@@ -53,15 +53,15 @@
 
 
 # -------------------------------------------------------------------------------------------------
-# Working with configurations
+# Working with the ScriptEngine context
 # -------------------------------------------------------------------------------------------------
 
-- config:  # A simple value stored under the name 'planet'
+- context:  # A simple value stored under the name 'planet'
     planet: world
 - echo:    # Access the value stored above
     msg: "Hello, {{planet}}!"
 
-- config:  # Config values can be nested and may contain lists
+- context:  # Context values can be nested and may contain lists
     countries:
         nordic: [Sweden, Norway, Danmark, Finnland, Iceland]
         other:  [foo, bar, baz]
@@ -70,7 +70,7 @@
         workers: [Peter, Paul]
     number: 5
 
-- getenv: # The *getenv* task sets a configuration item from an environment variable
+- getenv: # The *getenv* task sets a context item from an environment variable
     name: HOME
     set: home
 - echo: {msg: "My home is at {{home}}"}
@@ -87,7 +87,7 @@
     msg: "Hello, {{item}}!"
   loop: [earth, mars]
 
-- echo:  # *Loop* lists can be defined in config tasks
+- echo:  # *Loop* lists can be defined in context tasks
     msg: "A nice country: {{item}}"
   loop: "{{countries.nordic}}"
 
@@ -98,8 +98,8 @@
 
   # Jobs may contain a *when* clause (a conditional)
   # - *when* clauses are evaluated by Jinja2
-  # - they may therefore access config variables
-- config:
+  # - they may therefore access context items
+- context:
     i: 7
 - echo: {msg: "i is pretty big (it's {{i}})"}
   when: i>5

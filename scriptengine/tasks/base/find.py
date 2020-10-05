@@ -11,7 +11,7 @@ class Find(Task):
     """Find task, finds files or directories by name patterns
     """
     def __init__(self, parameters):
-        super().__init__(__name__, parameters, required_parameters=["path"])
+        super().__init__(parameters, required_parameters=["path"])
 
     @timed_runner
     def run(self, context):

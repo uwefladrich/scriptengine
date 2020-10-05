@@ -10,7 +10,7 @@ class Chdir(Task):
     """Chdir task, changes the current working directory
     """
     def __init__(self, parameters):
-        super().__init__(__name__, parameters, required_parameters=["path"])
+        super().__init__(parameters, required_parameters=["path"])
 
     @timed_runner
     def run(self, context):

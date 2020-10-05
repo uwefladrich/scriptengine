@@ -22,7 +22,7 @@ class Template(Task):
             - dst: Destination file name
     """
     def __init__(self, parameters):
-        super().__init__(__name__, parameters, required_parameters=["src", "dst"])
+        super().__init__(parameters, required_parameters=["src", "dst"])
 
     def __str__(self):
         return f"Template: {self.src} --> {self.dst}"

@@ -13,7 +13,7 @@ class Time(Task):
     """
 
     def __init__(self, parameters):
-        super().__init__(__name__, parameters, required_parameters=['set'])
+        super().__init__(parameters, required_parameters=['set'])
 
     @timed_runner
     def run(self, context):

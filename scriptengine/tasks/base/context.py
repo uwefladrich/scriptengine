@@ -17,7 +17,7 @@ class Context(Task):
        string types (see the YAML constructors defined in yaml.py).
     """
     def __init__(self, parameters):
-        super().__init__(__name__, parameters)
+        super().__init__(parameters)
 
     @timed_runner
     def run(self, context):

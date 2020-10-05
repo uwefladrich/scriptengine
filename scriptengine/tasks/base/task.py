@@ -21,10 +21,9 @@ class Task:
 
     _invalid_arguments = ('run', 'id', )
 
-    def __init__(self, logger_name, parameters=None, required_parameters=None):
+    def __init__(self, parameters=None, required_parameters=None):
 
         self._identifier = uuid.uuid4()
-        self._logger = logging.getLogger(logger_name)
 
         for name in (parameters or ()):
             if name in Task._invalid_arguments:
@@ -42,6 +41,10 @@ class Task:
     @property
     def id(self):
         return self._identifier
+
+    @property
+    def shortid(self):
+        return self._identifier.hex[:10]
 
     def __repr__(self):
         params = {key:val for key, val in self.__dict__.items()
@@ -106,17 +109,22 @@ class Task:
 
         return parse(arg)
 
-    def _log_message(self, message):
-        return f'{message} [{str(self.id).split("-")[-1]}]'
+    def _log(self, level, msg):
+        logger = getattr(self, '_logger',
+                         'se.task.'+self.__class__.__name__.lower())
+        logging.getLogger(logger).log(level, msg, extra={'id': self.shortid})
 
-    def log_debug(self, message):
-        self._logger.debug(f'{message} ({self.id})')
+    def log_debug(self, msg):
+        self._log(logging.DEBUG, msg)
 
-    def log_info(self, message):
-        self._logger.info(self._log_message(message))
+    def log_info(self, msg):
+        self._log(logging.INFO, msg)
 
-    def log_warning(self, message):
-        self._logger.warning(self._log_message(message))
+    def log_warning(self, msg):
+        self._log(logging.WARNING, msg)
 
-    def log_error(self, message):
-        self._logger.error(self._log_message(message))
+    def log_error(self, msg):
+        self._log(logging.ERROR, msg)
+
+    def log_critical(self, msg):
+        self._log(logging.CRITICAL, msg)

@@ -7,24 +7,21 @@ on the local machine, without consideration of job contexts.
 import sys
 import logging
 
-import scriptengine.logging
-
 from scriptengine.tasks.base import Task
 from scriptengine.jobs import Job
-from scriptengine.exceptions import ScriptEngineStopException
+from scriptengine.exceptions import ScriptEngineError, \
+                                    ScriptEngineStopException
+
 
 class SimpleScriptEngine:
     """Simplistic script engine for ScriptEngine.
     """
 
-    def __init__(self, log_level=logging.INFO):
-        self._logger = scriptengine.logging.logger(self.__class__.__name__, level=log_level)
-
     def _guarded_run(self, item, context):
         try:
             item.run(context)
         except ScriptEngineStopException as e:
-            self._logger.info(e)
+            self.log_info(e)
             sys.exit()
 
     def run(self, script, context):
@@ -41,7 +38,8 @@ class SimpleScriptEngine:
                     loop_var, loop_iter = script_item.loop(context)
                     old_loop_var = context.get(loop_var, None)
                     if old_loop_var:
-                        self._logger.warn(f"Loop variable collision for '{loop_var}'")
+                        self.log_warning("Loop variable collision "
+                                         f"for '{loop_var}'")
 
                     # Run loop (at least once)
                     for loop_item in loop_iter or [none_loop]:
@@ -57,12 +55,34 @@ class SimpleScriptEngine:
                                 # recurse for jobs
                                 self.run(todo, context)
                             else:
-                                raise RuntimeError(f"Can only run Tasks or Jobs, "
-                                                   f"found: {type(script_item)}")
+                                raise ScriptEngineError(
+                                            "Invalid item "
+                                            "(neither Task nor Job) "
+                                            f"of type {type(script_item)}")
                     # Remove or restore loop var
                     if old_loop_var:
                         context[loop_var] = old_loop_var
                     else:
                         context.pop(loop_var, None)
             else:
-                raise RuntimeError(f"Can only run Tasks or Jobs, found: {type(script_item)}")
+                raise ScriptEngineError("Invalid item (neither Task nor Job) "
+                                        f"of type {type(script_item)}")
+
+    def _log(self, level, msg):
+        logger = 'se.instance.'+self.__class__.__name__.lower()
+        logging.getLogger(logger).log(level, msg)
+
+    def log_debug(self, msg):
+        self._log(logging.DEBUG, msg)
+
+    def log_info(self, msg):
+        self._log(logging.INFO, msg)
+
+    def log_warning(self, msg):
+        self._log(logging.WARNING, msg)
+
+    def log_error(self, msg):
+        self._log(logging.ERROR, msg)
+
+    def log_critical(self, msg):
+        self._log(logging.CRITICAL, msg)
