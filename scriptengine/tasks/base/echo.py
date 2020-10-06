@@ -9,11 +9,15 @@ from scriptengine.helpers import terminal_colors as tc
 class Echo(Task):
     """Echo task, writes a (coloured) message to stdout
     """
-    def __init__(self, parameters):
-        super().__init__(parameters, required_parameters=['msg'])
+
+    _required_arguments = ('msg', )
+
+    def __init__(self, arguments):
+        Echo.check_arguments(arguments)
+        super().__init__(arguments)
 
     def __str__(self):
-        return f'Echo: {self.msg}'
+        return f'Echo: {getattr(self, "msg", "")}'
 
     @timed_runner
     def run(self, context):

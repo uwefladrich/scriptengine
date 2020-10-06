@@ -10,7 +10,7 @@ def test_create_task():
 
 
 def test_create_task_with_args():
-    assert type(Task(parameters={'foo': 1, 'bar': 2})) == Task
+    assert type(Task({'foo': 1, 'bar': 2})) == Task
 
 
 def test_create_task_with_invalid_args():
@@ -18,6 +18,7 @@ def test_create_task_with_invalid_args():
         (Task, {'run': 1}),
         (Task, {'id': 2}),
         (Task, {'run': 1, 'id': 2}),
+        (Task, {'_logger': 1}),
     )
 
     for task_class, parameters in tests:

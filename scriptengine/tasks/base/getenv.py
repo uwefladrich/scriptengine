@@ -18,8 +18,11 @@ class Getenv(Task):
             - set: Name of the ScriptEngine config parameter that is set to
                 the value of the environment variable (if it exists)
     """
-    def __init__(self, parameters):
-        super().__init__(parameters, required_parameters=["name", "set"])
+    _required_arguments = ('name', 'set', )
+
+    def __init__(self, arguments):
+        Getenv.check_arguments(arguments)
+        super().__init__(arguments)
 
     def __str__(self):
         return f"Getenv: ENV{self.name} --> {self.set}"

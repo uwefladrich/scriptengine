@@ -9,15 +9,13 @@ from scriptengine.tasks.base.timing import timed_runner
 
 
 class Context(Task):
-    """Context task, sets paramaters in the SE context
+    """Context task, sets parameters in the SE context
 
        The tasks run() method processes, recursively, a dictionary of key:value
        pairs and adds them to the context. The parameter values are rendered
        with Jinja2 and YAML unless they are of the special NoParse*String
        string types (see the YAML constructors defined in yaml.py).
     """
-    def __init__(self, parameters):
-        super().__init__(parameters)
 
     @timed_runner
     def run(self, context):
@@ -30,19 +28,26 @@ class Context(Task):
             for key, val in parameters.items():
 
                 if isinstance(val, str):
-                    if not isinstance(val, scriptengine.yaml.NoParseJinjaString):
-                        # Make sure that a NoParseString is still a NoParseString after this!
-                        val = type(val)(scriptengine.jinja.render(val, context))
+                    if not isinstance(val,
+                                      scriptengine.yaml.NoParseJinjaString):
+                        # Make sure that a NoParseString is still a
+                        # NoParseString after this!
+                        val = type(val)(scriptengine.jinja.render(val,
+                                                                  context))
 
-                    if not isinstance(val, scriptengine.yaml.NoParseYamlString):
+                    if not isinstance(val,
+                                      scriptengine.yaml.NoParseYamlString):
                         # Try to reload the item through YAML, in order to
                         # get the right type
                         # Otherwise, everything would be just a string
                         try:
                             val = yaml.full_load(val)
-                        # However, it may really be a string that is no valid YAML!
-                        except (yaml.parser.ParserError, yaml.constructor.ConstructorError):
-                            self.log_debug(f'Reparsing argument "{val}" with YAML failed')
+                        # However, it may really be a string that is
+                        # no valid YAML!
+                        except (yaml.parser.ParserError,
+                                yaml.constructor.ConstructorError):
+                            self.log_debug(f'Reparsing argument "{val}" '
+                                           'with YAML failed')
 
                     # For consistency, we always return plain strings
                     if isinstance(val, scriptengine.yaml.NoParseString):
@@ -58,7 +63,7 @@ class Context(Task):
 
             return evaluated_params
 
-        params = {key:val for key, val in self.__dict__.items()
+        params = {key: val for key, val in self.__dict__.items()
                   if not (isinstance(key, str) and key.startswith('_'))}
         self.log_info(f'{", ".join([f"{k}={params[k]}" for k in params])}')
 

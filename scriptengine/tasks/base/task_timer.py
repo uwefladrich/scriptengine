@@ -24,8 +24,11 @@ class TaskTimer(Task):
                             'info':  Logging to the info logger.
                             'debug': Logging to the debug logger.
     """
-    def __init__(self, parameters):
-        super().__init__(parameters, required_parameters=['mode'])
+    _required_arguments = ('mode', )
+
+    def __init__(self, arguments):
+        TaskTimer.check_arguments(arguments)
+        super().__init__(arguments)
 
     def run(self, context):
 

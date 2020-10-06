@@ -9,8 +9,11 @@ from scriptengine.tasks.base.timing import timed_runner
 class Chdir(Task):
     """Chdir task, changes the current working directory
     """
-    def __init__(self, parameters):
-        super().__init__(parameters, required_parameters=["path"])
+    _required_arguments = ('path', )
+
+    def __init__(self, arguments):
+        Chdir.check_arguments(arguments)
+        super().__init__(arguments)
 
     @timed_runner
     def run(self, context):

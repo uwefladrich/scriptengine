@@ -11,9 +11,11 @@ from scriptengine.tasks.base.timing import timed_runner
 class Time(Task):
     """Task class for measuring time in ScriptEngine
     """
+    _required_arguments = ('set', )
 
-    def __init__(self, parameters):
-        super().__init__(parameters, required_parameters=['set'])
+    def __init__(self, arguments):
+        Time.check_arguments(arguments)
+        super().__init__(arguments)
 
     @timed_runner
     def run(self, context):

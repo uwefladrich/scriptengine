@@ -21,8 +21,11 @@ class Template(Task):
             - src: Source file name (a Jinja2 template)
             - dst: Destination file name
     """
-    def __init__(self, parameters):
-        super().__init__(parameters, required_parameters=["src", "dst"])
+    _required_arguments = ('src', 'dst', )
+
+    def __init__(self, arguments):
+        Template.check_arguments(arguments)
+        super().__init__(arguments)
 
     def __str__(self):
         return f"Template: {self.src} --> {self.dst}"

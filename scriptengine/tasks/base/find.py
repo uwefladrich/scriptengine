@@ -7,11 +7,15 @@ from scriptengine.tasks.base import Task
 from scriptengine.tasks.base.timing import timed_runner
 from scriptengine.exceptions import ScriptEngineStopException
 
+
 class Find(Task):
     """Find task, finds files or directories by name patterns
     """
-    def __init__(self, parameters):
-        super().__init__(parameters, required_parameters=["path"])
+    _required_arguments = ('path', )
+
+    def __init__(self, arguments):
+        Find.check_arguments(arguments)
+        super().__init__(arguments)
 
     @timed_runner
     def run(self, context):

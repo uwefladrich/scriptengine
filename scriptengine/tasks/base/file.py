@@ -15,8 +15,11 @@ class Copy(Task):
     paths for the copy operation. Directories are copied recursively,
     maintaining symlinks.
     """
-    def __init__(self, parameters):
-        super().__init__(parameters, required_parameters=["src", "dst"])
+    _required_arguments = ('src', 'dst', )
+
+    def __init__(self, arguments):
+        Copy.check_arguments(arguments)
+        super().__init__(arguments)
 
     @timed_runner
     def run(self, context):
@@ -39,8 +42,11 @@ class Move(Task):
     'dst' parameters when it is created, providing the source and destination
     paths for the move operation.
     """
-    def __init__(self, parameters):
-        super().__init__(parameters, required_parameters=["src", "dst"])
+    _required_arguments = ('src', 'dst', )
+
+    def __init__(self, arguments):
+        Move.check_arguments(arguments)
+        super().__init__(arguments)
 
     @timed_runner
     def run(self, context):
@@ -55,8 +61,11 @@ class Link(Task):
     parameters when it is created, providing the source and destination paths
     for the link.
     """
-    def __init__(self, parameters):
-        super().__init__(parameters, required_parameters=["src", "dst"])
+    _required_arguments = ('src', 'dst', )
+
+    def __init__(self, arguments):
+        Link.check_arguments(arguments)
+        super().__init__(arguments)
 
     @timed_runner
     def run(self, context):
@@ -73,8 +82,11 @@ class Remove(Task):
     Directories are removed recursively. It needs the 'path' parameter when it
     is created, providing the path to the file or directory to be removed.
     """
-    def __init__(self, parameters):
-        super().__init__(parameters, required_parameters=["path"])
+    _required_arguments = ('path', )
+
+    def __init__(self, arguments):
+        Remove.check_arguments(arguments)
+        super().__init__(arguments)
 
     @timed_runner
     def run(self, context):
@@ -94,8 +106,11 @@ class MakeDir(Task):
     """ScriptEngine MakeDir task: Creates a directory. It needs the 'path'
     parameter when it is created, providing the path of the new directory
     """
-    def __init__(self, parameters):
-        super().__init__(parameters, required_parameters=["path"])
+    _required_arguments = ('path', )
+
+    def __init__(self, arguments):
+        MakeDir.check_arguments(arguments)
+        super().__init__(arguments)
 
     @timed_runner
     def run(self, context):

@@ -16,7 +16,6 @@ from .loader import load, loaded_tasks
 from .task import Task
 
 from .include import Include
-from .config import Config
 from .context import Context
 from .echo import Echo
 from .chdir import Chdir
@@ -32,7 +31,6 @@ from .task_timer import TaskTimer
 
 def task_loader_map():
     return {'include': Include,
-            'config': Config,
             'context': Context,
             'echo': Echo,
             'chdir': Chdir,
@@ -48,4 +46,4 @@ def task_loader_map():
             'template': Template,
             'time': Time,
             'task_timer': TaskTimer,
-           }
+            }

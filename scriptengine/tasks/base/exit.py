@@ -5,11 +5,8 @@ from scriptengine.exceptions import ScriptEngineStopException
 
 
 class Exit(Task):
-    """Exit task, stops by calling sys.exit
+    """Exit task, run method throws ScriptEngineStopException
     """
-    def __init__(self, parameters=None):
-        super().__init__(parameters)
-
     def run(self, context):
         msg = self.getarg('msg', context, default='Requesting ScriptEngine to stop')
         self.log_info(msg)
