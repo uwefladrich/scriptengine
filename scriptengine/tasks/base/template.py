@@ -28,25 +28,29 @@ class Template(Task):
         super().__init__(arguments)
 
     def __str__(self):
-        return f"Template: {self.src} --> {self.dst}"
+        return f'Template: {self.src} --> {self.dst}'
 
     @timed_runner
     def run(self, context):
         src = self.getarg('src', context)
         dst = self.getarg('dst', context)
-        self.log_info(f"Render {src} --> {dst}")
+        self.log_info(f'Render {src} --> {dst}')
 
         # The template search path:
         #   1. .
         #   2. ./templates
         #   3. <ocwd>
         #   4. <ocwd>/templates
-        # where <ocwd> is the original working directory at the time when the se script was called
+        # where <ocwd> is the original working directory at the time when the
+        # se script was called
         search_path = ['.', 'templates']
-        if "_se_cmd_cwd" in context:
-            search_path.extend([context["_se_cmd_cwd"],
-                                os.path.join(context["_se_cmd_cwd"], "templates")])
-        self.log_debug(f"Search path for template: {search_path}")
+        if '_se_cmd_cwd' in context:
+            search_path.extend([context['_se_cmd_cwd'],
+                                os.path.join(context['_se_cmd_cwd'],
+                                             'templates')
+                                ]
+                               )
+        self.log_debug(f'Search path for template: {search_path}')
 
         loader = jinja2.FileSystemLoader(search_path)
         environment = jinja2.Environment(loader=loader)
@@ -55,5 +59,5 @@ class Template(Task):
         template = environment.get_template(src)
         output_text = j2render(template.render(context), context)
 
-        with open(dst, "w") as output_file:
-            output_file.write(f"{output_text}\n")
+        with open(dst, 'w') as output_file:
+            output_file.write(f'{output_text}\n')

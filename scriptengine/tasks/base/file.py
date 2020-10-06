@@ -26,14 +26,16 @@ class Copy(Task):
         src = self.getarg('src', context)
         dst = self.getarg('dst', context)
         if os.path.isfile(src):
-            self.log_info(f"Copy file: {src} --> {dst}")
+            self.log_info(f'Copy file: {src} --> {dst}')
             if os.path.isfile(dst):
-                self.log_warning(f"Destination file '{dst}' exists already; overwriting")
+                self.log_warning(
+                    f'Destination file "{dst}" exists already; overwriting')
             shutil.copy(src, dst)
         else:
-            self.log_info(f"Copy directory: {src} --> {dst}")
+            self.log_info(f'Copy directory: {src} --> {dst}')
             if os.path.exists(dst):
-                raise RuntimeError(f"Target '{dst}' for directory copy exists already")
+                raise RuntimeError(
+                    f'Target "{dst}" for directory copy exists already')
             shutil.copytree(src, dst, symlinks=True)
 
 
@@ -52,7 +54,7 @@ class Move(Task):
     def run(self, context):
         src = self.getarg('src', context)
         dst = self.getarg('dst', context)
-        self.log_info(f"Move file: {src} --> {dst}")
+        self.log_info(f'Move file: {src} --> {dst}')
         shutil.move(src, dst)
 
 
@@ -71,10 +73,10 @@ class Link(Task):
     def run(self, context):
         src = self.getarg('src', context)
         dst = self.getarg('dst', context)
-        self.log_info(f"Create link: {src} --> {dst}")
+        self.log_info(f'Create link: {src} --> {dst}')
         os.symlink(src, dst)
         if not os.path.exists(dst):
-            self.log_warning(f"Created dangling symlink: '{dst}-->{src}'")
+            self.log_warning(f'Created dangling symlink: {dst}-->{src}')
 
 
 class Remove(Task):
@@ -93,13 +95,13 @@ class Remove(Task):
         path = self.getarg('path', context)
         if os.path.exists(path):
             if os.path.isdir(path):
-                self.log_info(f"Removing directory '{path}'")
+                self.log_info(f'Removing directory "{path}"')
                 shutil.rmtree(path)
             else:
-                self.log_info(f"Removing file '{path}'")
+                self.log_info(f'Removing file "{path}"')
                 os.remove(path)
         else:
-            self.log_info(f"Non-existing path '{path}'; nothing removed")
+            self.log_info(f'Non-existing path "{path}"; nothing removed')
 
 
 class MakeDir(Task):
@@ -116,9 +118,9 @@ class MakeDir(Task):
     def run(self, context):
         path = self.getarg('path', context)
         if os.path.isdir(path):
-            self.log_info(f"Directory '{path}' exists already.")
+            self.log_info(f'Directory "{path}" exists already.')
         elif os.path.isfile(path):
-            raise RuntimeError(f"'{path}' is a file, can't create directory")
+            raise RuntimeError(f'"{path}" is a file, can''t create directory')
         else:
-            self.log_info(f"Creating directory '{path}'")
+            self.log_info(f'Creating directory "{path}"')
             os.makedirs(path)

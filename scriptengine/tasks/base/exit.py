@@ -8,6 +8,8 @@ class Exit(Task):
     """Exit task, run method throws ScriptEngineStopException
     """
     def run(self, context):
-        msg = self.getarg('msg', context, default='Requesting ScriptEngine to stop')
+        msg = self.getarg('msg', context,
+                          default='Requesting ScriptEngine to stop')
         self.log_info(msg)
-        raise ScriptEngineStopException("Exit task requests stopping ScriptEngine")
+        raise ScriptEngineStopException(
+                        'Exit task requests stopping ScriptEngine')

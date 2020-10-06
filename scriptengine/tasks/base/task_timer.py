@@ -10,7 +10,8 @@ class TaskTimer(Task):
          mode (required):   one of
                             False:       Timing is switched off.
                             'basic':     Each task is timed, log messages are
-                                         written according to 'logging' argument.
+                                         written according to 'logging'
+                                         argument.
                             'classes':   As for 'basic', plus times are
                                          accumulated for task classes.
                             'instances': As for 'classes', plus times are
@@ -34,26 +35,28 @@ class TaskTimer(Task):
 
         mode = self.getarg('mode', context)
         self.log_info(f'Setting timer mode to "{mode}"')
-        if not mode in (False, 'basic', 'classes', 'instances'):
+        if mode not in (False, 'basic', 'classes', 'instances'):
             raise RuntimeError('Unknown mode in TaskTimer: must be one of '
-                               f'"off", "basic", "classes", "instances", not "{mode}"')
+                               '"off", "basic", "classes", "instances", '
+                               f'not "{mode}"')
 
         if mode:
             timer_key = self.getarg('set', context, default=None)
             try:
                 timer_context = context.setdefault(timer_key, {})
             except TypeError:
-                raise RuntimeError('Invalid context key in "set" argument of TaskTimer: '
-                                   f'{timer_key}"')
+                raise RuntimeError('Invalid context key in "set" argument of '
+                                   f'TaskTimer: {timer_key}"')
 
             self.log_debug(f'Using timer key "{timer_key}"')
 
             timer_context['mode'] = mode
 
             logging = self.getarg('logging', context, default=False)
-            if not logging in (False, 'info', 'debug'):
-                raise RuntimeError('Unknown logging mode in TaskTimer: must be one of '
-                                   f'"off", "info", "debug", not "{logging}"')
+            if logging not in (False, 'info', 'debug'):
+                raise RuntimeError(
+                        'Unknown logging mode in TaskTimer: must be one of '
+                        f'"off", "info", "debug", not "{logging}"')
             timer_context['logging'] = logging
 
             context['_se_task_timing'] = timer_key

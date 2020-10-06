@@ -40,17 +40,22 @@ class Command(Task):
 
         stdout = self.getarg('stdout', default=None)
         try:
-            result = subprocess.run(map(str, [command]+args),
-                                    stdout=subprocess.PIPE if stdout is not None else None,
-                                    cwd=cwd,
-                                    check=True)
+            result = subprocess.run(
+                        map(str, [command]+args),
+                        stdout=subprocess.PIPE if stdout is not None else None,
+                        cwd=cwd,
+                        check=True)
         except subprocess.CalledProcessError as error:
             if self.getarg('ignore_error', context, default=False):
-                self.log_warning(f"{self.name} returned error code {error.returncode}")
+                self.log_warning(
+                        f'{self.name} returned error code {error.returncode}')
             else:
-                self.log_error(f"{self.name} returned error code {error.returncode}")
-                raise ScriptEngineStopException("Stopping ScriptEngine after nonzero "
-                                                "exit code in command task")
+                self.log_error(
+                        f'{self.name} returned error code {error.returncode}')
+                raise ScriptEngineStopException(
+                        'Stopping ScriptEngine after nonzero exit code '
+                        'in command task')
         else:
             if stdout is not None:
-                context[stdout] = [binary.decode("UTF-8") for binary in result.stdout.splitlines()]
+                context[stdout] = [binary.decode("UTF-8")
+                                   for binary in result.stdout.splitlines()]

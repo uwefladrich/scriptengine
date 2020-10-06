@@ -22,8 +22,8 @@ def timed_runner(func):
         timing = context.get(context.get('_se_task_timing', object()))
         if timing:
 
-            mode = timing.get("mode")
-            if mode in ("basic", "classes", "instances"):
+            mode = timing.get('mode')
+            if mode in ('basic', 'classes', 'instances'):
 
                 tic = time.perf_counter()
                 value = func(self, context)
@@ -31,18 +31,20 @@ def timed_runner(func):
 
                 logging = timing.get('logging')
                 if logging == 'info':
-                    self.log_info(f"Elapsed time: {elapsed_time:0.4f} seconds")
+                    self.log_info(
+                        f'Elapsed time: {elapsed_time:0.4f} seconds')
                 if logging == 'debug':
-                    self.log_debug(f"Elapsed time: {elapsed_time:0.4f} seconds")
+                    self.log_debug(
+                        f'Elapsed time: {elapsed_time:0.4f} seconds')
 
-                if mode in ("classes", "instances"):
-                    timers = timing.setdefault("classes", {})
+                if mode in ('classes', 'instances'):
+                    timers = timing.setdefault('classes', {})
                     my_name = self.__class__.__name__
                     timers.setdefault(my_name, 0)
                     timers[my_name] += elapsed_time
 
-                    if mode == "instances":
-                        timers = timing.setdefault("instances", {})
+                    if mode == 'instances':
+                        timers = timing.setdefault('instances', {})
                         timers.setdefault(self.id, 0)
                         timers[self.id] += elapsed_time
 
