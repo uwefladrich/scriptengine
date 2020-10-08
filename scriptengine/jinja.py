@@ -4,6 +4,8 @@ import jinja2
 from datetime import datetime
 from distutils.util import strtobool
 
+from scriptengine.exceptions import ScriptEngineParseJinjaError
+
 
 def string_to_datetime(string, format="%Y-%m-%d %H:%M:%S"):
     """Jinja2 filter to convert a string to datetime.datetime"""
@@ -59,25 +61,21 @@ def render(arg, context, recursive=True, boolean=False):
             # Render string in parameter environment using context
             return _param_env.from_string(string_arg).render(context)
         except jinja2.TemplateSyntaxError:
-            raise RuntimeError(f"Syntax error while rendering template string '{string_arg}'"
-                               f"{' in boolean context' if boolean else ''}")
+            raise ScriptEngineParseJinjaError(
+                        'Syntax error while rendering template string '
+                        f'"{string_arg}"'
+                        f'{" in boolean context" if boolean else ""}')
 
     if isinstance(arg, str):
-        # Deprecated!
-        # The use of !noeval is deprecated. Use !noparse or the specific versions
-        # !noparse_jinja/!noparse_yaml instead!
-        if arg.startswith("_noeval_"):
-            return arg[8:]
-        else:
-            rendered_string = render_with_context(arg)
-            if recursive:
+        rendered_string = render_with_context(arg)
+        if recursive:
+            next_rendered_string = render_with_context(rendered_string)
+            while rendered_string != next_rendered_string:
+                rendered_string = next_rendered_string
                 next_rendered_string = render_with_context(rendered_string)
-                while rendered_string != next_rendered_string:
-                    rendered_string = next_rendered_string
-                    next_rendered_string = render_with_context(rendered_string)
-            if boolean:
-                expr = f"{{% if {rendered_string} %}}1{{% else %}}0{{% endif %}}"
-                return bool(strtobool(render_with_context(expr)))
-            return rendered_string
+        if boolean:
+            expr = f'{{% if {rendered_string} %}}1{{% else %}}0{{% endif %}}'
+            return bool(strtobool(render_with_context(expr)))
+        return rendered_string
     else:
         return arg

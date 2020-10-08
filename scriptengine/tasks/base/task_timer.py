@@ -1,6 +1,7 @@
 """TaskTimer for ScriptEngine."""
 
 from scriptengine.tasks.base import Task
+from scriptengine.exceptions import ScriptEngineTaskRunError
 
 
 class TaskTimer(Task):
@@ -36,27 +37,24 @@ class TaskTimer(Task):
         mode = self.getarg('mode', context)
         self.log_info(f'Setting timer mode to "{mode}"')
         if mode not in (False, 'basic', 'classes', 'instances'):
-            raise RuntimeError('Unknown mode in TaskTimer: must be one of '
-                               '"off", "basic", "classes", "instances", '
-                               f'not "{mode}"')
+            msg = ('Unknown mode in TaskTimer: must be one of "off", "basic", '
+                   f'"classes", "instances", not "{mode}"')
+            self.log_error(msg)
+            raise ScriptEngineTaskRunError(msg)
 
         if mode:
-            timer_key = self.getarg('set', context, default=None)
-            try:
-                timer_context = context.setdefault(timer_key, {})
-            except TypeError:
-                raise RuntimeError('Invalid context key in "set" argument of '
-                                   f'TaskTimer: {timer_key}"')
-
+            timer_key = self.getarg('set', context)
+            timer_context = context.setdefault(timer_key, {})
             self.log_debug(f'Using timer key "{timer_key}"')
 
             timer_context['mode'] = mode
 
             logging = self.getarg('logging', context, default=False)
             if logging not in (False, 'info', 'debug'):
-                raise RuntimeError(
-                        'Unknown logging mode in TaskTimer: must be one of '
-                        f'"off", "info", "debug", not "{logging}"')
+                msg = ('Unknown logging mode in TaskTimer: must be one of '
+                       f'"off", "info", "debug", not "{logging}"')
+                self.log_error(msg)
+                raise ScriptEngineTaskRunError(msg)
             timer_context['logging'] = logging
 
             context['_se_task_timing'] = timer_key

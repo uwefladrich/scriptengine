@@ -10,7 +10,7 @@ import subprocess
 
 from scriptengine.tasks.base import Task
 from scriptengine.tasks.base.timing import timed_runner
-from scriptengine.exceptions import ScriptEngineStopException
+from scriptengine.exceptions import ScriptEngineTaskRunError
 
 
 class Command(Task):
@@ -46,15 +46,13 @@ class Command(Task):
                         cwd=cwd,
                         check=True)
         except subprocess.CalledProcessError as error:
+            msg = (f'Command "{self.name}" returned '
+                   f'error code {error.returncode}')
             if self.getarg('ignore_error', context, default=False):
-                self.log_warning(
-                        f'{self.name} returned error code {error.returncode}')
+                self.log_warning(msg)
             else:
-                self.log_error(
-                        f'{self.name} returned error code {error.returncode}')
-                raise ScriptEngineStopException(
-                        'Stopping ScriptEngine after nonzero exit code '
-                        'in command task')
+                self.log_error(msg)
+                raise ScriptEngineTaskRunError(msg)
         else:
             if stdout is not None:
                 context[stdout] = [binary.decode("UTF-8")

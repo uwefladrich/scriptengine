@@ -10,6 +10,8 @@ import scriptengine.yaml
 
 from scriptengine.tasks.base import Task
 from scriptengine.tasks.base.timing import timed_runner
+from scriptengine.exceptions import ScriptEngineError, \
+                                    ScriptEngineTaskRunError
 
 
 class Include(Task):
@@ -41,7 +43,9 @@ class Include(Task):
             if self.getarg('ignore_not_found', False):
                 self.log_warning(f'Include file "{inc_file}" not found.')
                 return
-            raise RuntimeError(f'Include file "{inc_file}" not found')
+            msg = f'Include file "{inc_file}" not found'
+            self.log_error(msg)
+            raise ScriptEngineTaskRunError(msg)
 
         script = scriptengine.yaml.parse_file(inc_file_path)
 
@@ -52,7 +56,8 @@ class Include(Task):
         try:
             se_instance = context['_se_instance']
         except KeyError:
-            raise RuntimeError('ScriptEngine instance not found')
+            self.log_error('ScriptEngine instance not found')
+            raise ScriptEngineError('ScriptEngine instance not found')
         else:
             self.log_debug(f'Execute script from "{inc_file}"')
             se_instance.run(script, context)

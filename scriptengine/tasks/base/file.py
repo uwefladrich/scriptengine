@@ -7,6 +7,7 @@ import shutil
 
 from scriptengine.tasks.base import Task
 from scriptengine.tasks.base.timing import timed_runner
+from scriptengine.exceptions import ScriptEngineTaskRunError
 
 
 class Copy(Task):
@@ -34,8 +35,9 @@ class Copy(Task):
         else:
             self.log_info(f'Copy directory: {src} --> {dst}')
             if os.path.exists(dst):
-                raise RuntimeError(
-                    f'Target "{dst}" for directory copy exists already')
+                msg = f'Target "{dst}" for directory copy exists already'
+                self.log_error(msg)
+                raise ScriptEngineTaskRunError(msg)
             shutil.copytree(src, dst, symlinks=True)
 
 
@@ -120,7 +122,9 @@ class MakeDir(Task):
         if os.path.isdir(path):
             self.log_info(f'Directory "{path}" exists already.')
         elif os.path.isfile(path):
-            raise RuntimeError(f'"{path}" is a file, can''t create directory')
+            msg = f'Can\'t create directory because "{path}" is a file'
+            self.log_error(msg)
+            raise ScriptEngineTaskRunError(msg)
         else:
             self.log_info(f'Creating directory "{path}"')
             os.makedirs(path)

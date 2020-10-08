@@ -34,7 +34,7 @@ class SimpleScriptEngine:
                 if script_item.when(context):
 
                     # Loop setup with loop var collision detection
-                    none_loop = object() # just a unique object
+                    none_loop = object()  # just a unique object
                     loop_var, loop_iter = script_item.loop(context)
                     old_loop_var = context.get(loop_var, None)
                     if old_loop_var:

@@ -6,7 +6,7 @@ import dateutil.rrule
 
 from scriptengine.tasks.base import loaded_tasks
 from scriptengine.jobs import Job
-from scriptengine.exceptions import ScriptEngineStopException
+from scriptengine.exceptions import ScriptEngineParseScriptError
 
 
 class NoParseYamlString(str):
@@ -32,9 +32,14 @@ def string_class_constructor(derived_string_class):
         value = loader.construct_scalar(node)
         return derived_string_class(str(value))
     return constructor
-yaml.add_constructor(u'!noparse', string_class_constructor(NoParseString))
-yaml.add_constructor(u'!noparse_yaml', string_class_constructor(NoParseYamlString))
-yaml.add_constructor(u'!noparse_jinja', string_class_constructor(NoParseJinjaString))
+
+
+yaml.add_constructor(u'!noparse',
+                     string_class_constructor(NoParseString))
+yaml.add_constructor(u'!noparse_yaml',
+                     string_class_constructor(NoParseYamlString))
+yaml.add_constructor(u'!noparse_jinja',
+                     string_class_constructor(NoParseJinjaString))
 
 
 def rrule_constructor(loader, node):
@@ -43,16 +48,9 @@ def rrule_constructor(loader, node):
     value = loader.construct_scalar(node)
     rrule = dateutil.rrule.rrulestr(value)
     return rrule
+
+
 yaml.add_constructor(u'!rrule', rrule_constructor)
-
-
-# Deprecated!
-# The use of !noeval is deprecated. Use !noparse or the specific versions
-# !noparse_jinja/!noparse_yaml instead!
-def noeval_string_constructor(loader, node):
-    value = loader.construct_scalar(node)
-    return '_noeval_'+str(value)
-yaml.add_constructor(u'!noeval', noeval_string_constructor)
 
 
 def parse(data):
@@ -63,7 +61,8 @@ def parse(data):
             ScriptEngine grammar in the documentation.
 
     Returns:
-        A scriptengine.task.Task, a scriptengine.jobs.Job, or a list of tasks/jobs.
+        A scriptengine.task.Task, a scriptengine.jobs.Job, or a list of
+        tasks/jobs.
     """
     tasks = loaded_tasks()
     jobs = {"do"}
@@ -79,21 +78,21 @@ def parse(data):
 
     # Parse and return a single task or job
     try:
-        keys = (jobs|tasks.keys()) & data.keys()
+        keys = (jobs | tasks.keys()) & data.keys()
     except AttributeError:
-        raise ScriptEngineStopException(f"Expected dictionary, got "
-                                        f"{type(data).__name__}: {data}")
+        raise ScriptEngineParseScriptError(
+                f'Expected dictionary, got "{type(data).__name__}: {data}"')
     if not keys:
-        raise ScriptEngineStopException(f"Unknown task name in: "
-                                        f"{list(data.keys())}")
+        raise ScriptEngineParseScriptError(
+                f'Unknown task name in "{list(data.keys())}"')
     if len(keys) > 1:
-        raise ScriptEngineStopException(f"Ambiguous keys in "
-                                        f"{list(data.keys())}")
+        raise ScriptEngineParseScriptError(
+                f'Ambiguous keys in "{list(data.keys())}"')
 
     key = keys.pop()
 
     if key in tasks:
-        if len(data) == 1: # Simple task (no when clause or loop)
+        if len(data) == 1:  # Simple task (no when clause or loop)
             return tasks[key](data[key])
         # Job made from single task with when/loop
         job = Job(when=data.get("when"), loop=data.get("loop"))
@@ -113,7 +112,8 @@ def parse_file(filename):
         filename (str): Path to YAML file
 
     Returns:
-        A scriptengine.task.Task, a scriptengine.jobs.Job, or a list of tasks/jobs.
+        A scriptengine.task.Task, a scriptengine.jobs.Job, or a list of
+        tasks/jobs.
     """
     with open(filename) as file:
         data = yaml.load(file, Loader=yaml.FullLoader)

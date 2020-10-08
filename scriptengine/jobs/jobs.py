@@ -10,6 +10,8 @@ import uuid
 import ast
 
 from scriptengine.jinja import render as j2render
+from scriptengine.exceptions import ScriptEngineParseError
+
 
 class Job:
 
@@ -19,20 +21,21 @@ class Job:
         self._when = when
 
         if loop is None:
-            self._loop_var  = None
+            self._loop_var = None
             self._loop_iter = None
         elif isinstance(loop, dict):
-            self._loop_var  = loop.get("with", "item")
+            self._loop_var = loop.get("with", "item")
             self._loop_iter = loop.get("in", None)
-        else: # loop is assumed list
-            self._loop_var  = "item"
+        else:  # loop is assumed list
+            self._loop_var = "item"
             self._loop_iter = loop
 
         self._logger = logging.getLogger(__name__)
-        self.log_debug(f"Create Job"
-                       f"{' when '+self._when if self._when else ''}"
-                       f"{' with '+str(self._loop_var) if self._loop_var else ''}"
-                       f"{' in '+str(self._loop_iter) if self._loop_iter else ''}")
+        self.log_debug(
+                f"Create Job"
+                f"{' when '+self._when if self._when else ''}"
+                f"{' with '+str(self._loop_var) if self._loop_var else ''}"
+                f"{' in '+str(self._loop_iter) if self._loop_iter else ''}")
 
     @property
     def id(self):
@@ -43,7 +46,8 @@ class Job:
         return iter(self._todo)
 
     def when(self, context):
-        return self._when is None or j2render(self._when, context, boolean=True)
+        return (self._when is None
+                or j2render(self._when, context, boolean=True))
 
     def loop(self, context):
         loop_iter = j2render(self._loop_iter, context)
@@ -51,13 +55,15 @@ class Job:
             try:
                 loop_iter = ast.literal_eval(loop_iter)
             except SyntaxError:
-                raise RuntimeError(f"Syntax error while evaluating loop expression '{loop_iter}'"
-                                   f" in job with id {self.id}")
+                raise ScriptEngineParseError(
+                        'Syntax error while evaluating loop expression '
+                        f'"{loop_iter}" in job with id {self.id}')
         return self._loop_var, loop_iter
 
     def append(self, todo):
         todo_as_list = todo if isinstance(todo, list) else [todo]
-        self.log_debug(f"Append: {','.join([str(t.id) for t in todo_as_list])} to")
+        self.log_debug(
+                f"Append: {','.join([str(t.id) for t in todo_as_list])} to")
         self._todo.extend(todo_as_list)
 
     def log_debug(self, message):

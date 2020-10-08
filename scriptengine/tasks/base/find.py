@@ -5,7 +5,7 @@ import fnmatch
 
 from scriptengine.tasks.base import Task
 from scriptengine.tasks.base.timing import timed_runner
-from scriptengine.exceptions import ScriptEngineStopException
+from scriptengine.exceptions import ScriptEngineTaskArgumentInvalidError
 
 
 class Find(Task):
@@ -26,19 +26,18 @@ class Find(Task):
 
         find_type = self.getarg('type', context, default='file')
         if find_type not in ('file', 'dir'):
-            self.log_error(f'Invalid "type" argument: {find_type} '
-                           '(must be either "file" or "dir")')
-            raise ScriptEngineStopException(
-                        'Invalid type argument in find task')
+            msg = (f'Invalid "type" argument '
+                   f'(must be either "file" or "dir"): {find_type}')
+            self.log_error(msg)
+            raise ScriptEngineTaskArgumentInvalidError(msg)
 
         max_depth = self.getarg('depth', context, default=-1)
         try:
             max_depth = max(-1, int(max_depth))
         except (ValueError, TypeError):
-            self.log_error(f'Invalid "depth" argument: {max_depth} '
-                           '(must be an integer)')
-            raise ScriptEngineStopException(
-                        'Invalid "depth" argument in find task')
+            msg = f'Invalid "depth" argument (not an integer): {max_depth}'
+            self.log_error(msg)
+            raise ScriptEngineTaskArgumentInvalidError(msg)
 
         self.log_info(f'Find {find_type} with pattern "{pattern}" '
                       f'in {path} (with max depth={max_depth})')
