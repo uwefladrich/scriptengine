@@ -6,7 +6,8 @@ import dateutil.rrule
 
 from scriptengine.tasks.base import loaded_tasks
 from scriptengine.jobs import Job
-from scriptengine.exceptions import ScriptEngineParseScriptError
+from scriptengine.exceptions import ScriptEngineParseScriptError, \
+                                    ScriptEngineParseYAMLError
 
 
 class NoParseYamlString(str):
@@ -81,13 +82,14 @@ def parse(data):
         keys = (jobs | tasks.keys()) & data.keys()
     except AttributeError:
         raise ScriptEngineParseScriptError(
-                f'Expected dictionary, got "{type(data).__name__}: {data}"')
+                'Expected YAML dictionary, got '
+                f'"{type(data).__name__}: {data}"')
     if not keys:
         raise ScriptEngineParseScriptError(
-                f'Unknown task name in "{list(data.keys())}"')
+                f'None of {list(data.keys())} is a known SE task name')
     if len(keys) > 1:
         raise ScriptEngineParseScriptError(
-                f'Ambiguous keys in "{list(data.keys())}"')
+                f'Ambiguous SE task name in {list(data.keys())}')
 
     key = keys.pop()
 
@@ -116,5 +118,8 @@ def parse_file(filename):
         tasks/jobs.
     """
     with open(filename) as file:
-        data = yaml.load(file, Loader=yaml.FullLoader)
+        try:
+            data = yaml.load(file, Loader=yaml.FullLoader)
+        except yaml.YAMLError as e:
+            raise ScriptEngineParseYAMLError(e)
     return parse(data)

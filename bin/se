@@ -39,6 +39,8 @@ import scriptengine.logging
 from scriptengine.helpers import terminal_colors
 from scriptengine.scripts import SimpleScriptEngine
 
+from scriptengine.exceptions import ScriptEngineParseError
+
 __version__ = scriptengine.version.__version__
 
 
@@ -135,12 +137,17 @@ def load_tasks(cfg, ctx):
 
 
 def parse_files(cfg, ctx):
-    """Parses all files named in ctx['files'] and returns a script (list of tasks/jobs)
-       Add file dirnames to ctx['_se_filepath']
+    """Parses all files named in ctx['files'] and returns a script (list of
+       tasks/jobs). Add file dirnames to ctx['_se_filepath']
     """
     script = []
     for fname in cfg['files']:
-        next_script = scriptengine.yaml.parse_file(fname) # task, job, list
+        try:
+            # next_script is a Task or Job or list of either
+            next_script = scriptengine.yaml.parse_file(fname)
+        except ScriptEngineParseError as e:
+            CLI_LOGGER.error(f'{e} in {fname}')
+            raise
         if isinstance(next_script, list):
             script.extend(next_script)
         else:
