@@ -30,16 +30,19 @@ class Job:
             self._loop_var = "item"
             self._loop_iter = loop
 
-        self._logger = logging.getLogger(__name__)
         self.log_debug(
-                f"Create Job"
-                f"{' when '+self._when if self._when else ''}"
-                f"{' with '+str(self._loop_var) if self._loop_var else ''}"
-                f"{' in '+str(self._loop_iter) if self._loop_iter else ''}")
+                f'Create Job'
+                f'{" when "+self._when if self._when else ""}'
+                f'{" with "+str(self._loop_var) if self._loop_var else ""}'
+                f'{" in "+str(self._loop_iter) if self._loop_iter else ""}')
 
     @property
     def id(self):
         return self._identifier
+
+    @property
+    def shortid(self):
+        return self._identifier.hex[:10]
 
     @property
     def todo(self):
@@ -66,14 +69,20 @@ class Job:
                 f"Append: {','.join([str(t.id) for t in todo_as_list])} to")
         self._todo.extend(todo_as_list)
 
-    def log_debug(self, message):
-        self._logger.debug(f"{message} ({self.id})")
+    def _log(self, level, msg):
+        logging.getLogger('se.job').log(level, msg, extra={'id': self.shortid})
 
-    def log_info(self, message):
-        self._logger.info(f"{message} ({self.id})")
+    def log_debug(self, msg):
+        self._log(logging.DEBUG, msg)
 
-    def log_warning(self, message):
-        self._logger.warning(f"{message} ({self.id})")
+    def log_info(self, msg):
+        self._log(logging.INFO, msg)
 
-    def log_error(self, message):
-        self._logger.error(f"{message} ({self.id})")
+    def log_warning(self, msg):
+        self._log(logging.WARNING, msg)
+
+    def log_error(self, msg):
+        self._log(logging.ERROR, msg)
+
+    def log_critical(self, msg):
+        self._log(logging.CRITICAL, msg)

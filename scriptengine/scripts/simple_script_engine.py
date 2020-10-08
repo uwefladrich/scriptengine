@@ -64,6 +64,10 @@ class SimpleScriptEngine:
                         context[loop_var] = old_loop_var
                     else:
                         context.pop(loop_var, None)
+                else:
+                    self.log_debug(
+                        f'Not executing <{script_item.shortid}> because '
+                        'when clause evaluates false')
             else:
                 raise ScriptEngineError("Invalid item (neither Task nor Job) "
                                         f"of type {type(script_item)}")

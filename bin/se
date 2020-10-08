@@ -88,7 +88,13 @@ def configure_logger(cfg, ctx):
     scriptengine.logging.configure_logger(
             'se.task', log_level, scriptengine.logging.task_log_formatter)
 
+    # Configure Job logger
+    # Uses same formatting as Task logger!
+    scriptengine.logging.configure_logger(
+            'se.job', log_level, scriptengine.logging.task_log_formatter)
+
     # Configure SE instance logger
+    # Uses same formatting as CLI logger!
     scriptengine.logging.configure_logger(
             'se.instance', log_level, scriptengine.logging.cli_log_formatter)
 
@@ -184,7 +190,7 @@ def main():
     process_cmd_line_args(config)
 
     # set up logging
-    #   - logs for cli, tasks, se instances
+    #   - logs for cli, tasks, jobs, se instances
     #   - color scheme
     configure_logger(config, context)
 
