@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 """ScriptEngine command line interface (cli).
 
 The se command provides a command line interface to ScriptEngine, allowing for
@@ -215,6 +213,3 @@ def main():
     context['_se_instance'].run(script, context)
 
     return 0
-
-if __name__ == '__main__':
-    sys.exit(main())

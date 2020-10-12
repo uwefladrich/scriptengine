@@ -42,5 +42,7 @@ setuptools.setup(
         "PyYAML",
         "jinja2",
     ],
-    scripts=["bin/se"],
+    entry_points = {
+        'console_scripts': ['se=scriptengine.cli.se:main'],
+    }
 )
