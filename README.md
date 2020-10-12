@@ -3,9 +3,10 @@
 ScriptEngine is a lightweight and extensible framework for executing scripts
 written in YAML. The main purpose of ScriptEngine is to replace shell scripts
 in situations where highly configurable and modular scripts are needed.
-ScriptEngine relies on YAML and makes extensive use of Jinja2 templating to
-provide a comprehensive scripting language. This allows users to put focus on
-the description of tasks, rather than their implementation. The description of
+ScriptEngine relies on [YAML](https://yaml.org/) and makes extensive use of
+[Jinja2](https://palletsprojects.com/p/jinja/) templating to provide a
+comprehensive scripting language. This allows users to put focus on the
+description of tasks, rather than their implementation. The description of
 complex tasks should be nearly as short and clear as for simpler ones.
 
 The ScriptEngine concept separates scripts (*what* to do) from the
@@ -25,5 +26,9 @@ that it is rather easy to build new tasks sets for particular needs. And
 because everything is based on Python3, there is a wide range of modules
 available to get the actual work done easily and efficiently.
 
-ScriptEngine is open source software, hosted at GitHub. Documentation,
-including installation instructions are provided at ReadTheDocs.
+ScriptEngine is [open source](LICENSE) software, hosted at
+[GitHub](https://github.com/uwefladrich/scriptengine). ScriptEngine packages
+are provided at [PyPI](https://pypi.org/project/scriptengine/), so installation
+is as easy as `pip install scriptengine`. Documentation, including more
+detailed installation instructions, is published at
+[ReadtheDocs](https://scriptengine.readthedocs.io/en/latest/).
