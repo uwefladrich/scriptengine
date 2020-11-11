@@ -24,6 +24,7 @@ setuptools.setup(
     url="https://github.com/uwefladrich/scriptengine",
     packages=[
         "scriptengine",
+        "scriptengine.cli",
         "scriptengine.helpers",
         "scriptengine.jobs",
         "scriptengine.scripts",
