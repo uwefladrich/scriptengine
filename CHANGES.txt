@@ -1,3 +1,22 @@
+ScriptEngine 0.7.0
+==================
+
+Features
+--------
+- Documentation  and README (#21) updates
+- API change: Remove handling of _noeval_
+- Improve CLI logging for script parsing problems
+
+Internal changes
+----------------
+- Fix #9: Log jobs not executed
+- Fix #15: Add parsing of nested dict arguments. Closes #15
+- Fix #16: Improve exceptions and add testing (#16)
+- Fix #17: New argument checking for tasks
+- Fix #18: Revised logging for ScriptEngine
+- Fix #19: Use setuptools entry_points for cli
+
+
 ScriptEngine 0.6.0 (350044f47b1d, Wed Jul 8 10:24:48 2020 +0200)
 ==================
 
