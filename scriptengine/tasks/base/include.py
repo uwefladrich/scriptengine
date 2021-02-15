@@ -40,7 +40,7 @@ class Include(Task):
                 self.log_debug(f'Found include file at "{inc_file_path}"')
                 break
         else:
-            if self.getarg('ignore_not_found', False):
+            if self.getarg('ignore_not_found', default=False):
                 self.log_warning(f'Include file "{inc_file}" not found.')
                 return
             msg = f'Include file "{inc_file}" not found'
