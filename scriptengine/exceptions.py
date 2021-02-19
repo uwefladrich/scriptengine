@@ -32,6 +32,10 @@ class ScriptEngineTaskError(ScriptEngineError):
     """All ScriptEngine Tasks should throw this"""
 
 
+class ScriptEngineTaskLoaderError(ScriptEngineTaskError):
+    """There is a problem while loading an SE task or taskset"""
+
+
 class ScriptEngineTaskArgumentError(ScriptEngineTaskError):
     """There is a problem with an SE Task argument"""
 

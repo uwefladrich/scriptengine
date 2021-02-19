@@ -42,6 +42,7 @@ setuptools.setup(
         "deepmerge",
         "PyYAML",
         "jinja2",
+        "attrdict",
     ],
     entry_points = {
         'console_scripts': ['se=scriptengine.cli.se:main'],

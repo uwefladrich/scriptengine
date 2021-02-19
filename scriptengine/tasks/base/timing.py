@@ -19,38 +19,40 @@ def timed_runner(func):
     @functools.wraps(func)
     def wrap_timed(self, context):
 
-        timing = context.get(context.get('_se_task_timing', object()))
-        if timing:
+        try:
+            mode = context.se.tasks.timing.mode
+        except AttributeError:
+            mode = False
 
-            mode = timing.get('mode')
-            if mode in ('basic', 'classes', 'instances'):
+        if mode in ('basic', 'classes', 'instances'):
 
-                tic = time.perf_counter()
-                value = func(self, context)
-                elapsed_time = time.perf_counter() - tic
+            # timed function call
+            start_tic = time.perf_counter()
+            func_return_value = func(self, context)
+            elapsed_time = time.perf_counter() - start_tic
 
-                logging = timing.get('logging')
-                if logging == 'info':
-                    self.log_info(
-                        f'Elapsed time: {elapsed_time:0.4f} seconds')
-                if logging == 'debug':
-                    self.log_debug(
-                        f'Elapsed time: {elapsed_time:0.4f} seconds')
+            # logging
+            if context.se.tasks.timing.logging == 'info':
+                self.log_info(f'Elapsed time: {elapsed_time:0.4f} seconds')
+            elif context.se.tasks.timing.logging == 'debug':
+                self.log_debug(f'Elapsed time: {elapsed_time:0.4f} seconds')
 
-                if mode in ('classes', 'instances'):
-                    timers = timing.setdefault('classes', {})
-                    my_name = self.__class__.__name__
-                    timers.setdefault(my_name, 0)
-                    timers[my_name] += elapsed_time
+            # update timers
+            if mode in ('classes', 'instances'):
+                timers = context['se']['tasks']['timing']['timers']
 
-                    if mode == 'instances':
-                        timers = timing.setdefault('instances', {})
-                        timers.setdefault(self.id, 0)
-                        timers[self.id] += elapsed_time
+                class_t = timers.setdefault('classes', {})
+                class_t.setdefault(self.__class__.__name__, 0)
+                class_t[self.__class__.__name__] += elapsed_time
 
-                return value
+                if mode == 'instances':
+                    instance_t = timers.setdefault('instances', {})
+                    instance_t.setdefault(self.id, 0)
+                    instance_t[self.id] += elapsed_time
 
-        # Default return if no timing
+            return func_return_value
+
+        # if no timing, just return the function
         return func(self, context)
 
     return wrap_timed

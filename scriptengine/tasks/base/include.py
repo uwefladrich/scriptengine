@@ -10,8 +10,7 @@ import scriptengine.yaml
 
 from scriptengine.tasks.base import Task
 from scriptengine.tasks.base.timing import timed_runner
-from scriptengine.exceptions import ScriptEngineError, \
-                                    ScriptEngineTaskRunError
+from scriptengine.exceptions import ScriptEngineTaskRunError
 
 
 class Include(Task):
@@ -30,9 +29,9 @@ class Include(Task):
         inc_file = self.getarg('src', context)
         self.log_info(f'Include script from {inc_file}')
 
-        search_path = (['.', context.get('_se_cmd_cwd', '')]
-                       + context.get('_se_filepath', []))
+        search_path = ('.', context.se.cli.cwd) + context.se.cli.script_path
         self.log_debug(f'Searching in path: {search_path}')
+
         for directory in search_path:
             inc_file_path = os.path.join(directory, inc_file)
             self.log_debug(f'Searching for include file at "{inc_file_path}"')
@@ -50,15 +49,10 @@ class Include(Task):
         script = scriptengine.yaml.parse_file(inc_file_path)
 
         inc_file_dir = os.path.dirname(os.path.abspath(inc_file_path))
-        if inc_file_dir not in context.get('_se_filepath', []):
-            context.setdefault('_se_filepath', []).append(inc_file_dir)
+        if inc_file_dir not in context.se.cli.script_path:
+            context.se.cli.script_path += inc_file_dir,
+        self.log_debug(f'New script_path: {context.se.cli.script_path}')
 
-        try:
-            se_instance = context['_se_instance']
-        except KeyError:
-            self.log_error('ScriptEngine instance not found')
-            raise ScriptEngineError('ScriptEngine instance not found')
-        else:
-            self.log_debug(f'Execute script from "{inc_file}"')
-            se_instance.run(script, context)
-            self.log_debug(f'Finished executing script from "{inc_file}"')
+        self.log_debug(f'Execute script from "{inc_file}"')
+        context.se.instance.run(script, context)
+        self.log_debug(f'Finished executing script from "{inc_file}"')

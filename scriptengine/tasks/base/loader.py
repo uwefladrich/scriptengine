@@ -1,6 +1,6 @@
 from importlib import import_module
 
-from scriptengine.exceptions import ScriptEngineError
+from scriptengine.exceptions import ScriptEngineTaskLoaderError
 
 
 _loaded_tasks = {}
@@ -15,12 +15,12 @@ def load(modules):
         try:
             module = import_module(mod_name)
         except ModuleNotFoundError:
-            raise ScriptEngineError(
+            raise ScriptEngineTaskLoaderError(
                         f'Taskset module "{mod_name}" not found')
         for task_name, task_class in module.task_loader_map().items():
             if task_name not in _loaded_tasks:
                 _loaded_tasks[task_name] = task_class
             else:
-                raise ScriptEngineError(
+                raise ScriptEngineTaskLoaderError(
                         f'Duplicate task entry "{task_name}"'
                         f'from module "{mod_name}"')
