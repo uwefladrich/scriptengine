@@ -38,7 +38,6 @@ import scriptengine.logging
 from scriptengine.helpers import terminal_colors
 from scriptengine.scripts import SimpleScriptEngine
 
-from scriptengine.exceptions import ScriptEngineTaskLoaderError
 from scriptengine.exceptions import ScriptEngineParseError
 
 __version__ = scriptengine.version.__version__
@@ -54,9 +53,6 @@ def parse_cmd_line_args():
                             help="show ScriptEngine version and exit",
                             action="version",
                             version=__version__)
-    arg_parser.add_argument("-t", "--taskset",
-                            help="load taskset",
-                            action="append")
     arg_parser.add_argument("-q", "--quiet",
                             help="be quiet, no extra output",
                             action="store_true")
@@ -112,23 +108,6 @@ def configure_loggers(nocolor=False, quiet=False, debug=False):
     return cli_logger
 
 
-def load_tasks(logger, taskset=None):
-    """Loads tasks from scriptengine.tasks.base, plus whatever was given by
-       command line argument '--taskset'
-    """
-
-    scriptengine.tasks.base.load(('scriptengine.tasks.base',))
-    for ts in taskset or []:
-        try:
-            scriptengine.tasks.base.load((f'scriptengine.tasks.{ts}',))
-        except ScriptEngineTaskLoaderError:
-            logger.error(f'Error loading taskset {ts}')
-            raise
-    logger.debug(
-        "Loaded tasks: "
-        f"{', '.join(scriptengine.tasks.base.loaded_tasks().keys())}")
-
-
 def parse_files(logger, files):
     """Parses files and returns a script (list of tasks/jobs).
     """
@@ -173,9 +152,6 @@ def main():
     logger = configure_loggers(nocolor=parsed_args.nocolor,
                                quiet=parsed_args.quiet,
                                debug=parsed_args.debug)
-
-    # load tasks
-    load_tasks(logger, taskset=parsed_args.taskset)
 
     # create script by parsing the files given on the command line
     script = parse_files(logger, parsed_args.files)

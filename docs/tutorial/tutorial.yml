@@ -12,56 +12,58 @@
 # -------------------------------------------------------------------------------------------------
 # Switch on ScriptEngine timing
 # -------------------------------------------------------------------------------------------------
-- context:
-    se_timing:
-        mode: instances
+- base.task_timer:
+    mode: instances
 
 
 # -------------------------------------------------------------------------------------------------
 # Some simple tasks:
 # -------------------------------------------------------------------------------------------------
 
-- echo:  # The *echo* task just writes out stuff
+- base.echo:  # The *echo* task just writes out stuff
     msg: Hello, world!
 
   # Same, in compact YAML syntax
-- echo: {msg: "World, hello again!"}
+- base.echo: {msg: "World, hello again!"}
 
-- command:  # The *command* task runs commands, in this case 'ls'
+- base.command:  # The *command* task runs commands, in this case 'ls'
     name: ls
 
-- command:  # The *command* task can take argument lists
+- base.command:  # The *command* task can take argument lists
     name: mkdir
     args: [-p, foo]
 
-- command:  # The *command* task can change the current working directory
+- base.make_dir: # Note that there is a special task to create directories
+    path: bar
+
+- base.command:  # The *command* task can change the current working directory
             # Note that *args* still needs to be a list, even when it's just one item!
     name: touch
     args: [bar.txt]
     cwd:  foo
 
-- copy:  # The *copy* task copies files
+- base.copy:  # The *copy* task copies files
     src: foo/bar.txt
     dst: foo/bar.txt.j2
 
-- template: # The *template* task renders Jinja2 template files
+- base.template: # The *template* task renders Jinja2 template files
     src: foo/bar.txt.j2
     dst: foo/bar.txt
 
   # Just cleaning up ...
-- command: {name: rm, args: [-fr, foo]}
+- base.command: {name: rm, args: [-fr, foo, bar]}
 
 
 # -------------------------------------------------------------------------------------------------
 # Working with the ScriptEngine context
 # -------------------------------------------------------------------------------------------------
 
-- context:  # A simple value stored under the name 'planet'
+- base.context:  # A simple value stored under the name 'planet'
     planet: world
-- echo:    # Access the value stored above
+- base.echo:    # Access the value stored above
     msg: "Hello, {{planet}}!"
 
-- context:  # Context values can be nested and may contain lists
+- base.context:  # Context values can be nested and may contain lists
     countries:
         nordic: [Sweden, Norway, Danmark, Finnland, Iceland]
         other:  [foo, bar, baz]
@@ -70,24 +72,24 @@
         workers: [Peter, Paul]
     number: 5
 
-- getenv: # The *getenv* task sets a context item from an environment variable
+- base.getenv: # The *getenv* task sets a context item from an environment variable
     name: HOME
     set: home
-- echo: {msg: "My home is at {{home}}"}
+- base.echo: {msg: "My home is at {{home}}"}
 
 
 # -------------------------------------------------------------------------------------------------
 # Working with loops
 # -------------------------------------------------------------------------------------------------
 
-- echo:  # Tasks can be repeated by using *loop*s:
+- base.echo:  # Tasks can be repeated by using *loop*s:
          # - note correct indentation!
          # - the *loop* index is {{item}}
          # - *loop*s may not be nested
     msg: "Hello, {{item}}!"
   loop: [earth, mars]
 
-- echo:  # *Loop* lists can be defined in context tasks
+- base.echo:  # *Loop* lists can be defined in context tasks
     msg: "A nice country: {{item}}"
   loop: "{{countries.nordic}}"
 
@@ -99,17 +101,17 @@
   # Jobs may contain a *when* clause (a conditional)
   # - *when* clauses are evaluated by Jinja2
   # - they may therefore access context items
-- context:
+- base.context:
     i: 7
-- echo: {msg: "i is pretty big (it's {{i}})"}
+- base.echo: {msg: "i is pretty big (it's {{i}})"}
   when: i>5
-- echo: {msg: "i is not so big (just {{i}})"}
+- base.echo: {msg: "i is not so big (just {{i}})"}
   when: i<=5
 
   # Loops and *when* clauses can be combined, however:
   # - the *when* clause must not access {{item}}
   # - the *when* clause is evaluated only once
-- echo: {msg: "i is not so big (just {{i}})"}
+- base.echo: {msg: "i is not so big (just {{i}})"}
   loop: [1,2,3]
   when: i<=5
 
@@ -121,14 +123,14 @@
 # Jobs can be grouped by using *do*, which is usefull when when you want to apply *loop*s or *when*
 # clauses to multiple tasks/jobs
 - do:
-    - echo: {msg: "We can do something with '{{item}}'"}
-    - echo: {msg: "Maybe we want to do something else with '{{item}}' as well"}
+    - base.echo: {msg: "We can do something with '{{item}}'"}
+    - base.echo: {msg: "Maybe we want to do something else with '{{item}}' as well"}
   loop: [foo, bar, baz]
 
 - do: # With *do* jobs, you can combine *loop* and *when* AND access the *loop* index *item*
-    - echo: {msg: "Item is not so big (just {{item}}), but wait!"}
+    - base.echo: {msg: "Item is not so big (just {{item}}), but wait!"}
       when: "item<5"
-    - echo: {msg: "Now item is pretty big! ({{item}})"}
+    - base.echo: {msg: "Now item is pretty big! ({{item}})"}
       when: "item>=5"
   loop: [1,2,3,4,5,6,7,8,9]
 
@@ -138,7 +140,7 @@
 # -------------------------------------------------------------------------------------------------
 
 # Other YAML files can be included.
-- include:
+- base.include:
     src: tutorial.inc.yml
 
 # Note that including files in ScriptEngine is done at run time! This means
@@ -150,38 +152,38 @@
 # Find task
 # -------------------------------------------------------------------------------------------------
 
-- find:
+- base.find:
     path: .
     pattern: '*.yml'
     set: found_files
-- echo:
+- base.echo:
     msg: "Files found -- {{found_files}}"
 
 
 # -------------------------------------------------------------------------------------------------
 # Print timing results
 # -------------------------------------------------------------------------------------------------
-- echo:
+- base.echo:
     msg: !noparse_yaml |
 
-        {% if 'timers' in se_timing -%}
+        {% if se.tasks.timing.mode -%}
         ScriptEngine timings
         ====================
 
-        {% if 'classes' in se_timing.timers -%}
+        {% if 'classes' in se.tasks.timing.timers -%}
         Timing for task classes
         -----------------------
-        {% for class, time in se_timing.timers.classes.items() -%}
-            {{class}}: {{'%0.3f' % time}} seconds
-        {% endfor %}
-        {% endif -%}
+        {%- for class, time in se.tasks.timing.timers.classes|dictsort(false, 'value') %}
+            {{"%12s: %9.3f seconds" % (class, time)}}
+        {%- endfor %}
+        {%- endif %}
 
-        {% if 'instances' in se_timing.timers -%}
+        {% if 'instances' in se.tasks.timing.timers -%}
         Timing for task instances
         -------------------------
-        {% for uid, time in se_timing.timers.instances.items() -%}
-            {{(uid|string).split('-')[-1]}}: {{'%0.3f' % time}} seconds
-        {% endfor %}
+        {%- for uid, time in se.tasks.timing.timers.instances|dictsort(false, 'value') %}
+            {{"%12s: %9.3f seconds" % ((uid|string).split('-')[-1], time)}}
+        {%- endfor %}
         {% endif %}
         {% else -%}
         No detailed Scriptengine timing activated
@@ -194,7 +196,7 @@
 
 # The exit task requests the ScriptEngine instance to stop execution. It takes
 # an *optional* message ('msg') parameter.
-- exit:
+- base.exit:
     msg: This is the end of the tutorial!
 
 # The SimpleScriptEngine will just stop the execution via sys.exit()

@@ -1,6 +1,6 @@
 import pytest
 
-from scriptengine.tasks.base import Echo
+from scriptengine.tasks.base.echo import Echo
 from scriptengine.exceptions import ScriptEngineTaskArgumentMissingError
 
 

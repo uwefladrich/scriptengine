@@ -1,6 +1,6 @@
 ---
 
-- echo:
+- base.echo:
     msg: Hello from the include file!
 
 ...

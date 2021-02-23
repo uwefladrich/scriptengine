@@ -7,7 +7,7 @@ on the local machine, without consideration of job contexts.
 import sys
 import logging
 
-from scriptengine.tasks.base import Task
+from scriptengine.tasks import Task
 from scriptengine.jobs import Job
 from scriptengine.exceptions import ScriptEngineError, \
                                     ScriptEngineStopException

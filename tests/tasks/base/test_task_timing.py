@@ -3,10 +3,9 @@ import pytest
 from time import sleep
 from attrdict import AttrDict
 
-from scriptengine.tasks.base import Task, \
-                                    TaskTimer
+from scriptengine.tasks import Task, timed_runner
+from scriptengine.tasks.base.task_timer import TaskTimer
 from scriptengine.exceptions import ScriptEngineTaskArgumentMissingError
-from scriptengine.tasks.base.timing import timed_runner
 
 
 class WaitASecond(Task):

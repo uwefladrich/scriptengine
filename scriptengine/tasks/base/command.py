@@ -8,8 +8,8 @@
 
 import subprocess
 
-from scriptengine.tasks.base import Task
-from scriptengine.tasks.base.timing import timed_runner
+from scriptengine.tasks import Task
+from scriptengine.tasks.timing import timed_runner
 from scriptengine.exceptions import ScriptEngineTaskRunError
 
 

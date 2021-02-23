@@ -3,10 +3,12 @@
 
 import yaml
 import dateutil.rrule
+import pkg_resources
+import logging
 
-from scriptengine.tasks.base import loaded_tasks
 from scriptengine.jobs import Job
-from scriptengine.exceptions import ScriptEngineParseScriptError, \
+from scriptengine.exceptions import ScriptEngineTaskLoaderError, \
+                                    ScriptEngineParseScriptError, \
                                     ScriptEngineParseYAMLError
 
 
@@ -65,19 +67,31 @@ def parse(data):
         A scriptengine.task.Task, a scriptengine.jobs.Job, or a list of
         tasks/jobs.
     """
-    tasks = loaded_tasks()
-    jobs = {"do"}
 
     if not data:
         return []
 
-    if isinstance(data, list):
-        result = []
-        for item in data:
-            result.append(parse(item))
-        return result
+    tasks = dict()
+    for ep in pkg_resources.iter_entry_points('scriptengine.tasks'):
+        if ep.name not in tasks:
+            tasks[ep.name] = ep.load()
+        else:
+            conflict = next(conflict_ep.module_name
+                            for conflict_ep
+                            in pkg_resources.iter_entry_points('scriptengine.tasks')
+                            if conflict_ep.name == ep.name)
+            raise ScriptEngineTaskLoaderError(
+                f'Duplicate: Task "{ep.name}" from module "{ep.module_name}" '
+                f'conflicts with same name task from module "{conflict}".'
+            )
 
-    # Parse and return a single task or job
+    jobs = {"do"}
+
+    # Recursively parse lists of tasks/jobs
+    if isinstance(data, list):
+        return [parse(item) for item in data]
+
+    # Parse single task/job
     try:
         keys = (jobs | tasks.keys()) & data.keys()
     except AttributeError:
@@ -86,14 +100,29 @@ def parse(data):
                 f'"{type(data).__name__}: {data}"')
     if not keys:
         raise ScriptEngineParseScriptError(
-                f'None of {list(data.keys())} is a known SE task name')
+                'Found unknown task name(s): '
+                f'\"{", ".join(data.keys())}\"'
+              )
     if len(keys) > 1:
         raise ScriptEngineParseScriptError(
-                f'Ambiguous SE task name in {list(data.keys())}')
+                'Found ambiguous task names: '
+                f'\"{", ".join(data.keys())}\"'
+              )
 
+    # There is exactly one key, get it
     key = keys.pop()
 
     if key in tasks:
+
+        if '.' not in key:
+            logging.getLogger('se.task').warn(
+                'The use of task names without dots (i.e. without a namespace)'
+                f' is deprecated! This task defaults to "base.{key}", but the '
+                'default will be removed in the future and a '
+                'ScriptEngineParseScriptError error will occur instead.',
+                extra={'id': key}
+            )
+
         if len(data) == 1:  # Simple task (no when clause or loop)
             return tasks[key](data[key])
         # Job made from single task with when/loop
