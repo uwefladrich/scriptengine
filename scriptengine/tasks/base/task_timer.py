@@ -1,6 +1,6 @@
 """TaskTimer for ScriptEngine."""
 
-from scriptengine.tasks import Task
+from scriptengine.tasks.core import Task
 from scriptengine.exceptions import ScriptEngineTaskRunError
 
 

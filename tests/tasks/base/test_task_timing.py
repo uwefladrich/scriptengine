@@ -3,7 +3,7 @@ import pytest
 from time import sleep
 from attrdict import AttrDict
 
-from scriptengine.tasks import Task, timed_runner
+from scriptengine.tasks.core import Task, timed_runner
 from scriptengine.tasks.base.task_timer import TaskTimer
 from scriptengine.exceptions import ScriptEngineTaskArgumentMissingError
 

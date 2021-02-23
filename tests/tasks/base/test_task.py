@@ -1,6 +1,6 @@
 import pytest
 
-from scriptengine.tasks import Task
+from scriptengine.tasks.core import Task
 from scriptengine.exceptions import ScriptEngineTaskArgumentInvalidError, \
                                     ScriptEngineTaskArgumentMissingError
 

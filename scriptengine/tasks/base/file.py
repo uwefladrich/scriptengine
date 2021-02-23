@@ -5,8 +5,7 @@ Provides Copy, Move, Link, Remove and MakeDir tasks
 import os
 import shutil
 
-from scriptengine.tasks import Task
-from scriptengine.tasks.timing import timed_runner
+from scriptengine.tasks.core import Task, timed_runner
 from scriptengine.exceptions import ScriptEngineTaskRunError
 
 

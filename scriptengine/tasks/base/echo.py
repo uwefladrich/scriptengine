@@ -1,8 +1,6 @@
 """Echo task for ScriptEngine."""
 
-from scriptengine.tasks import Task
-from scriptengine.tasks.timing import timed_runner
-
+from scriptengine.tasks.core import Task, timed_runner
 from scriptengine.helpers import terminal_colors as tc
 
 

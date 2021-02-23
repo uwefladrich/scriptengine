@@ -4,8 +4,7 @@ import yaml
 from deepmerge import always_merger
 
 import scriptengine.jinja
-from scriptengine.tasks import Task
-from scriptengine.tasks.timing import timed_runner
+from scriptengine.tasks.core import Task, timed_runner
 
 
 class Context(Task):

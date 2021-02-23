@@ -27,13 +27,13 @@ setuptools.setup(
     long_description_content_type='text/markdown',
     url='https://github.com/uwefladrich/scriptengine',
     packages=[
-        'scriptengine',
         'scriptengine.cli',
         'scriptengine.helpers',
         'scriptengine.jobs',
         'scriptengine.scripts',
         'scriptengine.tasks',
         'scriptengine.tasks.base',
+        'scriptengine.tasks.core',
     ],
     classifiers=[
         'Programming Language :: Python :: 3',
