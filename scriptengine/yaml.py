@@ -6,6 +6,7 @@ import dateutil.rrule
 import pkg_resources
 import logging
 
+import scriptengine.tasks.core.loader
 from scriptengine.jobs import Job
 from scriptengine.exceptions import ScriptEngineTaskLoaderError, \
                                     ScriptEngineParseScriptError, \
@@ -71,20 +72,7 @@ def parse(data):
     if not data:
         return []
 
-    tasks = dict()
-    for ep in pkg_resources.iter_entry_points('scriptengine.tasks'):
-        if ep.name not in tasks:
-            tasks[ep.name] = ep.load()
-        else:
-            conflict = next(conflict_ep.module_name
-                            for conflict_ep
-                            in pkg_resources.iter_entry_points('scriptengine.tasks')
-                            if conflict_ep.name == ep.name)
-            raise ScriptEngineTaskLoaderError(
-                f'Duplicate: Task "{ep.name}" from module "{ep.module_name}" '
-                f'conflicts with same name task from module "{conflict}".'
-            )
-
+    tasks = scriptengine.tasks.core.loader.load()
     jobs = {"do"}
 
     # Recursively parse lists of tasks/jobs
