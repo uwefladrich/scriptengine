@@ -20,7 +20,8 @@ _SENTINEL = object()
 
 class Task:
 
-    _invalid_arguments = ('run', 'id', '_logger', )
+    _reg_name = None
+    _invalid_arguments = ('run', 'id', )
 
     @classmethod
     def check_arguments(cls, arguments):
@@ -59,6 +60,15 @@ class Task:
                                    f'Invalid task argument (reserved): {name}')
                 setattr(self, name, value)
         self.log_debug(f'Created task: {self}')
+
+    @classmethod
+    def register_name(cls, name):
+        cls._reg_name = name
+
+    @property
+    def reg_name(self):
+        return self._reg_name or \
+               f'{self.__class__.__module__}:{self.__class__.__name__}'
 
     @property
     def id(self):
@@ -138,9 +148,9 @@ class Task:
         return parse(arg)
 
     def _log(self, level, msg):
-        logger = getattr(self, '_logger',
-                         'se.task.'+self.__class__.__name__.lower())
-        logging.getLogger(logger).log(level, msg, extra={'id': self.shortid})
+        logger = logging.getLogger('se.task')
+        logger.log(level, msg, extra={'type': self.reg_name,
+                                      'id': self.shortid})
 
     def log_debug(self, msg):
         self._log(logging.DEBUG, msg)

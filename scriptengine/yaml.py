@@ -3,12 +3,11 @@
 
 import yaml
 import dateutil.rrule
-import pkg_resources
 import logging
 
 import scriptengine.tasks.core.loader
 from scriptengine.jobs import Job
-from scriptengine.exceptions import ScriptEngineTaskLoaderError, \
+from scriptengine.exceptions import ScriptEngineParseFileError, \
                                     ScriptEngineParseScriptError, \
                                     ScriptEngineParseYAMLError
 
@@ -72,7 +71,7 @@ def parse(data):
     if not data:
         return []
 
-    tasks = scriptengine.tasks.core.loader.load()
+    tasks = scriptengine.tasks.core.loader.load_and_register()
     jobs = {"do"}
 
     # Recursively parse lists of tasks/jobs
@@ -83,19 +82,23 @@ def parse(data):
     try:
         keys = (jobs | tasks.keys()) & data.keys()
     except AttributeError:
-        raise ScriptEngineParseScriptError(
-                'Expected YAML dictionary, got '
-                f'"{type(data).__name__}: {data}"')
+        logging.getLogger('se.yaml').error(
+            'Expected YAML dictionary, got '
+            f'"{type(data).__name__}: {data}"'
+        )
+        raise ScriptEngineParseScriptError
     if not keys:
-        raise ScriptEngineParseScriptError(
-                'Found unknown task name(s): '
-                f'\"{", ".join(data.keys())}\"'
-              )
+        logging.getLogger('se.yaml').error(
+            'Found unknown task name(s): '
+            f'\"{", ".join(data.keys())}\"'
+        )
+        raise ScriptEngineParseScriptError
     if len(keys) > 1:
-        raise ScriptEngineParseScriptError(
-                'Found ambiguous task names: '
-                f'\"{", ".join(data.keys())}\"'
-              )
+        logging.getLogger('se.yaml').error(
+            'Found ambiguous task names: '
+            f'\"{", ".join(data.keys())}\"'
+        )
+        raise ScriptEngineParseScriptError
 
     # There is exactly one key, get it
     key = keys.pop()
@@ -134,9 +137,19 @@ def parse_file(filename):
         A scriptengine.task.Task, a scriptengine.jobs.Job, or a list of
         tasks/jobs.
     """
-    with open(filename) as file:
-        try:
+    try:
+        with open(filename) as file:
             data = yaml.load(file, Loader=yaml.FullLoader)
-        except yaml.YAMLError as e:
-            raise ScriptEngineParseYAMLError(e)
+    except (FileNotFoundError,
+            PermissionError,
+            IsADirectoryError) as e:
+        logging.getLogger('se.yaml').error(
+            f'Could not read script file: {e}'
+        )
+        raise ScriptEngineParseFileError
+    except yaml.YAMLError as e:
+        logging.getLogger('se.yaml').error(
+            f'Could not parse script file: {e}'
+        )
+        raise ScriptEngineParseYAMLError
     return parse(data)

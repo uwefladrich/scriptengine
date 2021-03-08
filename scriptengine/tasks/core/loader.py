@@ -24,9 +24,17 @@ def load():
                          for clash_ep
                          in pkg_resources.iter_entry_points(entry_point)
                          if clash_ep.name == ep.name)
-            msg = f'Same task name "{ep.name}" defined in modules ' \
-                  f'"{ep.module_name}" and "{clash}"'
-            logging.getLogger('se.task').error(msg, extra={'id': 'loader'})
-            raise ScriptEngineTaskLoaderError(msg)
+            logging.getLogger('se.task.loader').error(
+                f'Same task name "{ep.name} defined in modules '
+                f'"{ep.module_name}" and "{clash}"'
+            )
+            raise ScriptEngineTaskLoaderError
 
+    return loaded_tasks
+
+
+def load_and_register():
+    loaded_tasks = load()
+    for name, task in loaded_tasks.items():
+        task.register_name(name)
     return loaded_tasks

@@ -18,7 +18,6 @@ def test_create_task_with_invalid_args():
         (Task, {'run': 1}),
         (Task, {'id': 2}),
         (Task, {'run': 1, 'id': 2}),
-        (Task, {'_logger': 1}),
     )
 
     for task_class, parameters in tests:

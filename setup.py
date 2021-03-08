@@ -53,23 +53,7 @@ setuptools.setup(
             'se = scriptengine.cli.se:main',
         ],
         'scriptengine.tasks': [
-            'base.chdir = scriptengine.tasks.base.chdir:Chdir',
-            'base.command = scriptengine.tasks.base.command:Command',
-            'base.context = scriptengine.tasks.base.context:Context',
-            'base.copy = scriptengine.tasks.base.file:Copy',
-            'base.echo = scriptengine.tasks.base.echo:Echo',
-            'base.exit = scriptengine.tasks.base.exit:Exit',
-            'base.find = scriptengine.tasks.base.find:Find',
-            'base.getenv = scriptengine.tasks.base.getenv:Getenv',
-            'base.include = scriptengine.tasks.base.include:Include',
-            'base.link = scriptengine.tasks.base.file:Link',
-            'base.make_dir = scriptengine.tasks.base.file:MakeDir',
-            'base.move = scriptengine.tasks.base.file:Move',
-            'base.remove = scriptengine.tasks.base.file:Remove',
-            'base.task_timer = scriptengine.tasks.base.task_timer:TaskTimer',
-            'base.template = scriptengine.tasks.base.template:Template',
-            'base.time = scriptengine.tasks.base.time:Time',
-            # Add short aliases for backward compatibility
+            # Short aliases for backward compatibility
             'chdir = scriptengine.tasks.base.chdir:Chdir',
             'command = scriptengine.tasks.base.command:Command',
             'context = scriptengine.tasks.base.context:Context',
@@ -86,6 +70,23 @@ setuptools.setup(
             'task_timer = scriptengine.tasks.base.task_timer:TaskTimer',
             'template = scriptengine.tasks.base.template:Template',
             'time = scriptengine.tasks.base.time:Time',
+            # Real names
+            'base.chdir = scriptengine.tasks.base.chdir:Chdir',
+            'base.command = scriptengine.tasks.base.command:Command',
+            'base.context = scriptengine.tasks.base.context:Context',
+            'base.copy = scriptengine.tasks.base.file:Copy',
+            'base.echo = scriptengine.tasks.base.echo:Echo',
+            'base.exit = scriptengine.tasks.base.exit:Exit',
+            'base.find = scriptengine.tasks.base.find:Find',
+            'base.getenv = scriptengine.tasks.base.getenv:Getenv',
+            'base.include = scriptengine.tasks.base.include:Include',
+            'base.link = scriptengine.tasks.base.file:Link',
+            'base.make_dir = scriptengine.tasks.base.file:MakeDir',
+            'base.move = scriptengine.tasks.base.file:Move',
+            'base.remove = scriptengine.tasks.base.file:Remove',
+            'base.task_timer = scriptengine.tasks.base.task_timer:TaskTimer',
+            'base.template = scriptengine.tasks.base.template:Template',
+            'base.time = scriptengine.tasks.base.time:Time',
         ]
     }
 )

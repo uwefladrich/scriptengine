@@ -1,11 +1,11 @@
-"""ScriptEngine command line interface (cli).
+'''ScriptEngine command line interface (cli).
 
 The se command provides a command line interface to ScriptEngine, allowing for
 the creation of scripts from YAML files and runnig the scripts via the
 SimpleScriptEngine.
-"""
+'''
 
-__copyright__ = """
+__copyright__ = '''
 Copyright 2019, 2020 Uwe Fladrich
 
 This file is part of ScriptEngine.
@@ -22,8 +22,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with ScriptEngine. If not, see <https://www.gnu.org/licenses/>.
-"""
-__license__ = "GPLv3+"
+'''
+__license__ = 'GPLv3+'
 
 
 import os
@@ -33,92 +33,55 @@ import logging
 from attrdict import AttrDict
 
 import scriptengine.version
-import scriptengine.logging
 
-from scriptengine.helpers import terminal_colors
+from scriptengine.helpers.terminal_colors import set_theme
+from scriptengine.logging import configure_logging
 from scriptengine.scripts import SimpleScriptEngine
 
-from scriptengine.exceptions import ScriptEngineParseError
+from scriptengine.exceptions import ScriptEngineParseError, \
+                                    ScriptEngineParseFileError
 
 __version__ = scriptengine.version.__version__
 
 
 def parse_cmd_line_args():
-    """Parses the command line arguments with argparse
-    """
+    '''Parses the command line arguments with argparse
+    '''
     arg_parser = argparse.ArgumentParser(
-                        description="ScriptEngine command line tool")
-
-    arg_parser.add_argument("-V", "--version",
-                            help="show ScriptEngine version and exit",
-                            action="version",
+                    description='ScriptEngine command line tool',
+                    epilog='Available ScriptEngine tasks: ' +
+                           ', '.join(scriptengine.tasks.core.loader.load().keys()))
+    arg_parser.add_argument('-V', '--version',
+                            help='show ScriptEngine version and exit',
+                            action='version',
                             version=__version__)
-    arg_parser.add_argument("-q", "--quiet",
-                            help="be quiet, no extra output",
-                            action="store_true")
-    arg_parser.add_argument("--debug",
-                            help="lots of extra debug output",
-                            action="store_true")
-    arg_parser.add_argument("--nocolor",
-                            help="do not use colored terminal output",
-                            action="store_true")
-    arg_parser.add_argument("files",
-                            help="YAML file(s) to read",
-                            nargs="+")
+    arg_parser.add_argument('--loglevel',
+                            help='The minimum level of log messages that is '
+                                 'displayed. For verbose output, use '
+                                 '"debug". For minimal output, use "error" '
+                                 'or "critical".',
+                            choices=['debug',
+                                     'info',
+                                     'warning',
+                                     'error',
+                                     'critical'])
+    arg_parser.add_argument('--nocolor',
+                            help='do not use colored terminal output',
+                            action='store_true')
+    arg_parser.add_argument('files',
+                            help='YAML file(s) to read',
+                            nargs='+')
 
     return arg_parser.parse_args()
 
 
-def configure_loggers(nocolor=False, quiet=False, debug=False):
-    """Configures logging according to arguments:
-       - sets color scheme (side effect!)
-       - creates cli, task, se instance loggers with appropriate levels
-    """
-    if nocolor:
-        terminal_colors.set_theme("none")
-
-    if quiet:
-        log_level = logging.WARNING
-    elif debug:
-        log_level = logging.DEBUG
-    else:
-        log_level = logging.INFO
-
-    # Configure CLI logger
-    scriptengine.logging.configure_logger(
-            'se.cli', log_level, scriptengine.logging.cli_log_formatter)
-
-    # Configure Task logger
-    scriptengine.logging.configure_logger(
-            'se.task', log_level, scriptengine.logging.task_log_formatter)
-
-    # Configure Job logger
-    # Uses same formatting as Task logger!
-    scriptengine.logging.configure_logger(
-            'se.job', log_level, scriptengine.logging.task_log_formatter)
-
-    # Configure SE instance logger
-    # Uses same formatting as CLI logger!
-    scriptengine.logging.configure_logger(
-            'se.instance', log_level, scriptengine.logging.cli_log_formatter)
-
-    cli_logger = logging.getLogger('se.cli')
-    cli_logger.info('Logging configured and started')
-
-    return cli_logger
-
-
 def parse_files(logger, files):
-    """Parses files and returns a script (list of tasks/jobs).
-    """
+    '''Parses files and returns a script (list of tasks/jobs).
+    '''
     script = []
     for fname in files:
-        try:
-            # next_script is a Task or Job or list of either
-            next_script = scriptengine.yaml.parse_file(fname)
-        except ScriptEngineParseError as e:
-            logger.error(f'{e} in {fname}')
-            raise
+        # next_script is a Task or Job or list of either
+        next_script = scriptengine.yaml.parse_file(fname)
         if isinstance(next_script, list):
             script.extend(next_script)
         else:
@@ -128,7 +91,7 @@ def parse_files(logger, files):
 
 
 def main():
-    """ScriptEngine command line tool
+    '''ScriptEngine command line tool
 
        The context is passed to the ScriptEngine instance and, later, to all
        tasks. Some context information is already set here in the se command
@@ -141,20 +104,41 @@ def main():
                                       that executes the task
          context.se.tasks.timing    - task timing information
                                       (defaults to no timing)
-    """
+    '''
 
-    # parse command line arguments
+    # Parse command line arguments
     parsed_args = parse_cmd_line_args()
 
-    # set up logging
-    #   - logs for cli, tasks, jobs, se instances
-    #   - color scheme
-    logger = configure_loggers(nocolor=parsed_args.nocolor,
-                               quiet=parsed_args.quiet,
-                               debug=parsed_args.debug)
+    # Choose colored output unless --nocolor
+    set_theme('none' if parsed_args.nocolor else 'standard')
 
-    # create script by parsing the files given on the command line
-    script = parse_files(logger, parsed_args.files)
+    # Configure logging with level given by --loglevel
+    # or by default with logging.INFO
+    configure_logging(
+        logging.getLevelName(parsed_args.loglevel.upper())
+        if parsed_args.loglevel else logging.INFO
+    )
+    logger = logging.getLogger('se.cli')
+    logger.info('Logging configured and started')
+
+    # Log all loaded tasks if debugging
+    if logger.level <= logging.DEBUG:
+        for name, task in scriptengine.tasks.core.loader.load().items():
+            logger.debug(
+                f'Loaded task {name}: '
+                f'{task.__name__} '
+                f'from {task.__module__}'
+            )
+
+    # Create script by parsing the files given on the command line
+    try:
+        script = parse_files(logger, parsed_args.files)
+    except ScriptEngineParseFileError:
+        logger.critical('Could not read all script files')
+        return os.EX_NOINPUT
+    except ScriptEngineParseError:
+        logger.critical('Could not parse all script files')
+        return os.EX_DATAERR
 
     # Note that the following removal of duplicates does not guarantee the
     # order of entries before Python 3.7! We'll accept this in favour of the
@@ -181,7 +165,7 @@ def main():
         }
     })
 
-    # call ScriptEngine instance to run the script
+    # Call ScriptEngine instance to run the script
     context.se.instance.run(script, context)
 
-    return 0
+    return os.EX_OK
