@@ -1,3 +1,34 @@
+Current changes
+===============
+
+Features
+--------
+- #20: Review task loading mechanism
+  + automatic task loading, '-t' flag no longer needed (or supported)
+  + se -h lists loaded tasks
+- Better logging
+  + support for log levels via new '--loglevel' switch
+    (--debug and --quiet no longer supported)
+  + tasks logging uses better names
+- better error handling: less cli errors create traceback
+- ScriptEngine part of the task context now available as 'se.*'
+  in particular, this provides
+  + se.cli.*
+  + se.tasks.*
+  + se.instance
+
+Fixes
+-----
+- Fix #26: Include task crashes when ignore_not_found is not present
+
+Internal changes
+----------------
+- Tasks loaded via setuptools entry_points (#20)
+  This means task developers do not need to implement namespace packages and
+  don't have to provide the task_loader_map, just 'scriptengine.tasks' entry
+  points!
+
+
 ScriptEngine 0.7.1
 ==================
 
