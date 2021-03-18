@@ -19,7 +19,7 @@ import sphinx_rtd_theme
 # -- Project information -----------------------------------------------------
 
 project = 'ScriptEngine Documentation'
-copyright = '2020, Uwe Fladrich'
+copyright = '2020+2021, Uwe Fladrich'
 author = 'Uwe Fladrich'
 
 # The full version, including alpha/beta/rc tags
@@ -33,6 +33,7 @@ release = '0.6.0'
 # ones.
 extensions = [
     "sphinx_rtd_theme",
+    'sphinx.ext.autosectionlabel',
 ]
 
 # Add any paths that contain templates here, relative to this directory.

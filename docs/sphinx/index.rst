@@ -7,6 +7,7 @@ Welcome to the ScriptEngine Documentation
 
    intro
    installation
+   cli
    concepts
    scripts
    loops
@@ -14,8 +15,6 @@ Welcome to the ScriptEngine Documentation
    system-tasks
    file-tasks
    other-tasks
-   ecearth-tasks
-
 
 
 Indices and tables
