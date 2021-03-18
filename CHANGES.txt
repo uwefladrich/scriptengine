@@ -1,3 +1,12 @@
+ScriptEngine 0.7.1
+==================
+
+Fixes
+-----
+- Add missing scriptengine.cli package in setup.py (e622e0d)
+  This was braking SE 0.7.0!
+
+
 ScriptEngine 0.7.0
 ==================
 
