@@ -26,15 +26,7 @@ setuptools.setup(
     long_description=read('README.md'),
     long_description_content_type='text/markdown',
     url='https://github.com/uwefladrich/scriptengine',
-    packages=[
-        'scriptengine.cli',
-        'scriptengine.helpers',
-        'scriptengine.jobs',
-        'scriptengine.scripts',
-        'scriptengine.tasks',
-        'scriptengine.tasks.base',
-        'scriptengine.tasks.core',
-    ],
+    packages=setuptools.find_packages(),
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',

@@ -16,7 +16,7 @@ class LogLevelFormatter:
         return self._formatters[record.levelno].format(record)
 
 
-def configure_logging(log_level=logging.INFO):
+def configure(log_level=logging.INFO):
 
     levels = [
         logging.DEBUG,

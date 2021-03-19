@@ -22,7 +22,7 @@ def test_configure_logger(caplog):
     for logger in loggers:
         for level in levels:
             caplog.clear()
-            scriptengine.logging.configure_logging(level)
+            scriptengine.logging.configure(level)
             logging.getLogger(logger).log(level, test_string)
             assert caplog.record_tuples == [(logger, level, test_string)]
 
@@ -39,7 +39,7 @@ def test_task_loader_logger(caplog):
     )
     for level in levels:
         caplog.clear()
-        scriptengine.logging.configure_logging(level)
+        scriptengine.logging.configure(level)
         logger = logging.getLogger('se.task.loader')
         logger.propagate = True
         logging.getLogger('se.task').propagate = True
@@ -60,7 +60,7 @@ def test_job_logger(caplog):
     )
     for level in levels:
         caplog.clear()
-        scriptengine.logging.configure_logging(level)
+        scriptengine.logging.configure(level)
         logger = logging.getLogger('se.job')
         logger.propagate = True
         logger.log(level, test_string, extra={'id': test_id})
@@ -81,7 +81,7 @@ def test_task_logger(caplog):
     )
     for level in levels:
         caplog.clear()
-        scriptengine.logging.configure_logging(level)
+        scriptengine.logging.configure(level)
         logger = logging.getLogger('se.task')
         logger.propagate = True
         logger.log(level,

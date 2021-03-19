@@ -33,11 +33,10 @@ import logging
 from attrdict import AttrDict
 
 import scriptengine.version
+import scriptengine.helpers.terminal_colors
+import scriptengine.logging
 
-from scriptengine.helpers.terminal_colors import set_theme
-from scriptengine.logging import configure_logging
 from scriptengine.scripts import SimpleScriptEngine
-
 from scriptengine.exceptions import ScriptEngineParseError, \
                                     ScriptEngineParseFileError
 
@@ -110,11 +109,13 @@ def main():
     parsed_args = parse_cmd_line_args()
 
     # Choose colored output unless --nocolor
-    set_theme('none' if parsed_args.nocolor else 'standard')
+    scriptengine.helpers.terminal_colors.set_theme(
+        'none' if parsed_args.nocolor else 'standard'
+    )
 
     # Configure logging with level given by --loglevel
     # or by default with logging.INFO
-    configure_logging(
+    scriptengine.logging.configure(
         logging.getLevelName(parsed_args.loglevel.upper())
         if parsed_args.loglevel else logging.INFO
     )

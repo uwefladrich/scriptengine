@@ -10,7 +10,7 @@ Features
   + support for log levels via new '--loglevel' switch
     (--debug and --quiet no longer supported)
   + tasks logging uses better names
-- better error handling: less cli errors create traceback
+- Better error handling: less cli errors create traceback
 - ScriptEngine part of the task context now available as 'se.*'
   in particular, this provides
   + se.cli.*
@@ -27,6 +27,9 @@ Internal changes
   This means task developers do not need to implement namespace packages and
   don't have to provide the task_loader_map, just 'scriptengine.tasks' entry
   points!
+- Fix #32: Clean up imports and get rid of namespace packages
+  This prevents loading SE task packages as namespace packages, i.e. these
+  packages must no longer include 'scriptengine.tasks'!
 
 
 ScriptEngine 0.7.1
