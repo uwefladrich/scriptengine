@@ -83,6 +83,23 @@ Test if ScriptEngine works in your ``conda`` environment::
     (se)> se --version
 
 
+Development installation
+------------------------
+
+ScriptEngine can be installed directly from a local directory. This can be
+useful for testing own developments or changes that have not yet been
+published as a package on PyPi. For example, ScriptEngine can be installed
+from a clone of the Github repository::
+
+    (.se)> git clone https://github.com/uwefladrich/scriptengine.git
+    (.se)> cd scriptengine
+    (.se)> pip install -e .
+
+This will install ScriptEngine along with it's dependencies very similar to
+installing from PyPI. However, any changes made in the local directory will
+immediately affect the ScriptEngine installation.
+
+
 .. _PyPI: https://pypi.org
 .. _Anaconda: https://anaconda.com
 .. _conda: https://conda.io

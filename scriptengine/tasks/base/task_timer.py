@@ -18,8 +18,6 @@ class TaskTimer(Task):
                             'instances': As for 'classes', plus times are
                                          accumulated for each individual task
                                          instance.
-        set (optional):     The context key used to store timing information.
-                            This argument is needed if 'mode' is not False.
         logging (optional): one of
                             False:   No time logging after each task. Does not
                                      affect statistic collection.

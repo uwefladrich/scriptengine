@@ -16,11 +16,12 @@ A task is the basic unit of work for ScriptEngine. It is the building block for
 scripts (see next section) and also the individual item a ScriptEngine instance
 (see even later) will handle.
 
-Tasks "do things". This can be simple things, like copying a file or writing a
-message on the terminal. It could also be more complex things, like changeing a
-date in a NetCDF file. Whatever the complexity of a task is, it will be hidden.
-A task is listed in a script by it's name and some arguments, and later it is
-run by a ScriptEngine instance to do it's actual work.
+Tasks "do things". This can be simple things, like copying a file or writing
+a message on the terminal. It could also be more complex things, involving
+more complex computations, file operations, or interactions with services.
+But whatever the actual complexity of a task is, it will be hidden. A task is
+listed in a script by it's name and some arguments, and later it is run by a
+ScriptEngine instance to do it's actual work.
 
 A number of different tasks are available when using ScriptEngine. In fact, one
 of the main ideas with ScriptEngine is that it should be easy to develop and
@@ -30,8 +31,9 @@ available for most of what users would want to do with ScriptEngine.
 However, tasks are not "baked" into the ScriptEngine code. Instead, they are
 loaded, at run time, from separate Python modules. Thus, tasks can easily be
 provided by other packages and made available to the user when ScriptEngine is
-run. Of course, there are packages for standard tasks that come with
-ScriptEngine.
+run. ScriptEngine comes with a basic package of tasks that are often used,
+but it can be adapted to a wide range of fields by providing specialised task
+packages.
 
 Technically, a task is a Python class that is derived from the ``Task`` class
 that ScriptEngine provides. In fact, it is possible to use ScriptEngine from
@@ -46,18 +48,23 @@ in the YAML language. Usually, a script is a YAML file that represents a list
 of tasks. How specific tasks are represented in YAML is usually intuitive, as
 shown in the following example::
 
-    - context:
+    - base.context:
         planet: Earth
-    - echo:
+    - base.echo:
         msg: "Hello, {{planet}}!"
 
 This little script is the inevitable "Hello world" example in ScriptEngine! It
 is run like this::
 
-    se hello-world.yml
+    > se hello-world.yml
 
 provided the little YAML snippet was stored in a file called
-``hello-world.yml``.
+``hello-world.yml``. Please not that ScriptEngine uses a dot notation for the
+naming of tasks. This allows tasks from different task packages to coexist
+without conflict. The tasks in the above example come from the ``base`` task
+package, which is an integral part of ScriptEngine. Nevertheless, beside
+being always available, there is no technical difference between the ``base``
+task package and others.
 
 
 ScriptEngine Instances

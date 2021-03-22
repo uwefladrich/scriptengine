@@ -10,11 +10,7 @@ Welcome to the ScriptEngine Documentation
    cli
    concepts
    scripts
-   loops
-   basic-tasks
-   system-tasks
-   file-tasks
-   other-tasks
+   base-tasks
 
 
 Indices and tables
