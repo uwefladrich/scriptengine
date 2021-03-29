@@ -51,8 +51,9 @@
     dst: foo/bar.txt
 
   # Just cleaning up ...
-- base.command: {name: rm, args: [-fr, foo, bar]}
-
+- base.remove:
+    path: '{{item}}'
+  loop: [foo, bar]
 
 # -------------------------------------------------------------------------------------------------
 # Working with the ScriptEngine context
