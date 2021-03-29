@@ -20,8 +20,10 @@ class SimpleScriptEngine:
     def _guarded_run(self, item, context):
         try:
             item.run(context)
-        except ScriptEngineStopException as e:
-            self.log_info(e)
+        except ScriptEngineStopException:
+            self.log_info(
+                'STOPPING ScriptEngine instance upon request'
+            )
             sys.exit()
 
     def run(self, script, context):
