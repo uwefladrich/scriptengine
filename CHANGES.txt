@@ -1,15 +1,16 @@
-Current changes
-===============
+ScriptEngine 0.8.0
+==================
 
 Features
 --------
 - #20: Review task loading mechanism
   + automatic task loading, '-t' flag no longer needed (or supported)
-  + se -h lists loaded tasks
-- Better logging
+  + se -h lists loaded tasks (#28)
+- Better logging (#29)
   + support for log levels via new '--loglevel' switch
     (--debug and --quiet no longer supported)
   + tasks logging uses better names
+  + appropriate logging for base.exit task (#30)
 - Better error handling: less cli errors create traceback
 - ScriptEngine part of the task context now available as 'se.*'
   in particular, this provides
