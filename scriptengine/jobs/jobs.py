@@ -56,11 +56,13 @@ class Job:
         loop_iter = j2render(self._loop_iter, context)
         if isinstance(loop_iter, str):
             try:
-                loop_iter = ast.literal_eval(loop_iter)
+                loop_iter = ast.literal_eval(loop_iter or 'None')
             except SyntaxError:
-                raise ScriptEngineParseError(
-                        'Syntax error while evaluating loop expression '
-                        f'"{loop_iter}" in job with id {self.id}')
+                self.log_error(
+                    'Syntax error while evaluating loop '
+                    f'expression \'{loop_iter}\''
+                )
+                raise ScriptEngineParseError
         return self._loop_var, loop_iter
 
     def append(self, todo):
