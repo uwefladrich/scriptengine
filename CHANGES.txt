@@ -1,3 +1,11 @@
+ScriptEngine 0.8.1
+==================
+
+Fixes
+-----
+- Fix #35: Missing scriptengine module
+
+
 ScriptEngine 0.8.0
 ==================
 
