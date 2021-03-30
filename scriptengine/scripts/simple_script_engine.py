@@ -14,9 +14,8 @@ from scriptengine.exceptions import ScriptEngineError, \
 
 
 class SimpleScriptEngine:
-    """Simplistic script engine for ScriptEngine.
-    """
-
+    '''Simplistic script engine for ScriptEngine.
+    '''
     def _guarded_run(self, item, context):
         try:
             item.run(context)
@@ -40,9 +39,9 @@ class SimpleScriptEngine:
                     loop_var, loop_iter = script_item.loop(context)
                     old_loop_var = context.get(loop_var, None)
                     if old_loop_var:
-                        self.log_warning("Loop variable collision "
-                                         f"for '{loop_var}'")
-
+                        self.log_warning(
+                            'Loop variable collision for \'{loop_var}\''
+                        )
                     # Run loop (at least once)
                     for loop_item in loop_iter or [none_loop]:
 
@@ -57,10 +56,11 @@ class SimpleScriptEngine:
                                 # recurse for jobs
                                 self.run(todo, context)
                             else:
-                                raise ScriptEngineError(
-                                            "Invalid item "
-                                            "(neither Task nor Job) "
-                                            f"of type {type(script_item)}")
+                                self.log_error(
+                                    'Invalid item (neither Task nor Job) '
+                                    f'of type \'{type(script_item)}\''
+                                )
+                                raise ScriptEngineError
                     # Remove or restore loop var
                     if old_loop_var:
                         context[loop_var] = old_loop_var
@@ -71,8 +71,11 @@ class SimpleScriptEngine:
                         f'Not executing <{script_item.shortid}> because '
                         'when clause evaluates false')
             else:
-                raise ScriptEngineError("Invalid item (neither Task nor Job) "
-                                        f"of type {type(script_item)}")
+                self.log_error(
+                    'Invalid item (neither Task nor Job) '
+                    f'of type \'{type(script_item)}\''
+                )
+                raise ScriptEngineError
 
     def _log(self, level, msg):
         logger = 'se.instance.'+self.__class__.__name__.lower()
