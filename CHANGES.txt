@@ -1,3 +1,11 @@
+ScriptEngine 0.8.2
+==================
+
+Features
+--------
+- #36: Add 'basename' and 'dirname' Jinja2 filters
+
+
 ScriptEngine 0.8.1
 ==================
 

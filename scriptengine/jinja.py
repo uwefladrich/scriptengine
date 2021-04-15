@@ -1,27 +1,42 @@
 """ScriptEngine helpers: Jinja2 rendering"""
 
 import jinja2
-from datetime import datetime
-from distutils.util import strtobool
+import os
+import datetime
+import distutils.util
 
 from scriptengine.exceptions import ScriptEngineParseJinjaError
 
 
 def string_to_datetime(string, format="%Y-%m-%d %H:%M:%S"):
     """Jinja2 filter to convert a string to datetime.datetime"""
-    return datetime.strptime(string, format)
+    return datetime.datetime.strptime(string, format)
 
 
 def string_to_date(string, format="%Y-%m-%d %H:%M:%S"):
     """Jinja2 filter to convert a string to datetime.date"""
-    return datetime.strptime(string, format).date()
+    return datetime.datetime.strptime(string, format).date()
+
+
+def basename(path):
+    """Jinja2 filter that returns a path's base name"""
+    return os.path.basename(path)
+
+
+def dirname(path):
+    """Jinja2 filter that returns a path's dir name"""
+    return os.path.dirname(path)
 
 
 def filters():
     """Return all defined Jinja2 filters by their name and corresponding function
     """
-    return {'datetime': string_to_datetime,
-            'date': string_to_date}
+    return {
+        'datetime': string_to_datetime,
+        'date': string_to_date,
+        'basename': basename,
+        'dirname': dirname,
+    }
 
 
 # Jinja2 Environment to be used for rendering of parameters in the YAML files
@@ -75,7 +90,11 @@ def render(arg, context, recursive=True, boolean=False):
                 next_rendered_string = render_with_context(rendered_string)
         if boolean:
             expr = f'{{% if {rendered_string} %}}1{{% else %}}0{{% endif %}}'
-            return bool(strtobool(render_with_context(expr)))
+            return bool(
+                distutils.util.strtobool(
+                    render_with_context(expr)
+                )
+            )
         return rendered_string
     else:
         return arg
