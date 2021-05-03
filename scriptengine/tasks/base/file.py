@@ -52,7 +52,7 @@ class Copy(Task):
                     f'Target directory "{dst}" exists'
                 )
                 raise ScriptEngineTaskRunError
-            shutil.copytree(src, dst, symlinks=True)
+            shutil.copytree(str(src), str(dst), symlinks=True)
         elif not src.exists():
             ignore = self.getarg('ignore_not_found', context, default=False)
             if ignore:
@@ -87,7 +87,7 @@ class Move(Task):
         src = _getarg_path(self, 'src', context)
         dst = _getarg_path(self, 'dst', context)
         self.log_info(f'Move file: {src} --> {dst}')
-        shutil.move(src, dst)
+        src.rename(dst)
 
 
 class Link(Task):
@@ -128,7 +128,7 @@ class Remove(Task):
         if path.exists():
             if path.is_dir():
                 self.log_info(f'Removing directory "{path}"')
-                shutil.rmtree(path)
+                shutil.rmtree(str(path))
             else:
                 self.log_info(f'Removing "{path}"')
                 path.unlink()

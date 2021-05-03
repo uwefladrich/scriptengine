@@ -1,3 +1,11 @@
+ScriptEngine 0.8.4
+==================
+
+Fixes
+-----
+- Fix #39: shutil does not always accept path-like objects
+
+
 ScriptEngine 0.8.3
 ==================
 
