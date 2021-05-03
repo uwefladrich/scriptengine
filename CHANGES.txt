@@ -1,3 +1,11 @@
+ScriptEngine 0.8.5
+==================
+
+Fixes
+-----
+- Fix #39 (again): use shutil.move for base.move task
+
+
 ScriptEngine 0.8.4
 ==================
 

@@ -87,7 +87,7 @@ class Move(Task):
         src = _getarg_path(self, 'src', context)
         dst = _getarg_path(self, 'dst', context)
         self.log_info(f'Move file: {src} --> {dst}')
-        src.rename(dst)
+        shutil.move(str(src), str(dst))
 
 
 class Link(Task):
