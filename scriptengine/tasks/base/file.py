@@ -2,11 +2,23 @@
 Provides Copy, Move, Link, Remove and MakeDir tasks
 """
 
-import os
+import pathlib
 import shutil
 
 from scriptengine.tasks.core import Task, timed_runner
 from scriptengine.exceptions import ScriptEngineTaskRunError
+
+
+def _getarg_path(self, name, context={}, **kwargs):
+    """Wrapper for Task.getarg() that returns a pathlib.Path"""
+    arg = self.getarg(name, context, **kwargs)
+    try:
+        return pathlib.Path(arg)
+    except TypeError:
+        self.log_error(
+            f'Invalid "{name}" argument, "{arg}" is not a path'
+        )
+        raise ScriptEngineTaskRunError
 
 
 class Copy(Task):
@@ -23,21 +35,40 @@ class Copy(Task):
 
     @timed_runner
     def run(self, context):
-        src = self.getarg('src', context)
-        dst = self.getarg('dst', context)
-        if os.path.isfile(src):
+
+        src = _getarg_path(self, 'src', context)
+        dst = _getarg_path(self, 'dst', context)
+
+        if src.is_file():
             self.log_info(f'Copy file: {src} --> {dst}')
-            if os.path.isfile(dst):
+            if dst.exists():
                 self.log_warning(
                     f'Destination file "{dst}" exists already; overwriting')
             shutil.copy(src, dst)
-        else:
+        elif src.is_dir():
             self.log_info(f'Copy directory: {src} --> {dst}')
-            if os.path.exists(dst):
-                msg = f'Target "{dst}" for directory copy exists already'
-                self.log_error(msg)
-                raise ScriptEngineTaskRunError(msg)
+            if dst.exists():
+                self.log_error(
+                    f'Target directory "{dst}" exists'
+                )
+                raise ScriptEngineTaskRunError
             shutil.copytree(src, dst, symlinks=True)
+        elif not src.exists():
+            ignore = self.getarg('ignore_not_found', context, default=False)
+            if ignore:
+                self.log_warning(
+                    f'"src" does not exist: {src}'
+                )
+            else:
+                self.log_error(
+                    f'"src" does not exist: {src}'
+                )
+                raise ScriptEngineTaskRunError
+        else:
+            self.log_error(
+                f'"src" is not a file or directory: {src}'
+            )
+            raise ScriptEngineTaskRunError
 
 
 class Move(Task):
@@ -53,8 +84,8 @@ class Move(Task):
 
     @timed_runner
     def run(self, context):
-        src = self.getarg('src', context)
-        dst = self.getarg('dst', context)
+        src = _getarg_path(self, 'src', context)
+        dst = _getarg_path(self, 'dst', context)
         self.log_info(f'Move file: {src} --> {dst}')
         shutil.move(src, dst)
 
@@ -72,11 +103,11 @@ class Link(Task):
 
     @timed_runner
     def run(self, context):
-        src = self.getarg('src', context)
-        dst = self.getarg('dst', context)
+        src = _getarg_path(self, 'src', context)
+        dst = _getarg_path(self, 'dst', context)
         self.log_info(f'Create link: {src} --> {dst}')
-        os.symlink(src, dst)
-        if not os.path.exists(dst):
+        dst.symlink_to(src)
+        if not dst.exists():
             self.log_warning(f'Created dangling symlink: {dst}-->{src}')
 
 
@@ -93,14 +124,14 @@ class Remove(Task):
 
     @timed_runner
     def run(self, context):
-        path = self.getarg('path', context)
-        if os.path.exists(path):
-            if os.path.isdir(path):
+        path = _getarg_path(self, 'path', context)
+        if path.exists():
+            if path.is_dir():
                 self.log_info(f'Removing directory "{path}"')
                 shutil.rmtree(path)
             else:
-                self.log_info(f'Removing file "{path}"')
-                os.remove(path)
+                self.log_info(f'Removing "{path}"')
+                path.unlink()
         else:
             self.log_info(f'Non-existing path "{path}"; nothing removed')
 
@@ -117,13 +148,20 @@ class MakeDir(Task):
 
     @timed_runner
     def run(self, context):
-        path = self.getarg('path', context)
-        if os.path.isdir(path):
-            self.log_info(f'Directory "{path}" exists already.')
-        elif os.path.isfile(path):
-            msg = f'Can\'t create directory because "{path}" is a file'
-            self.log_error(msg)
-            raise ScriptEngineTaskRunError(msg)
+        path = _getarg_path(self, 'path', context)
+        try:
+            path.mkdir(parents=True)
+        except FileExistsError:
+            if path.is_dir():
+                self.log_info(
+                    f'Directory "{path}" exists already'
+                )
+            else:
+                self.log_error(
+                    f'A file in the way of creating directory "{path}"'
+                )
+                raise ScriptEngineTaskRunError
         else:
-            self.log_info(f'Creating directory "{path}"')
-            os.makedirs(path)
+            self.log_info(
+                f'Created directory "{path}"'
+            )

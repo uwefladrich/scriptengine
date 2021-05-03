@@ -96,10 +96,12 @@ Usage::
     - base.copy:
         src: <PATH>
         dst: <PATH>
+        ignore_not_found: <BOOL>  # optional
 
 When copying a file and the ``dst`` exists already, it is overwritten and a
 waring is issued. Copying a directory when ``dst`` already exists results in
-an error.
+an error. An error occurs if ``src`` does not exist, unless ``ignore_not_found``
+is ``True``.
 
 
 Echo task

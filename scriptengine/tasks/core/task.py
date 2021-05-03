@@ -88,7 +88,7 @@ class Task:
         raise NotImplementedError('Base class function Task.run() '
                                   'must not be called')
 
-    def getarg(self, name, context={},
+    def getarg(self, name, context={}, *,
                parse_jinja=True, parse_yaml=True, default=_SENTINEL):
         """Returns the value of argument 'name'.
            The argument value is parsed with Jinja2 and the given context,
