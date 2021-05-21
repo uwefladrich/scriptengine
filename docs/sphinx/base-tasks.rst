@@ -64,12 +64,14 @@ true.
 
 Context task
 ------------
-Stores data in the ScriptEngine context.
+Stores or updates data (one or more, possibly nested, pairs of names and values)
+in the ScriptEngine context.
 
 Usage::
 
     base.context:
         <NAME>: <VALUE>
+        [...]
 
 Example::
 
@@ -81,6 +83,37 @@ Example::
             - Finnland
             - Danmark
         number: 4
+
+The arguments of ``base.context`` will be *merged* into the ScriptEngine
+context. This means that data can be added to existing data structures, such as
+lists or dictionaries::
+
+    - base.context:
+        mylist:
+            - one
+            - two
+    # mylist is ['one', 'two']
+    - base.context:
+        mylist:
+            - 3
+            - 4
+    # mylist is now ['one', 'two', 3, 4]
+
+In the case of conflicts, the arguments of ``base.context`` will overwrite the
+current values in the ScriptEngine context. This can be used to clean data::
+
+    - base.context:
+        mylist:
+            - one
+            - two
+    # mylist is ['one', 'two']
+    - base.context:
+        mylist: null  # "remove" the value if mylist
+    - base.context:
+        mylist:
+            - 3
+            - 4
+    # mylist is now [3, 4]
 
 
 Copy task

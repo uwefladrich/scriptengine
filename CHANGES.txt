@@ -1,3 +1,11 @@
+Current changes
+===============
+
+Internal changes
+----------------
+- Major simplification of base.context code by using Task.getarg()
+
+
 ScriptEngine 0.8.5
 ==================
 
