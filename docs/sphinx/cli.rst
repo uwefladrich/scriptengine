@@ -3,7 +3,9 @@ Command Line Interface
 
 The ScriptEngine command line interface is provided by the ``se`` script. The
 command provides basic help when running it with the ``-h`` or ``--help``
-flag::
+flag:
+
+.. code-block:: shell
 
     > se --help
     usage: se [-h] [-V] [--loglevel {debug,info,warning,error,critical}]
@@ -29,12 +31,16 @@ flag::
     base.include, base.link, base.make_dir, base.move, base.remove,
     base.task_timer, base.template, base.time
 
-Using the ``-V`` or ``--version`` option displayes the current ScriptEngine version::
+Using the ``-V`` or ``--version`` option displayes the current ScriptEngine version:
+
+.. code-block:: shell
 
     > se --version
-    0.7.1
+    0.8.5
 
-One or more scripts can be passed to ScriptEngine as arguments::
+One or more scripts can be passed to ScriptEngine as arguments:
+
+.. code-block:: shell
 
     > se hello.yml
     2021-03-18 09:54:40 INFO [se.cli] Logging configured and started
@@ -43,7 +49,9 @@ One or more scripts can be passed to ScriptEngine as arguments::
 
 As seen above, ScriptEngine and ScriptEngine tasks provide information during
 the run via logging, usually as output to the terminal. The amount of
-information can be controlled by setting the ``--loglevel``::
+information can be controlled by setting the ``--loglevel``:
+
+.. code-block:: shell
 
     > se --loglevel debug hello.yml
     2021-03-18 09:58:04 INFO [se.cli] Logging configured and started

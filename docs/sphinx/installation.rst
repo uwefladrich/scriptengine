@@ -5,12 +5,16 @@ Prerequisites
 -------------
 
 ScriptEngine needs Python version 3.6 or newer. To check the version of your
-default Python installation, run::
+default Python installation, run:
+
+.. code-block:: shell
 
     > python --version
 
 If the version is 3.6 or larger, everything is fine. If the default Python
-version is 2, check if Python3 is still avalable::
+version is 2, check if Python3 is still avalable:
+
+.. code-block:: shell
 
     > python3 --version
 
@@ -29,7 +33,9 @@ used here to explain the ScriptEngine installation.
 
 Load the ``venv`` module from the ``python`` executable (if your default Python
 is version 3, otherwise use ``python3``) to create a virtual environment for
-ScriptEngine::
+ScriptEngine:
+
+.. code-block:: shell
 
     > python -m venv .se
 
@@ -37,18 +43,24 @@ The ``.se`` argument is just an arbitrary name for the virtual environment and
 the corresponding directory. You can chose any name, but it can be convenient
 to chose a hidden directory.
 
-Activate the created virtual environment::
+Activate the created virtual environment:
+
+.. code-block:: shell
 
     > source .se/bin/activate
 
 The ``venv`` module will also install the ``pip`` package manager in the
 virtual environment. Once the virtual environment is activated, use ``pip`` to
 install ScriptEngine, along with it's dependencies, from the Python Package
-Index (PyPI_)::
+Index (PyPI_):
+
+.. code-block:: shell
 
     (.se)> pip install scriptengine
 
-Test the ScriptEngine installation with::
+Test the ScriptEngine installation with:
+
+.. code-block:: shell
 
     (.se)> se --version
 
@@ -64,21 +76,29 @@ particular, this is needed if additional ScriptEngine task packages have
 dependencies that can only be satisfied with the conda_ package manager.
 
 Assuming that the ``conda`` command is available, create and activate a virtual
-environment (named ``se`` in the following example) for ScriptEngine::
+environment (named ``se`` in the following example) for ScriptEngine:
+
+.. code-block:: shell
 
     > conda create -n se
     > activate se
 
 Install ``pip`` in the virtual environment. This is needed, since ScriptEngine
-is still installed from PyPI::
+is still installed from PyPI:
+
+.. code-block:: shell
 
     (se)> conda install pip
 
-Finally, install ScriptEngine in the ``conda`` environmen::
+Finally, install ScriptEngine in the ``conda`` environmen:
+
+.. code-block:: shell
 
     (se)> pip install scriptengine
 
-Test if ScriptEngine works in your ``conda`` environment::
+Test if ScriptEngine works in your ``conda`` environment:
+
+.. code-block:: shell
 
     (se)> se --version
 
@@ -89,7 +109,9 @@ Development installation
 ScriptEngine can be installed directly from a local directory. This can be
 useful for testing own developments or changes that have not yet been
 published as a package on PyPi. For example, ScriptEngine can be installed
-from a clone of the Github repository::
+from a clone of the Github repository:
+
+.. code-block:: shell
 
     (.se)> git clone https://github.com/uwefladrich/scriptengine.git
     (.se)> cd scriptengine

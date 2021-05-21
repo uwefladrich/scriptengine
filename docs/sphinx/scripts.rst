@@ -15,7 +15,9 @@ usually a list of tasks. Let's look at the simplest possible script::
     base.exit:
     
 This script is not particularly helpful, it doesn't do anything at all.
-Nevertheless, if you put this in a file, e.g. ``exit.yml``, and run::
+Nevertheless, if you put this in a file, e.g. ``exit.yml``, and run:
+
+.. code-block:: shell
 
     > se exit.yml
 

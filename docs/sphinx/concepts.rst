@@ -54,7 +54,9 @@ shown in the following example::
         msg: "Hello, {{planet}}!"
 
 This little script is the inevitable "Hello world" example in ScriptEngine! It
-is run like this::
+is run like this:
+
+.. code-block:: shell
 
     > se hello-world.yml
 
