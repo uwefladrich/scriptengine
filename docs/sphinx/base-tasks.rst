@@ -176,21 +176,57 @@ Usage::
 
 Getenv task
 -----------
-Reads an environment variable and stores it in the ScriptEngine context.
+Reads one or more environment variables and stores the values in the
+ScriptEngine context.
 
 Usage::
 
     - base.getenv:
-        name: <VAR_NAME>
-        set: <NAME>
+        <CONTEXT_PARAMETER>: <ENV_VAR_NAME>
+        [...]
 
 Example::
 
     - base.getenv:
-        name: HOME
-        set: home
+        name: USER
+        home: HOME
     - base.echo:
-        msg: "My {{home}} is my castle."
+        msg: "I am {name} and {{home}} is my castle."
+
+.. warning::
+   Only simple, non-nested context parameters can be used in ``base.getenv``!
+
+
+Setenv task
+-----------
+Sets one or more environment variables from values of the ScriptEngine context.
+
+Usage::
+
+    - base.getenv:
+        <ENV_VAR_NAME>: <CONTEXT_PARAMETER>
+        [...]
+
+The following example::
+
+    - base.context:
+        libs: /path/to/libraries
+    - base.setenv:
+        LD_LIBRARY_PATH:  "{{libs}}"
+        FOO: 1
+        bar: two
+
+will set the environment variables ``$LD_LIBRARY_PATH`` to
+``"/path/to/libraries"``, ``$FOO`` to ``"1"`` and ``$bar`` to ``"two"``.
+
+.. note::
+   Environment variables are always strings! Thus, all values are converted to
+   strings before they are assigned. In the above example, the number ``1`` is
+   converted to the string ``"1"`` before it is assigned to the environment
+   variable ``$FOO``.
+
+.. warning::
+   Only simple, non-nested context parameters can be used in ``base.setenv``!
 
 
 Include task

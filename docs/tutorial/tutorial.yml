@@ -74,8 +74,7 @@
     number: 5
 
 - base.getenv: # The *getenv* task sets a context item from an environment variable
-    name: HOME
-    set: home
+    home: HOME
 - base.echo: {msg: "My home is at {{home}}"}
 
 

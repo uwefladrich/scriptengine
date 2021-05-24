@@ -1,6 +1,11 @@
 Current changes
 ===============
 
+Features
+--------
+- Fix #40: Handling environment variables
+  This adds base.setenv and changes the syntax for base.getenv!
+
 Internal changes
 ----------------
 - Major simplification of base.context code by using Task.getarg()

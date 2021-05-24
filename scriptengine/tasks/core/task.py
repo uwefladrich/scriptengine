@@ -137,14 +137,13 @@ class Task:
 
         try:
             arg = getattr(self, name)
-
         except AttributeError:
             if default is _SENTINEL:
-                self.log_error(f'Missing task argument: {name}')
-                raise ScriptEngineTaskArgumentMissingError(
-                                        f'Missing task argument: {name}')
+                self.log_error(
+                    f'Trying to access missing task argument: {name}'
+                )
+                raise ScriptEngineTaskArgumentMissingError
             arg = default
-
         return parse(arg)
 
     def _log(self, level, msg):
