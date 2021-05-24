@@ -1,5 +1,5 @@
-Current changes
-===============
+ScriptEngine 0.9.0
+==================
 
 Features
 --------
