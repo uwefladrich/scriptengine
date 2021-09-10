@@ -52,6 +52,6 @@ class ScriptEngineTaskArgumentMissingError(ScriptEngineTaskArgumentError):
     """An SE Task argument is missing"""
 
 
-class ScriptEngineTaskRunError(ScriptEngineError):
+class ScriptEngineTaskRunError(ScriptEngineTaskError):
     """Throw this for errors at run time, i.e. during execution of the tasks
        run() method"""

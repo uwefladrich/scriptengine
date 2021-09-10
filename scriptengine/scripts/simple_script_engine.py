@@ -10,7 +10,8 @@ import logging
 from scriptengine.tasks.core import Task
 from scriptengine.jobs import Job
 from scriptengine.exceptions import ScriptEngineError, \
-                                    ScriptEngineStopException
+                                    ScriptEngineStopException, \
+                                    ScriptEngineTaskError
 
 
 class SimpleScriptEngine:
@@ -22,6 +23,12 @@ class SimpleScriptEngine:
         except ScriptEngineStopException:
             self.log_info(
                 'STOPPING ScriptEngine instance upon request'
+            )
+            sys.exit()
+        except ScriptEngineTaskError:
+            self.log_error(
+                'STOPPING ScriptEngine due to an error in task '
+                f'"{item.reg_name}" with id <{item.shortid}>'
             )
             sys.exit()
 
