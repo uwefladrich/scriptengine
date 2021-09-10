@@ -31,10 +31,11 @@ class Job:
             self._loop_iter = loop
 
         self.log_debug(
-                f'Create Job'
-                f'{" when "+self._when if self._when else ""}'
-                f'{" with "+str(self._loop_var) if self._loop_var else ""}'
-                f'{" in "+str(self._loop_iter) if self._loop_iter else ""}')
+            'Create Job'
+            f'{" when "+self._when if self._when else ""}'
+            f'{" with "+str(self._loop_var) if self._loop_var else ""}'
+            f'{" in "+str(self._loop_iter) if self._loop_iter else ""}'
+        )
 
     @property
     def id(self):
@@ -66,10 +67,11 @@ class Job:
         return self._loop_var, loop_iter
 
     def append(self, todo):
-        todo_as_list = todo if isinstance(todo, list) else [todo]
+        todo_list = todo if isinstance(todo, list) else [todo]
+        self._todo.extend(todo_list)
         self.log_debug(
-                f"Append: {','.join([str(t.id) for t in todo_as_list])} to")
-        self._todo.extend(todo_as_list)
+            f'Append: {",".join(t.shortid for t in todo_list)}'
+        )
 
     def _log(self, level, msg):
         logging.getLogger('se.job').log(level, msg, extra={'id': self.shortid})
