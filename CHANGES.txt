@@ -1,3 +1,6 @@
+ScriptEngine 0.10.1
+===================
+
 Features
 --------
 - Fix #43: Let SE stop on task errors (without traceback)
@@ -9,7 +12,7 @@ Fixes
 
 
 ScriptEngine 0.10.0
-==================
+===================
 
 Features
 --------
