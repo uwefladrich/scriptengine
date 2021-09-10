@@ -25,7 +25,7 @@ Usage::
         name: <COMMAND_NAME>
         args: <LIST_OF_ARGS> # optional
         cwd: <PATH> # optional
-        stdout: <STRING> # optional
+        stdout: [true|false|<STRING>] # optional
         ignore_error: [true|false] # optional
 
 When ``cwd`` (current work directory) is specified, the command is executed in
@@ -36,8 +36,15 @@ the given directory::
         args: [-l]
         cwd: /tmp
 
-When the ``stdout`` is given, the standard output of the command is captured
-and stored in the ScriptEngine context, for example::
+When the ``stdout`` is given, it can be eiter a true value (e.g. ``true``,
+``True``, ``Yes``, ``ON`` in YAML), a false value, or a string that makes for a
+valid name in the ScriptEngine context. If ``stdout`` is set to true (the
+default), then the standard output of the command is printed as a log message
+(on the info level). When ``stdout`` is false, the standard output of the
+command is ignored.
+
+When ``stdout`` is a name, the standard output of the command is stored, under
+that name, in the ScriptEngine context, for example::
 
     - base.command:
         name: echo
@@ -55,11 +62,11 @@ used::
     - echo:
         msg: "Command returned: {{message[0]}}"
 
-If the command returns a non-zero exit code, ScriptEngine issues an error and
+If the command returns a non-zero exit code, ScriptEngine writes the exit code
+and the standard error output (if any) as log messages (on the error level) and
 stops.  However, if ``ignore_error`` is set to true and the command returns a
-non-zero exit code, a warning is issued and ScriptEngine continues. Note that
-YAML accepts, for example, the strings ``true``, ``True``, ``Yes``, ``ON`` as
-true.
+non-zero exit code, exit code and standard error of the command are logged at
+the warning level instead and ScriptEngine continues.
 
 
 Context task

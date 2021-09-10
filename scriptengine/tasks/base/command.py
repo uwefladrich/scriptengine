@@ -9,7 +9,8 @@
 import subprocess
 
 from scriptengine.tasks.core import Task, timed_runner
-from scriptengine.exceptions import ScriptEngineTaskRunError
+from scriptengine.exceptions import ScriptEngineTaskRunError, \
+                                    ScriptEngineTaskArgumentInvalidError
 
 
 class Command(Task):
@@ -23,9 +24,11 @@ class Command(Task):
 
     @timed_runner
     def run(self, context):
-        self.log_info(f"{self.name} "
-                      f"args={getattr(self, 'args', 'none')} "
-                      f"cwd={getattr(self, 'cwd', 'none')}")
+        self.log_info(
+            f'{self.name} '
+            f'args={getattr(self, "args", None)} '
+            f'cwd={getattr(self, "cwd", None)}'
+        )
 
         command = self.getarg('name', context)
 
@@ -33,26 +36,48 @@ class Command(Task):
         args = args if isinstance(args, list) else [args]
 
         cwd = self.getarg('cwd', context, default=None)
+        stdout = self.getarg('stdout', context, default=True)
+        ignore_error = self.getarg('ignore_error', context, default=False)
 
-        self.log_debug(f"{command} {' '.join(map(str,args))}"
-                       f"{' cwd='+cwd if cwd else ''}")
+        self.log_debug(
+            f'\"{command} {" ".join(map(str, args))}\" '
+            f'cwd={cwd} stdout={stdout} ignore_error={ignore_error}'
+        )
 
-        stdout = self.getarg('stdout', default=None)
         try:
-            result = subprocess.run(
-                        map(str, [command]+args),
-                        stdout=subprocess.PIPE if stdout is not None else None,
-                        cwd=cwd,
-                        check=True)
+            cmd_proc = subprocess.run(
+                map(str, (command, *args)),
+                capture_output=True,
+                cwd=cwd,
+                check=True,
+            )
         except subprocess.CalledProcessError as error:
-            msg = (f'Command "{self.name}" returned '
-                   f'error code {error.returncode}')
-            if self.getarg('ignore_error', context, default=False):
-                self.log_warning(msg)
+            err_msg = (
+                f'Command "{command}" returned error code '
+                f'{error.returncode} (error message below)\n'
+            )
+            err_msg += '\n'.join(error.stderr.decode('UTF-8').splitlines())
+            if ignore_error:
+                self.log_warning(err_msg)
+                self.log_warning(
+                    'The error is ignored because "ignore_error" is true'
+                )
             else:
-                self.log_error(msg)
-                raise ScriptEngineTaskRunError(msg)
+                self.log_error(err_msg)
+                raise ScriptEngineTaskRunError
         else:
-            if stdout is not None:
-                context[stdout] = [binary.decode("UTF-8")
-                                   for binary in result.stdout.splitlines()]
+            if stdout not in (False, None):
+                stdout_lines = cmd_proc.stdout.decode('UTF-8').splitlines()
+                if stdout is True:
+                    self.log_info(
+                        'Command "{command}" output follows below:\n'
+                        + '\n'.join(stdout_lines)
+                    )
+                elif isinstance(stdout, str):
+                    context[stdout] = stdout_lines
+                else:
+                    self.log_error(
+                       'Invalid type for "stdout" argument (should be str): '
+                       f'{stdout} has type {type(stdout).__name__}'
+                    )
+                    raise ScriptEngineTaskArgumentInvalidError
