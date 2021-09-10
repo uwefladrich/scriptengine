@@ -10,8 +10,7 @@ import yaml
 import scriptengine.jinja
 import scriptengine.yaml
 
-from scriptengine.exceptions import ScriptEngineTaskArgumentError, \
-                                    ScriptEngineTaskArgumentInvalidError, \
+from scriptengine.exceptions import ScriptEngineTaskArgumentInvalidError, \
                                     ScriptEngineTaskArgumentMissingError
 
 
@@ -32,32 +31,38 @@ class Task:
         """
         for name in arguments:
             if name in getattr(cls, '_invalid_arguments', ()):
-                logmsg = (f'Invalid argument "{name}" found while '
-                          f'trying to create {cls.__name__} task')
-                logging.getLogger('se.task').error(logmsg, extra={'id': None})
-                raise ScriptEngineTaskArgumentInvalidError(logmsg)
+                logging.getLogger('se.task').error(
+                    (
+                        f'Invalid argument "{name}" found while '
+                        f'trying to create "{cls.__name__}" task'
+                    ),
+                    extra={'id': 'no id', 'type': cls.__name__},
+                )
+                raise ScriptEngineTaskArgumentInvalidError
+
         for name in getattr(cls, '_required_arguments', ()):
             if name not in arguments:
-                logmsg = (f'Missing required argument "{name}" while '
-                          f'trying to create {cls.__name__} task')
-                logging.getLogger('se.task').error(logmsg, extra={'id': None})
-                raise ScriptEngineTaskArgumentMissingError(logmsg)
+                logging.getLogger('se.task').error(
+                    (
+                        f'Missing required argument "{name}" while '
+                        f'trying to create "{cls.__name__}" task'
+                    ),
+                    extra={'id': 'no id', 'type': cls.__name__},
+                )
+                raise ScriptEngineTaskArgumentMissingError
 
     def __init__(self, arguments=None):
 
         self._identifier = uuid.uuid4()
 
         if arguments is not None:
-            try:
-                Task.check_arguments(arguments)
-            except ScriptEngineTaskArgumentError as e:
-                self.log_error(e)
-                raise
+            Task.check_arguments(arguments)
             for name, value in arguments.items():
                 if hasattr(self, name):
-                    self.log_error(f'Invalid task argument (reserved): {name}')
-                    raise ScriptEngineTaskArgumentInvalidError(
-                                   f'Invalid task argument (reserved): {name}')
+                    self.log_error(
+                        f'Invalid (reserved name) task argument: {name}'
+                    )
+                    raise ScriptEngineTaskArgumentInvalidError
                 setattr(self, name, value)
         self.log_debug(f'Created task: {self}')
 
@@ -85,8 +90,9 @@ class Task:
         return f'{self.__class__.__name__}({params_list})'
 
     def run(self, context):
-        raise NotImplementedError('Base class function Task.run() '
-                                  'must not be called')
+        raise NotImplementedError(
+            'Base class function Task.run() must not be called'
+        )
 
     def getarg(self, name, context={}, *,
                parse_jinja=True, parse_yaml=True, default=_SENTINEL):
@@ -123,11 +129,14 @@ class Task:
                    not isinstance(arg_, scriptengine.yaml.NoParseYamlString):
                     try:
                         return yaml.full_load(arg_)
-                    except (yaml.scanner.ScannerError,
-                            yaml.parser.ParserError,
-                            yaml.constructor.ConstructorError):
-                        self.log_debug(f'Reparsing argument "{arg_}" '
-                                       'with YAML failed')
+                    except (
+                        yaml.scanner.ScannerError,
+                        yaml.parser.ParserError,
+                        yaml.constructor.ConstructorError,
+                    ):
+                        self.log_debug(
+                            f'Reparsing argument "{arg_}" with YAML failed'
+                        )
 
                 # Return plain strings, not NoParse*Strings
                 return str(arg_)
@@ -148,8 +157,11 @@ class Task:
 
     def _log(self, level, msg):
         logger = logging.getLogger('se.task')
-        logger.log(level, msg, extra={'type': self.reg_name,
-                                      'id': self.shortid})
+        logger.log(
+            level,
+            msg,
+            extra={'type': self.reg_name, 'id': self.shortid}
+        )
 
     def log_debug(self, msg):
         self._log(logging.DEBUG, msg)

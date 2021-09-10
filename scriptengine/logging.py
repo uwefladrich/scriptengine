@@ -68,27 +68,33 @@ def configure(log_level=logging.INFO):
             'basic': {
                 '()': 'scriptengine.logging.LogLevelFormatter',
                 'formatters': {
-                    lvl: logging.Formatter(fmt=formats['basic'][lvl],
-                                           style='{',
-                                           datefmt=date_format)
+                    lvl: logging.Formatter(
+                            fmt=formats['basic'][lvl],
+                            style='{',
+                            datefmt=date_format
+                         )
                     for lvl in levels
                 }
             },
             'job': {
                 '()': 'scriptengine.logging.LogLevelFormatter',
                 'formatters': {
-                    lvl: logging.Formatter(fmt=formats['with_id'][lvl],
-                                           style='{',
-                                           datefmt=date_format)
+                    lvl: logging.Formatter(
+                            fmt=formats['with_id'][lvl],
+                            style='{',
+                            datefmt=date_format
+                         )
                     for lvl in levels
                 }
             },
             'task': {
                 '()': 'scriptengine.logging.LogLevelFormatter',
                 'formatters': {
-                    lvl: logging.Formatter(fmt=formats['with_id_and_type'][lvl],
-                                           style='{',
-                                           datefmt=date_format)
+                    lvl: logging.Formatter(
+                            fmt=formats['with_id_and_type'][lvl],
+                            style='{',
+                            datefmt=date_format
+                         )
                     for lvl in levels
                 }
             },
