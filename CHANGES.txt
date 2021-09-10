@@ -3,6 +3,11 @@ Features
 - Fix #43: Let SE stop on task errors (without traceback)
 
 
+Fixes
+-----
+- Fix #34: Deprecation warning from attrdict
+
+
 ScriptEngine 0.10.0
 ==================
 

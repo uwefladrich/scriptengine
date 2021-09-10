@@ -42,10 +42,15 @@ class Template(Task):
         #   4. <cwd>/templates
         # where <cwd> is the original working directory at the time when the
         # se script was called
-        search_path = ('.',
-                       './templates',
-                       context.se.cli.cwd,
-                       os.path.join(context.se.cli.cwd, 'templates'))
+        search_path = (
+            '.',
+            './templates',
+            context['se']['cli']['cwd'],
+            os.path.join(
+                context['se']['cli']['cwd'],
+                'templates',
+            ),
+        )
         self.log_debug(f'Search path for template: {search_path}')
 
         loader = jinja2.FileSystemLoader(search_path)

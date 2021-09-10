@@ -20,8 +20,8 @@ def timed_runner(func):
     def wrap_timed(self, context):
 
         try:
-            mode = context.se.tasks.timing.mode
-        except AttributeError:
+            mode = context['se']['tasks']['timing']['mode']
+        except KeyError:
             mode = False
 
         if mode in ('basic', 'classes', 'instances'):
@@ -32,9 +32,9 @@ def timed_runner(func):
             elapsed_time = time.perf_counter() - start_tic
 
             # logging
-            if context.se.tasks.timing.logging == 'info':
+            if context['se']['tasks']['timing']['logging'] == 'info':
                 self.log_info(f'Elapsed time: {elapsed_time:0.4f} seconds')
-            elif context.se.tasks.timing.logging == 'debug':
+            elif context['se']['tasks']['timing']['logging'] == 'debug':
                 self.log_debug(f'Elapsed time: {elapsed_time:0.4f} seconds')
 
             # update timers

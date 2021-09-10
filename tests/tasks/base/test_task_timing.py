@@ -1,7 +1,6 @@
 import pytest
 
 from time import sleep
-from attrdict import AttrDict
 
 from scriptengine.tasks.core import Task, timed_runner
 from scriptengine.tasks.base.task_timer import TaskTimer
@@ -41,24 +40,22 @@ def test_task_timing():
                        'logging': timer_logging})
     timed = WaitASecond()
 
-    context = AttrDict(
-        {
-            'se': {
-                'tasks': {
-                    'timing': {
-                        'mode': False,
-                        'logging': None,
-                        'timers': {},
-                    }
+    context = {
+        'se': {
+            'tasks': {
+                'timing': {
+                    'mode': False,
+                    'logging': None,
+                    'timers': {},
                 }
             }
         }
-    )
+    }
     timer.run(context)
     timed.run(context)
 
-    assert context.se.tasks.timing.mode == timer_mode
-    assert context.se.tasks.timing.logging == timer_logging
+    assert context['se']['tasks']['timing']['mode'] == timer_mode
+    assert context['se']['tasks']['timing']['logging'] == timer_logging
 
-    assert context.se.tasks.timing.timers.classes[timed.__class__.__name__] > 1.0
-    assert context.se.tasks.timing.timers.instances[timed.id] > 1.0
+    assert context['se']['tasks']['timing']['timers']['classes'][timed.__class__.__name__] > 1.0
+    assert context['se']['tasks']['timing']['timers']['instances'][timed.id] > 1.0

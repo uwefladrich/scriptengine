@@ -28,7 +28,11 @@ class Include(Task):
         inc_file = self.getarg('src', context)
         self.log_info(f'Include script from {inc_file}')
 
-        search_path = ('.', context.se.cli.cwd) + context.se.cli.script_path
+        search_path = (
+            '.',
+            context['se']['cli']['cwd'],
+            *context['se']['cli']['script_path'],
+        )
         self.log_debug(f'Searching in path: {search_path}')
 
         for directory in search_path:
@@ -48,10 +52,12 @@ class Include(Task):
         script = scriptengine.yaml.parse_file(inc_file_path)
 
         inc_file_dir = os.path.dirname(os.path.abspath(inc_file_path))
-        if inc_file_dir not in context.se.cli.script_path:
-            context.se.cli.script_path += inc_file_dir,
-        self.log_debug(f'New script_path: {context.se.cli.script_path}')
+        if inc_file_dir not in context['se']['cli']['script_path']:
+            context['se']['cli']['script_path'] += inc_file_dir,
+        self.log_debug(
+            f'New script_path: {context["se"]["cli"]["script_path"]}'
+        )
 
         self.log_debug(f'Execute script from "{inc_file}"')
-        context.se.instance.run(script, context)
+        context['se']['instance'].run(script, context)
         self.log_debug(f'Finished executing script from "{inc_file}"')

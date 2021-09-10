@@ -30,8 +30,6 @@ import os
 import argparse
 import logging
 
-from attrdict import AttrDict
-
 import scriptengine.version
 import scriptengine.helpers.terminal_colors
 import scriptengine.logging
@@ -95,14 +93,15 @@ def main():
        The context is passed to the ScriptEngine instance and, later, to all
        tasks. Some context information is already set here in the se command
        line tool:
-         context.se.cli.cwd         - the original working directory
-         context.se.cli.script_path - list of paths for all scripts given at
-                                      the command line (used as search path
-                                      for includes, for example)
-         context.se.instance        - a reference to the ScriptEngine instance
-                                      that executes the task
-         context.se.tasks.timing    - task timing information
-                                      (defaults to no timing)
+         context['se']['cli']['cwd']         - the original working directory
+         context['se']['cli']['script_path'] - list of paths for all scripts
+                                               given at the command line (used
+                                               as search path for includes, for
+                                               example)
+         context['se']['instance']           - a reference to the ScriptEngine
+                                               instance that executes the task
+         context['se']['tasks']['timing']    - task timing information
+                                               (defaults to no timing)
     '''
 
     # Parse command line arguments
@@ -144,12 +143,13 @@ def main():
     # Note that the following removal of duplicates does not guarantee the
     # order of entries before Python 3.7! We'll accept this in favour of the
     # easier implementation.
-    script_path = tuple(dict.fromkeys(
-                        (os.path.dirname(file) for file in parsed_args.files)))
+    script_path = tuple(
+        dict.fromkeys(
+            (os.path.dirname(file) for file in parsed_args.files)
+        )
+    )
 
-    # Initialise the context as AttrDict,
-    # i.e. allowing *read* access as, for example, 'context.se.cli.cwd'
-    context = AttrDict({
+    context = {
         'se': {
             'cli': {
                 'cwd': os.getcwd(),
@@ -164,9 +164,9 @@ def main():
             },
             'instance': SimpleScriptEngine(),
         }
-    })
+    }
 
     # Call ScriptEngine instance to run the script
-    context.se.instance.run(script, context)
+    context['se']['instance'].run(script, context)
 
     return os.EX_OK
