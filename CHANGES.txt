@@ -1,3 +1,8 @@
+Fixes
+-----
+- Fix #44: Command task log not correct
+
+
 ScriptEngine 0.10.1
 ===================
 

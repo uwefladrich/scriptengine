@@ -70,7 +70,7 @@ class Command(Task):
                 stdout_lines = cmd_proc.stdout.decode('UTF-8').splitlines()
                 if stdout is True:
                     self.log_info(
-                        'Command "{command}" output follows below:\n'
+                        f'Command "{command}" output follows below:\n'
                         + '\n'.join(stdout_lines)
                     )
                 elif isinstance(stdout, str):
