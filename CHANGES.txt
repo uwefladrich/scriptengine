@@ -1,6 +1,10 @@
+ScriptEngine 0.10.2
+===================
+
 Fixes
 -----
 - Fix #44: Command task log not correct
+- Fix #45: Command task in 0.10 doesn't work with Python <3.7
 
 
 ScriptEngine 0.10.1

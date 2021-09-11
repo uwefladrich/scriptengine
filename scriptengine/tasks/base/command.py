@@ -47,7 +47,10 @@ class Command(Task):
         try:
             cmd_proc = subprocess.run(
                 map(str, (command, *args)),
-                capture_output=True,
+                # when Python 3.6 is no longer supported, the following two
+                # lines can be replaced by capture_output=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
                 cwd=cwd,
                 check=True,
             )
