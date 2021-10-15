@@ -23,11 +23,11 @@ Usage::
 
     - base.command:
         name: <COMMAND_NAME>
-        args: <LIST_OF_ARGS> # optional
-        cwd: <PATH> # optional
-        stdout: [true|false|<STRING>] # optional
-        stderr: [true|false|<STRING>] # optional
-        ignore_error: [true|false] # optional
+        args: <LIST_OF_ARGS>  # optional
+        cwd: <PATH>  # optional
+        stdout: [true|false|<STRING>]  # optional
+        stderr: [true|false|<STRING>]  # optional
+        ignore_error: [true|false]  # optional
 
 When ``cwd`` (current work directory) is specified, the command is executed in
 the given directory::
@@ -172,7 +172,7 @@ Requests ScriptEngine to stop, optionally displaying a customised message.
 Usage::
 
     - base.exit:
-        msg: <MESSAGE> # optional
+        msg: <MESSAGE>  # optional
 
 
 Find task
@@ -181,8 +181,8 @@ Usage::
 
     base.find:
         path: <PATH>
-        pattern: <SEARCH_PATTERN> # optional
-        type: <FILE_OR_DIR> # optional
+        pattern: <SEARCH_PATTERN>  # optional
+        type: <FILE_OR_DIR>  # optional
 
 
 Getenv task
@@ -246,7 +246,7 @@ Usage::
 
     - base.include:
         src: <PATH>
-        ignore_not_found: <TRUE_OR_FALSE> # optional
+        ignore_not_found: [true|false]  # optional
 
 
 Link task
@@ -306,7 +306,7 @@ Usage::
 
     base.task_timer:
         mode: <TIMING_MODE>
-        logging: <LOGLEVEL> # optional
+        logging: <LOGLEVEL>  # optional
 
 where::
 
@@ -338,9 +338,10 @@ Usage::
     base.template:
         src: <PATH>
         dst: <PATH>
+        executable: [true|false]  # optional
 
 ScriptEngine searches for the template file (``src``) in the following
-directories, at the given order:
+directories, in the order given:
 
 #. ``.``
 #. ``./templates``
@@ -352,11 +353,13 @@ is executed and ``{{se.cli.cwd}}`` is the original working directory, the
 working directory at the time when the ScriptEngine command line tool was
 called.
 
-It is important to note that ``src`` must contain a relative path, absolute
-paths will not work.
+The ScriptEngine context is passed to the Jinja2 template engine when the
+template is rendered, which means that all context parameters can be referred to
+in the template.
 
-The template file may refer to any of the configurations set by ``context``
-tasks.
+If the ``executable`` argument is true (the default being false), the
+destination file will get executable permissions. The setting of permissions
+will respect the user's umask.
 
 
 Time task
@@ -365,4 +368,4 @@ Usage::
 
     base.time:
         set: <CONTEXT_VARIABLE>
-        since: <DATETIME> # optional
+        since: <DATETIME>  # optional

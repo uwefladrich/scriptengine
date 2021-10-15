@@ -3,6 +3,7 @@ ScriptEngine XXXXXX
 
 Fixes
 -----
+- Fix #46: Add optional `executable` argument to base.template
 - Fix #48: stdout/stderr handling in base.command
 
 

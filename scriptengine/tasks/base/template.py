@@ -1,6 +1,8 @@
 """Template task for ScriptEngine."""
 
+from pathlib import Path
 import os
+import stat
 import jinja2
 
 from scriptengine.tasks.core import Task, timed_runner
@@ -20,45 +22,46 @@ class Template(Task):
             - src: Source file name (a Jinja2 template)
             - dst: Destination file name
     """
-    _required_arguments = ('src', 'dst', )
+
+    _required_arguments = (
+        "src",
+        "dst",
+    )
 
     def __init__(self, arguments):
         Template.check_arguments(arguments)
         super().__init__(arguments)
 
     def __str__(self):
-        return f'Template: {self.src} --> {self.dst}'
+        return f"Template: {self.src} --> {self.dst}"
 
     @timed_runner
     def run(self, context):
-        src = self.getarg('src', context)
-        dst = self.getarg('dst', context)
-        self.log_info(f'Render {src} --> {dst}')
+        src = self.getarg("src", context)
+        dst = Path(self.getarg("dst", context))
+        self.log_info(f"Jinja2 render: {src} --> {dst}")
 
-        # The template search path:
-        #   1. .
-        #   2. ./templates
-        #   3. <cwd>
-        #   4. <cwd>/templates
-        # where <cwd> is the original working directory at the time when the
-        # se script was called
+        # Prepare the Jinja render environment with the proper search path
         search_path = (
-            '.',
-            './templates',
-            context['se']['cli']['cwd'],
-            os.path.join(
-                context['se']['cli']['cwd'],
-                'templates',
-            ),
+            Path("."),
+            Path(".") / "templates",
+            Path(context["se"]["cli"]["cwd"]),
+            Path(context["se"]["cli"]["cwd"]) / "templates",
         )
-        self.log_debug(f'Search path for template: {search_path}')
-
-        loader = jinja2.FileSystemLoader(search_path)
-        environment = jinja2.Environment(loader=loader)
+        self.log_debug(f"Template search path: {tuple(map(str, search_path))}")
+        j2loader = jinja2.FileSystemLoader(search_path)
+        j2env = jinja2.Environment(loader=j2loader)
         for name, function in j2filters().items():
-            environment.filters[name] = function
-        template = environment.get_template(src)
-        output_text = j2render(template.render(context), context)
+            j2env.filters[name] = function
 
-        with open(dst, 'w') as output_file:
-            output_file.write(f'{output_text}\n')
+        output = j2render(j2env.get_template(src).render(context), context)
+        with dst.open(mode="w") as f:
+            f.write(output + "\n")
+
+        if self.getarg("executable", context, default=False):
+            umask = os.umask(0)
+            os.umask(umask)
+            dst.chmod(
+                dst.stat().st_mode
+                | (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH) & ~umask
+            )
