@@ -17,7 +17,7 @@ Example::
 
 Command task
 ------------
-Executes a command, with optional arguments.
+Executes an external command, with optional arguments.
 
 Usage::
 
@@ -26,6 +26,7 @@ Usage::
         args: <LIST_OF_ARGS> # optional
         cwd: <PATH> # optional
         stdout: [true|false|<STRING>] # optional
+        stderr: [true|false|<STRING>] # optional
         ignore_error: [true|false] # optional
 
 When ``cwd`` (current work directory) is specified, the command is executed in
@@ -39,7 +40,7 @@ the given directory::
 When the ``stdout`` is given, it can be eiter a true value (e.g. ``true``,
 ``True``, ``Yes``, ``ON`` in YAML), a false value, or a string that makes for a
 valid name in the ScriptEngine context. If ``stdout`` is set to true (the
-default), then the standard output of the command is printed as a log message
+default), then the standard output of the command is printed as log messages
 (on the info level). When ``stdout`` is false, the standard output of the
 command is ignored.
 
@@ -54,19 +55,22 @@ that name, in the ScriptEngine context, for example::
         msg: "Command returned: {{message}}"
 
 Note that the standard output is always returned as a list of lines, even if
-there is only one line (as in the above example). This is often desired, for
+there is only one line (as in the example above). This is often desired, for
 example when using the command output in a loop. However, if one wanted to
 extract the first (and only) line in the example above, Jinja2 syntax could be
 used::
 
     - echo:
-        msg: "Command returned: {{message[0]}}"
+        msg: "Command returned: {{message|first}}"
+
+The ``stderr`` argument works exactly as ``stdout``, but for standard error
+output.
 
 If the command returns a non-zero exit code, ScriptEngine writes the exit code
-and the standard error output (if any) as log messages (on the error level) and
-stops.  However, if ``ignore_error`` is set to true and the command returns a
-non-zero exit code, exit code and standard error of the command are logged at
-the warning level instead and ScriptEngine continues.
+as log message (on the error level) and stops.  However, if ``ignore_error`` is
+set to true and the command returns a non-zero exit code, the exit code of the
+command is logged at the warning level instead and ScriptEngine continues. The
+default value for ``ignore_error`` is false.
 
 
 Context task

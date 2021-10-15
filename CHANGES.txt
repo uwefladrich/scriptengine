@@ -1,3 +1,11 @@
+ScriptEngine XXXXXX
+===================
+
+Fixes
+-----
+- Fix #48: stdout/stderr handling in base.command
+
+
 ScriptEngine 0.10.2
 ===================
 
