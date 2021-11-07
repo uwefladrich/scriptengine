@@ -14,7 +14,6 @@ from scriptengine.exceptions import ScriptEngineParseError
 
 
 class Job:
-
     def __init__(self, when=None, loop=None):
         self._identifier = uuid.uuid4()
         self._todo = []
@@ -31,7 +30,7 @@ class Job:
             self._loop_iter = loop
 
         self.log_debug(
-            'Create Job'
+            "Create Job"
             f'{" when "+self._when if self._when else ""}'
             f'{" with "+str(self._loop_var) if self._loop_var else ""}'
             f'{" in "+str(self._loop_iter) if self._loop_iter else ""}'
@@ -50,18 +49,16 @@ class Job:
         return iter(self._todo)
 
     def when(self, context):
-        return (self._when is None
-                or j2render(self._when, context, boolean=True))
+        return self._when is None or j2render(self._when, context, boolean=True)
 
     def loop(self, context):
         loop_iter = j2render(self._loop_iter, context)
         if isinstance(loop_iter, str):
             try:
-                loop_iter = ast.literal_eval(loop_iter or 'None')
+                loop_iter = ast.literal_eval(loop_iter or "None")
             except SyntaxError:
                 self.log_error(
-                    'Syntax error while evaluating loop '
-                    f'expression \'{loop_iter}\''
+                    f"Syntax error while evaluating loop expression '{loop_iter}'"
                 )
                 raise ScriptEngineParseError
         return self._loop_var, loop_iter
@@ -69,12 +66,10 @@ class Job:
     def append(self, todo):
         todo_list = todo if isinstance(todo, list) else [todo]
         self._todo.extend(todo_list)
-        self.log_debug(
-            f'Append: {",".join(t.shortid for t in todo_list)}'
-        )
+        self.log_debug(f'Append: {",".join(t.shortid for t in todo_list)}')
 
     def _log(self, level, msg):
-        logging.getLogger('se.job').log(level, msg, extra={'id': self.shortid})
+        logging.getLogger("se.job").log(level, msg, extra={"id": self.shortid})
 
     def log_debug(self, msg):
         self._log(logging.DEBUG, msg)
