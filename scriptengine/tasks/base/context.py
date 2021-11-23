@@ -1,23 +1,21 @@
 """Context task for ScriptEngine."""
 
-from deepmerge import always_merger
-
 from scriptengine.tasks.core import Task, timed_runner
 
 
 class Context(Task):
-    """Context task, sets/updates parameters in the SE context
-    Context.run() creates a dictionary from all name, value pairs of its
-    arguments and updates the context with that dict. The update algorithm used
-    here is deepmerge.always_merger, which means that all non-conflicting
-    updates are merged and in the case of conflicts, the data from the task
-    arguments overwrite the context.
-    """
+    """Context task, sets/updates the SE context.
+    The context task takes name, value pairs as arguments and updates the SE
+    context accordingly. Values can be scalars, lists, dictionaries and nested
+    combinations thereof.
+    Note that Context.run() returns a context *update* and that the higher-level
+    running instance (a Job or a ScriptEngine instance) is responsible for
+    merging the update with an existing context dict."""
+
     @timed_runner
     def run(self, context):
         context_update = {
-            n: self.getarg(n, context)
-            for n in vars(self) if not n.startswith('_')
+            n: self.getarg(n, context) for n in vars(self) if not n.startswith("_")
         }
-        self.log_info(f'Adding to context: {context_update}')
-        always_merger.merge(context, context_update)
+        self.log_info(f"Context update: {context_update}")
+        return context_update
