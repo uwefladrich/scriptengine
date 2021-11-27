@@ -95,7 +95,7 @@ def parse(data):
     if key in tasks:
 
         if "." not in key:
-            logging.getLogger("se.yaml").warn(
+            logging.getLogger("se.yaml").warning(
                 f'Deprecation warning while processing task "{key}": '
                 "The use of task names without dots (i.e. without a namespace)"
                 f' is deprecated! This task defaults to "base.{key}", but the '
