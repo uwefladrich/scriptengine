@@ -5,13 +5,17 @@ made of tasks and may include loops, conditionals, and a context. Job lists can
 be given to a ScriptEngine, for execution.
 """
 
+import ast
 import logging
 import uuid
-import ast
+from copy import deepcopy
 
-from scriptengine.tasks.core import Task
-from scriptengine.jinja import render as j2render
+from deepdiff import DeepDiff, Delta
+from deepmerge import always_merger
+
 from scriptengine.exceptions import ScriptEngineParseError
+from scriptengine.jinja import render as j2render
+from scriptengine.tasks.core import Task
 
 
 def _listy(thing, type_=list):
@@ -105,9 +109,24 @@ class Job:
 
     def run(self, context):
         if self.when(context):
-            for items in self.loop(context):
+            job_context = deepcopy(context)
+            for items in self.loop(job_context):
+                if set(items) & set(job_context):
+                    self.log_warning(
+                        "The following loop variables collide with the "
+                        f"context: {set(items) & set(job_context)}"
+                    )
                 for t in self.todo:
-                    t.run({**items, **context})
+                    todo_result = t.run({**job_context, **items})
+                    if isinstance(todo_result, dict):
+                        always_merger.merge(job_context, todo_result)
+                    elif isinstance(todo_result, Delta):
+                        job_context += todo_result
+                    else:
+                        job_context.update(
+                            {"se": {"tasks": {"last_result": todo_result}}}
+                        )
+            return Delta(DeepDiff(context, job_context))
 
     def _log(self, level, msg):
         logging.getLogger("se.job").log(level, msg, extra={"id": self.shortid})
