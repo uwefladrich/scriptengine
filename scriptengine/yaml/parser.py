@@ -1,21 +1,22 @@
 """ScriptEngine YAML parsing
 """
 
-import yaml
-import dateutil.rrule
 import logging
 
-from scriptengine.tasks.core.loader import load_and_register
-from scriptengine.jobs import Job
+import dateutil.rrule
+import yaml
+
 from scriptengine.exceptions import (
     ScriptEngineParseFileError,
     ScriptEngineParseScriptError,
     ScriptEngineParseYAMLError,
 )
+from scriptengine.jobs import Job
+from scriptengine.tasks.core.loader import load_and_register
 from scriptengine.yaml.noparse_strings import (
+    NoParseJinjaString,
     NoParseString,
     NoParseYamlString,
-    NoParseJinjaString,
 )
 
 
@@ -49,71 +50,67 @@ yaml.add_constructor("!rrule", rrule_constructor)
 
 
 def parse(data):
-    """
-    Args:
-        data (dict or list of dicts): Data structure that holds the script
-            description, i.e. job and task specifications. See the simple
-            ScriptEngine grammar in the documentation.
+    """Recursively parses data and returns a ScriptEnginge Task or Job, or a list of those.
+    The data is supposed to come from YAML-parsing a ScriptEngine script."""
 
-    Returns:
-        A scriptengine.task.Task, a scriptengine.jobs.Job, or a list of
-        tasks/jobs.
-    """
+    def build_job(todo, spec):
+        sentinel = object()
+
+        when_clause = spec.get("when")
+        loop_descriptor = spec.get("loop", sentinel)
+
+        loop_opts = {}
+        if loop_descriptor is not sentinel:
+            if isinstance(loop_descriptor, list) or isinstance(loop_descriptor, str):
+                loop_opts = {
+                    "loop": loop_descriptor,
+                    "loop_vars": None,
+                }
+            elif isinstance(loop_descriptor, dict) and "in" in loop_descriptor:
+                loop_opts = {
+                    "loop": loop_descriptor["in"],
+                    "loop_vars": loop_descriptor.get("with"),
+                }
+            else:
+                log.error(f"Invalid loop descriptor: {loop_descriptor}")
+        return Job(todo, when=when_clause, **loop_opts)
 
     if not data:
         return []
 
-    tasks = load_and_register()
-    jobs = {"do"}
-
-    # Recursively parse lists of tasks/jobs
     if isinstance(data, list):
-        return [parse(item) for item in data]
+        return [parse(d) for d in data]
 
-    # Parse single task/job
+    log = logging.getLogger("se.yaml")
+
+    tasks = load_and_register()
+    job_keys = {"do"}
+
     try:
-        keys = (jobs | tasks.keys()) & data.keys()
+        valid_keys = data.keys() & (job_keys | tasks.keys())
     except AttributeError:
-        logging.getLogger("se.yaml").error(
-            f'Expected YAML dictionary, got "{type(data).__name__}: {data}"'
-        )
-        raise ScriptEngineParseScriptError
-    if not keys:
-        logging.getLogger("se.yaml").error(
-            f'Found unknown task name(s): "{", ".join(data.keys())}"'
-        )
-        raise ScriptEngineParseScriptError
-    if len(keys) > 1:
-        logging.getLogger("se.yaml").error(
-            f'Found ambiguous task names: "{", ".join(data.keys())}"'
-        )
+        log.error(f"Expected YAML list or dict, got {type(data).__name__}: {data}")
         raise ScriptEngineParseScriptError
 
-    # There is exactly one key, get it
-    key = keys.pop()
+    if not valid_keys:
+        log.error(f"No valid task name found in {data.keys()}")
+        raise ScriptEngineParseScriptError
+
+    if len(valid_keys) > 1:
+        log.error(f"Ambiguous task names found in {data.keys()}")
+        raise ScriptEngineParseScriptError
+
+    key = valid_keys.pop()
 
     if key in tasks:
-
-        if "." not in key:
-            logging.getLogger("se.yaml").warning(
-                f'Deprecation warning while processing task "{key}": '
-                "The use of task names without dots (i.e. without a namespace)"
-                f' is deprecated! This task defaults to "base.{key}", but the '
-                "default will be removed in the future and an error will "
-                "occur instead."
-            )
-
-        if len(data) == 1:  # Simple task (no when clause or loop)
+        if len(data) == 1:  # It's a simple Task
             return tasks[key](data[key])
-        # Job made from single task with when/loop
-        job = Job(when=data.get("when"), loop=data.get("loop"))
-        job.append(parse({key: data[key]}))
-        return job
+        return build_job(parse({key: data[key]}), data)
 
-    job = Job(when=data.get("when"), loop=data.get("loop"))
-    for item in data[key]:
-        job.append(parse(item))
-    return job
+    return build_job(
+        [parse(t) for t in data[key]],
+        data,
+    )
 
 
 def parse_file(filename):
