@@ -123,8 +123,8 @@ class Job:
                     elif isinstance(todo_result, Delta):
                         job_context += todo_result
                     else:
-                        job_context.update(
-                            {"se": {"tasks": {"last_result": todo_result}}}
+                        always_merger.merge(
+                            job_context, {"se": {"tasks": {"last_result": todo_result}}}
                         )
             return Delta(DeepDiff(context, job_context))
 
