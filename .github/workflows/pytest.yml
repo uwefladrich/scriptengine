@@ -31,7 +31,3 @@ jobs:
                 flake8 --count --select=E9,F63,F7,F82 --show-source --statistics scriptengine/
                 # All other stuff
                 flake8 --exit-zero --count --statistics --exclude=__init__.py --max-line-length=88 scriptengine/
-
-        - name: Build binary wheel and a source tarbal
-            - name: Run PyTest
-              run: python -m pytest --import-mode=append tests/
