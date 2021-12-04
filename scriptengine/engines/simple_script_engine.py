@@ -1,92 +1,71 @@
 """ SimpleScriptEngine for ScriptEngine.
 
 SimpleScriptEngine is a simplistic script engine. It runs all jobs sequentially
-on the local machine, without consideration of job contexts.
+on the local machine, without consideration of job contexts. The
+SimpleScriptEngine relies on the Job class to run the actual tasks/jobs.
 """
 
-import sys
 import logging
+import sys
+from copy import deepcopy
+from pprint import pprint
 
-from scriptengine.tasks.core import Task
-from scriptengine.jobs import Job
-from scriptengine.exceptions import ScriptEngineError, \
-                                    ScriptEngineStopException, \
-                                    ScriptEngineTaskError
+from deepdiff import Delta
+from deepmerge import always_merger
+
+from scriptengine.exceptions import ScriptEngineStopException, ScriptEngineTaskError
 
 
 class SimpleScriptEngine:
-    '''Simplistic script engine for ScriptEngine.
-    '''
-    def _guarded_run(self, item, context):
+    def __init__(self):
+        self.logger = logging.getLogger(
+            "se.instance." + self.__class__.__name__.lower()
+        )
+
+    def _guarded_run(self, runner, context):
         try:
-            item.run(context)
-        except ScriptEngineStopException:
-            self.log_info(
-                'STOPPING ScriptEngine instance upon request'
-            )
-            sys.exit()
-        except ScriptEngineTaskError:
+            return runner.run(context)
+        except AttributeError as e:
             self.log_error(
-                'STOPPING ScriptEngine due to an error in task '
-                f'"{item.reg_name}" with id <{item.shortid}>'
+                "STOPPING SimpleScriptEngine due to internal error: "
+                f"Cannot run type {type(runner).__name__}"
             )
-            sys.exit()
+            error = e
+        except ScriptEngineStopException:
+            self.log_info("STOPPING SimpleScriptEngine instance upon request")
+            error = None
+        except ScriptEngineTaskError as e:
+            self.log_error(
+                "STOPPING SimpleScriptEngine due to task error in "
+                f"{runner.reg_name} id <{runner.shortid}>"
+            )
+            error = e
+        if error:
+            if self.logger.getEffectiveLevel() <= logging.DEBUG:
+                self.log_error("Last context before error:")
+                pprint(context)
+                self.log_error("Traceback from error:")
+                raise error
+            else:
+                self.log_error("For more debugging info, re-run with loglevel DEBUG")
+        sys.exit()
 
     def run(self, script, context):
-
-        for script_item in script if isinstance(script, list) else [script]:
-
-            if isinstance(script_item, Task):
-                self._guarded_run(script_item, context)
-            elif isinstance(script_item, Job):
-                if script_item.when(context):
-
-                    # Loop setup with loop var collision detection
-                    none_loop = object()  # just a unique object
-                    loop_var, loop_iter = script_item.loop(context)
-                    old_loop_var = context.get(loop_var, None)
-                    if old_loop_var:
-                        self.log_warning(
-                            'Loop variable collision for \'{loop_var}\''
-                        )
-                    # Run loop (at least once)
-                    for loop_item in loop_iter or [none_loop]:
-
-                        if loop_item is not none_loop:
-                            context[loop_var] = loop_item
-
-                        # Run task/job for one loop iteration
-                        for todo in script_item.todo:
-                            if isinstance(todo, Task):
-                                self._guarded_run(todo, context)
-                            elif isinstance(todo, Job):
-                                # recurse for jobs
-                                self.run(todo, context)
-                            else:
-                                self.log_error(
-                                    'Invalid item (neither Task nor Job) '
-                                    f'of type \'{type(script_item)}\''
-                                )
-                                raise ScriptEngineError
-                    # Remove or restore loop var
-                    if old_loop_var:
-                        context[loop_var] = old_loop_var
-                    else:
-                        context.pop(loop_var, None)
-                else:
-                    self.log_debug(
-                        f'Not executing <{script_item.shortid}> because '
-                        'when clause evaluates false')
+        mycontext = deepcopy(context)
+        for todo in script if isinstance(script, list) else [script]:
+            todo_result = self._guarded_run(todo, mycontext)
+            if isinstance(todo_result, dict):
+                always_merger.merge(mycontext, todo_result)
+            elif isinstance(todo_result, Delta):
+                mycontext += todo_result
             else:
-                self.log_error(
-                    'Invalid item (neither Task nor Job) '
-                    f'of type \'{type(script_item)}\''
+                always_merger.merge(
+                    mycontext, {"se": {"tasks": {"last_result": todo_result}}}
                 )
-                raise ScriptEngineError
+        return mycontext
 
     def _log(self, level, msg):
-        logger = 'se.instance.'+self.__class__.__name__.lower()
-        logging.getLogger(logger).log(level, msg)
+        self.logger.log(level, msg)
 
     def log_debug(self, msg):
         self._log(logging.DEBUG, msg)
