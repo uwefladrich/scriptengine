@@ -5,55 +5,47 @@ import yaml
 import dateutil.rrule
 import logging
 
-import scriptengine.tasks.core.loader
+from scriptengine.tasks.core.loader import load_and_register
 from scriptengine.jobs import Job
-from scriptengine.exceptions import ScriptEngineParseFileError, \
-                                    ScriptEngineParseScriptError, \
-                                    ScriptEngineParseYAMLError
-
-
-class NoParseYamlString(str):
-    """This represents a string that should not be YAML-parsed"""
-
-
-class NoParseJinjaString(str):
-    """This represents a string that should not be parsed with Jinja2"""
-
-
-class NoParseString(NoParseYamlString, NoParseJinjaString):
-    """This represents a string that should not be parsed at all, neither YAML
-       or Jinja2"""
+from scriptengine.exceptions import (
+    ScriptEngineParseFileError,
+    ScriptEngineParseScriptError,
+    ScriptEngineParseYAMLError,
+)
+from scriptengine.yaml.noparse_strings import (
+    NoParseString,
+    NoParseYamlString,
+    NoParseJinjaString,
+)
 
 
 def string_class_constructor(derived_string_class):
     """YAML constructor factory. The constructors convert their values to a
-       string and return an object of a specific class (derived from str). The
-       class membership is later used to limit the Jinja2/YAML parsing during
-       the processing of ScriptEngine scripts.
+    string and return an object of a specific class (derived from str). The
+    class membership is later used to limit the Jinja2/YAML parsing during
+    the processing of ScriptEngine scripts.
     """
+
     def constructor(loader, node):
         value = loader.construct_scalar(node)
         return derived_string_class(str(value))
+
     return constructor
 
 
-yaml.add_constructor(u'!noparse',
-                     string_class_constructor(NoParseString))
-yaml.add_constructor(u'!noparse_yaml',
-                     string_class_constructor(NoParseYamlString))
-yaml.add_constructor(u'!noparse_jinja',
-                     string_class_constructor(NoParseJinjaString))
+yaml.add_constructor("!noparse", string_class_constructor(NoParseString))
+yaml.add_constructor("!noparse_yaml", string_class_constructor(NoParseYamlString))
+yaml.add_constructor("!noparse_jinja", string_class_constructor(NoParseJinjaString))
 
 
 def rrule_constructor(loader, node):
-    """A YAML constructor that can parse RFC5545 rrules
-    """
+    """A YAML constructor that can parse RFC5545 rrules"""
     value = loader.construct_scalar(node)
     rrule = dateutil.rrule.rrulestr(value)
     return rrule
 
 
-yaml.add_constructor(u'!rrule', rrule_constructor)
+yaml.add_constructor("!rrule", rrule_constructor)
 
 
 def parse(data):
@@ -71,7 +63,7 @@ def parse(data):
     if not data:
         return []
 
-    tasks = scriptengine.tasks.core.loader.load_and_register()
+    tasks = load_and_register()
     jobs = {"do"}
 
     # Recursively parse lists of tasks/jobs
@@ -82,21 +74,18 @@ def parse(data):
     try:
         keys = (jobs | tasks.keys()) & data.keys()
     except AttributeError:
-        logging.getLogger('se.yaml').error(
-            'Expected YAML dictionary, got '
-            f'"{type(data).__name__}: {data}"'
+        logging.getLogger("se.yaml").error(
+            f'Expected YAML dictionary, got "{type(data).__name__}: {data}"'
         )
         raise ScriptEngineParseScriptError
     if not keys:
-        logging.getLogger('se.yaml').error(
-            'Found unknown task name(s): '
-            f'\"{", ".join(data.keys())}\"'
+        logging.getLogger("se.yaml").error(
+            f'Found unknown task name(s): "{", ".join(data.keys())}"'
         )
         raise ScriptEngineParseScriptError
     if len(keys) > 1:
-        logging.getLogger('se.yaml').error(
-            'Found ambiguous task names: '
-            f'\"{", ".join(data.keys())}\"'
+        logging.getLogger("se.yaml").error(
+            f'Found ambiguous task names: "{", ".join(data.keys())}"'
         )
         raise ScriptEngineParseScriptError
 
@@ -105,13 +94,13 @@ def parse(data):
 
     if key in tasks:
 
-        if '.' not in key:
-            logging.getLogger('se.yaml').warn(
+        if "." not in key:
+            logging.getLogger("se.yaml").warn(
                 f'Deprecation warning while processing task "{key}": '
-                'The use of task names without dots (i.e. without a namespace)'
+                "The use of task names without dots (i.e. without a namespace)"
                 f' is deprecated! This task defaults to "base.{key}", but the '
-                'default will be removed in the future and an error will '
-                'occur instead.'
+                "default will be removed in the future and an error will "
+                "occur instead."
             )
 
         if len(data) == 1:  # Simple task (no when clause or loop)
@@ -140,16 +129,10 @@ def parse_file(filename):
     try:
         with open(filename) as file:
             data = yaml.load(file, Loader=yaml.FullLoader)
-    except (FileNotFoundError,
-            PermissionError,
-            IsADirectoryError) as e:
-        logging.getLogger('se.yaml').error(
-            f'Could not read script file: {e}'
-        )
+    except (FileNotFoundError, PermissionError, IsADirectoryError) as e:
+        logging.getLogger("se.yaml").error(f"Could not read script file: {e}")
         raise ScriptEngineParseFileError
     except yaml.YAMLError as e:
-        logging.getLogger('se.yaml').error(
-            f'Could not parse script file: {e}'
-        )
+        logging.getLogger("se.yaml").error(f"Could not parse script file: {e}")
         raise ScriptEngineParseYAMLError
     return parse(data)

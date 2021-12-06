@@ -6,7 +6,7 @@
 
 import os
 
-import scriptengine.yaml
+from scriptengine.yaml.parser import parse_file as parse_yaml_file
 
 from scriptengine.tasks.core import Task, timed_runner
 from scriptengine.exceptions import ScriptEngineTaskRunError
@@ -49,7 +49,7 @@ class Include(Task):
             self.log_error(msg)
             raise ScriptEngineTaskRunError(msg)
 
-        script = scriptengine.yaml.parse_file(inc_file_path)
+        script = parse_yaml_file(inc_file_path)
 
         inc_file_dir = os.path.dirname(os.path.abspath(inc_file_path))
         if inc_file_dir not in context['se']['cli']['script_path']:

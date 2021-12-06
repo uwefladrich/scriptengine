@@ -8,6 +8,10 @@ import uuid
 import yaml
 
 import scriptengine.jinja
+from scriptengine.yaml.noparse_strings import (
+    NoParseJinjaString,
+    NoParseYamlString,
+)
 import scriptengine.yaml
 
 from scriptengine.exceptions import ScriptEngineTaskArgumentInvalidError, \
@@ -120,13 +124,13 @@ class Task:
 
             if isinstance(arg_, str):
                 if parse_jinja and \
-                   not isinstance(arg_, scriptengine.yaml.NoParseJinjaString):
+                   not isinstance(arg_, NoParseJinjaString):
                     # Make sure that a NoParseString is still a NoParseString
                     # after this!
                     arg_ = type(arg_)(scriptengine.jinja.render(arg_, context))
 
                 if parse_yaml and \
-                   not isinstance(arg_, scriptengine.yaml.NoParseYamlString):
+                   not isinstance(arg_, NoParseYamlString):
                     try:
                         return yaml.full_load(arg_)
                     except (
