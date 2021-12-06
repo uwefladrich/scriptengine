@@ -1,4 +1,4 @@
-name: Build Python package and publish to PyPI if tagged
+name: Package and publish PyPI
 on: push
 
 jobs:
