@@ -1,3 +1,19 @@
+ScriptEngine <next-version>
+===================
+
+Features
+--------
+- Fix #47: Loop over dictionaries
+- Introduce context["se"]["tasks"]["last_result"]
+
+Internal changes
+----------------
+- Task.run() never changes context, returns dict or deepdiff.Delta
+  for context updates
+- Major changes in Job implementation
+- SimpleScriptEngine relies on Job class for run()
+
+
 ScriptEngine 0.11.0
 ===================
 

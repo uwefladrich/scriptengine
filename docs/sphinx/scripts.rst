@@ -136,6 +136,52 @@ variable collision. When using nested loops with the same loop index variable
 (explicitely or by default), the variable values from outer loops will not be
 accessible in the inner loops.
 
+It is also possible to loop over dicts in ScriptEngine, like in the following
+example::
+
+    - base.echo:
+        msg: "{{key}} is {{value}} years old."
+      loop:
+        in:
+            Mary: 31
+            Peter: 29
+            Paul: 39
+
+which would yield::
+
+    Mary is 31 years old.
+    Peter is 29 years old.
+    Paul is 39 years old.
+
+The example shows that the extended loop specifier with ``in:`` must be used
+when looping over dicts, otherwise an *invalid loop decriptor error* error
+occurs. Futhermore, the example shows that the default loop variables for loops
+over dicts are ``key`` and ``value``. If the dict loop should use other
+variables, their names can be given explicitely::
+
+    - base.echo:
+        msg: "{{name}} is {{age}} years old."
+      loop:
+        with: [name, age]
+        in:
+            Mary: 31
+            Peter: 29
+            Paul: 39
+
+In the same manner as for lists, loop dicts can be defined in the ScriptEngine
+context::
+
+    - base.context:
+        people:
+            Mary: 31
+            Peter: 29
+            Paul: 39
+    - base.echo:
+        msg: '{{name}} is {{age}} years old.'
+      loop:
+        with: [name, age]
+        in: '{{people}}'
+
 
 Conditionals (`when` clauses)
 -----------------------------
