@@ -1,3 +1,11 @@
+ScriptEngine 0.12.1
+===================
+
+Fixes
+-----
+- Fix #53: Looping over list of dicts doesn't work in particular case
+
+
 ScriptEngine 0.12.0
 ===================
 

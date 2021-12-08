@@ -19,7 +19,7 @@ from scriptengine.tasks.core import Task
 
 
 def _listy(thing, type_=list):
-    if isinstance(thing, str):
+    if isinstance(thing, str) or isinstance(thing, dict):
         return type_((thing,))
     try:
         iter(thing)

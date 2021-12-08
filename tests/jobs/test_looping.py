@@ -1,6 +1,7 @@
 import yaml
 
 from scriptengine.yaml.parser import parse
+from scriptengine.engines import SimpleScriptEngine
 
 
 def from_yaml(string):
@@ -123,3 +124,24 @@ def test_loop_in_dict_from_context(capsys):
     assert "foo is 1" in captured.out
     assert "bar is 2" in captured.out
     assert "baz is 3" in captured.out
+
+def test_loop_over_list_of_dicts(capsys):
+    s = from_yaml(
+        """
+        - base.context:
+            list:
+              - foo:
+                  bar: 1
+                  baz: 2
+              - foo:
+                  bar: 3
+                  baz: 4
+        - base.echo:
+            msg: '{{item.foo.bar}} - {{item.foo.baz}}'
+          loop: "{{list}}"
+        """
+    )
+    SimpleScriptEngine().run(s, context={})
+    captured = capsys.readouterr()
+    assert "1 - 2" in captured.out
+    assert "3 - 4" in captured.out
