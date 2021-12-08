@@ -13,7 +13,11 @@ from deepdiff import Delta
 from deepmerge import always_merger
 
 from scriptengine.context import context_delta, save_copy
-from scriptengine.exceptions import ScriptEngineParseError
+from scriptengine.exceptions import (
+    ScriptEngineJobError,
+    ScriptEngineParseError,
+    ScriptEngineParseJinjaError,
+)
 from scriptengine.jinja import render as j2render
 from scriptengine.tasks.core import Task
 
@@ -71,7 +75,14 @@ class Job:
         self._todo = _todo_list(todo)
 
     def when(self, context):
-        return self._when is None or j2render(self._when, context, boolean=True)
+        try:
+            return self._when is None or j2render(self._when, context, boolean=True)
+        except ScriptEngineParseJinjaError:
+            self.log_error(
+                "Error while parsing the job's when clause: "
+                f'"{self._when}" with context "{context}"'
+            )
+            raise ScriptEngineJobError
 
     def loop(self, context):
         if self._loop:

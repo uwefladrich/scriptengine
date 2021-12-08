@@ -13,7 +13,11 @@ from deepdiff import Delta
 from deepmerge import always_merger
 
 from scriptengine.context import save_copy
-from scriptengine.exceptions import ScriptEngineStopException, ScriptEngineTaskError
+from scriptengine.exceptions import (
+    ScriptEngineJobError,
+    ScriptEngineStopException,
+    ScriptEngineTaskError,
+)
 
 
 class SimpleScriptEngine:
@@ -38,6 +42,11 @@ class SimpleScriptEngine:
             self.log_error(
                 "STOPPING SimpleScriptEngine due to task error in "
                 f"{runner.reg_name} id <{runner.shortid}>"
+            )
+            error = e
+        except ScriptEngineJobError as e:
+            self.log_error(
+                f"STOPPING SimpleScriptEngine due to job error in <{runner.shortid}>"
             )
             error = e
         if error:

@@ -1,3 +1,11 @@
+ScriptEngine 0.12.2
+===================
+
+Fixes
+-----
+- Fix #33: When clause with empty/undefined expression
+
+
 ScriptEngine 0.12.1
 ===================
 

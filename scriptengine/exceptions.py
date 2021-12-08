@@ -29,7 +29,7 @@ class ScriptEngineParseYAMLError(ScriptEngineParseError):
 
 class ScriptEngineParseScriptError(ScriptEngineParseError):
     """Throw this exception if YAML/Jinja2 is okay, but the result can not be
-       parsed as a valid ScriptEngine script"""
+    parsed as a valid ScriptEngine script"""
 
 
 class ScriptEngineTaskError(ScriptEngineError):
@@ -54,4 +54,8 @@ class ScriptEngineTaskArgumentMissingError(ScriptEngineTaskArgumentError):
 
 class ScriptEngineTaskRunError(ScriptEngineTaskError):
     """Throw this for errors at run time, i.e. during execution of the tasks
-       run() method"""
+    run() method"""
+
+
+class ScriptEngineJobError(ScriptEngineError):
+    """All ScriptEngine Jobs should throw this"""
