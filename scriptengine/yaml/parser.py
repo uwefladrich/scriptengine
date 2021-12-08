@@ -61,6 +61,11 @@ def parse(data):
 
         loop_opts = {}
         if loop_descriptor is not sentinel:
+            if not loop_descriptor:
+                log.error(
+                    f"Invalid loop descriptor (evaluates to False): {loop_descriptor}"
+                )
+                raise ScriptEngineParseYAMLError
             if isinstance(loop_descriptor, list) or isinstance(loop_descriptor, str):
                 loop_opts = {
                     "loop": loop_descriptor,
@@ -73,6 +78,7 @@ def parse(data):
                 }
             else:
                 log.error(f"Invalid loop descriptor: {loop_descriptor}")
+                raise ScriptEngineParseYAMLError
         return Job(todo, when=when_clause, **loop_opts)
 
     if not data:

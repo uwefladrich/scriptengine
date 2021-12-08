@@ -59,3 +59,7 @@ class ScriptEngineTaskRunError(ScriptEngineTaskError):
 
 class ScriptEngineJobError(ScriptEngineError):
     """All ScriptEngine Jobs should throw this"""
+
+
+class ScriptEngineJobParseError(ScriptEngineJobError):
+    """An error while parsing a job description"""

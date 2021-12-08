@@ -14,8 +14,7 @@ from deepmerge import always_merger
 
 from scriptengine.context import context_delta, save_copy
 from scriptengine.exceptions import (
-    ScriptEngineJobError,
-    ScriptEngineParseError,
+    ScriptEngineJobParseError,
     ScriptEngineParseJinjaError,
 )
 from scriptengine.jinja import render as j2render
@@ -79,33 +78,46 @@ class Job:
             return self._when is None or j2render(self._when, context, boolean=True)
         except ScriptEngineParseJinjaError:
             self.log_error(
-                "Error while parsing the job's when clause: "
+                "Error while parsing (Jinja2) invalid when clause "
                 f'"{self._when}" with context "{context}"'
             )
-            raise ScriptEngineJobError
+            raise ScriptEngineJobParseError
 
     def loop(self, context):
         if self._loop:
-            loop_iter = j2render(self._loop, context)
+            try:
+                loop_iter = j2render(self._loop, context)
+            except ScriptEngineParseJinjaError:
+                self.log_error(
+                    "Error while parsing (Jinja2) invalid loop expression "
+                    f'"{self._loop}" with context "{context}"'
+                )
+                raise ScriptEngineJobParseError
             if isinstance(loop_iter, str):
                 try:
                     loop_iter = ast.literal_eval(loop_iter or "None")
-                except SyntaxError:
+                except (SyntaxError, ValueError):
                     self.log_error(
-                        f"Syntax error while evaluating loop expression '{loop_iter}'"
+                        "Error while evaluating (AST) invalid loop expression "
+                        f'"{loop_iter}" with context "{context}"'
                     )
-                    raise ScriptEngineParseError
+                    raise ScriptEngineJobParseError
             if isinstance(loop_iter, dict):
                 loop_iter = loop_iter.items()
                 loop_vars = self._loop_vars or ("key", "value")
             else:
                 loop_vars = self._loop_vars or ("item",)
-            for items in loop_iter:
-                yield dict(
-                    zip(
-                        _listy(loop_vars, type_=tuple),
-                        (j2render(i, context) for i in _listy(items, type_=tuple)),
+            if loop_iter:
+                for items in loop_iter:
+                    yield dict(
+                        zip(
+                            _listy(loop_vars, type_=tuple),
+                            (j2render(i, context) for i in _listy(items, type_=tuple)),
+                        )
                     )
+            else:
+                self.log_warning(
+                    "Loop descriptor evaluates to false after parsing, job is not run!"
                 )
         else:
             yield {}

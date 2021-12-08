@@ -1,3 +1,11 @@
+ScriptEngine <next version>
+===================
+
+Fixes
+-----
+- Fix #8: Loops with empty or undefined specs
+
+
 ScriptEngine 0.12.2
 ===================
 
