@@ -7,12 +7,12 @@ SimpleScriptEngine relies on the Job class to run the actual tasks/jobs.
 
 import logging
 import sys
-from copy import deepcopy
 from pprint import pprint
 
 from deepdiff import Delta
 from deepmerge import always_merger
 
+from scriptengine.context import save_copy
 from scriptengine.exceptions import ScriptEngineStopException, ScriptEngineTaskError
 
 
@@ -51,7 +51,7 @@ class SimpleScriptEngine:
         sys.exit()
 
     def run(self, script, context):
-        mycontext = deepcopy(context)
+        mycontext = save_copy(context)
         for todo in script if isinstance(script, list) else [script]:
             todo_result = self._guarded_run(todo, mycontext)
             if isinstance(todo_result, dict):

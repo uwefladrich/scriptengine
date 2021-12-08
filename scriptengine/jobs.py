@@ -8,11 +8,11 @@ be given to a ScriptEngine, for execution.
 import ast
 import logging
 import uuid
-from copy import deepcopy
 
-from deepdiff import DeepDiff, Delta
+from deepdiff import Delta
 from deepmerge import always_merger
 
+from scriptengine.context import context_delta, save_copy
 from scriptengine.exceptions import ScriptEngineParseError
 from scriptengine.jinja import render as j2render
 from scriptengine.tasks.core import Task
@@ -106,7 +106,7 @@ class Job:
 
     def run(self, context):
         if self.when(context):
-            job_context = deepcopy(context)
+            job_context = save_copy(context)
             for items in self.loop(job_context):
                 if set(items) & set(job_context):
                     self.log_warning(
@@ -123,7 +123,7 @@ class Job:
                         always_merger.merge(
                             job_context, {"se": {"tasks": {"last_result": todo_result}}}
                         )
-            return Delta(DeepDiff(context, job_context))
+            return context_delta(context, job_context)
 
     def _log(self, level, msg):
         logging.getLogger("se.job").log(level, msg, extra={"id": self.shortid})
