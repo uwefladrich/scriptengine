@@ -18,6 +18,7 @@ from scriptengine.exceptions import (
     ScriptEngineStopException,
     ScriptEngineTaskError,
 )
+from scriptengine.tasks.core import Task
 
 
 class SimpleScriptEngine:
@@ -39,10 +40,16 @@ class SimpleScriptEngine:
             self.log_info("STOPPING SimpleScriptEngine instance upon request")
             error = None
         except ScriptEngineTaskError as e:
-            self.log_error(
-                "STOPPING SimpleScriptEngine due to task error in "
-                f"{runner.reg_name} id <{runner.shortid}>"
-            )
+            if isinstance(runner, Task):
+                self.log_error(
+                    "STOPPING SimpleScriptEngine due to task error in "
+                    f"{runner.reg_name} <{runner.shortid}>"
+                )
+            else:
+                self.log_error(
+                    "STOPPING SimpleScriptEngine due to task error in job "
+                    f"<{runner.shortid}>"
+                )
             error = e
         except ScriptEngineJobError as e:
             self.log_error(

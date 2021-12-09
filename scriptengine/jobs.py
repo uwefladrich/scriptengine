@@ -51,10 +51,11 @@ class Job:
         self._loop = loop
         self._loop_vars = loop_vars
         self.log_debug(
-            "Create Job"
-            f'{" when "+self._when if self._when else ""}'
-            f'{" with "+str(self._loop_vars) if self._loop else ""}'
-            f'{" in "+str(self._loop) if self._loop else ""}'
+            "New Job:"
+            f"{' when '+self._when if self._when else ''}"
+            f"{' with '+str(self._loop_vars) if self._loop else ''}"
+            f"{' in '+str(self._loop) if self._loop else ''}"
+            f" {tuple(t.shortid for t in self._todo)}"
         )
 
     @property
