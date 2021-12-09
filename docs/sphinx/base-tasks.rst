@@ -248,6 +248,15 @@ Usage::
         src: <PATH>
         ignore_not_found: [true|false]  # optional
 
+Includes and runs a ScriptEngine script given by the ``src`` argument, which
+must be a relative path. The script is search relative to the current working
+directory at the moment the include task is run, the original working directory
+when the ``se`` command was run, or any of the directories that the scripts
+given to the ``se`` command were in.
+
+If ``ingore_not_found`` is ``True``, a warning is written in case the include
+script is not found. If it is ``False`` (the default) an error is raised.
+
 
 Link task
 ---------

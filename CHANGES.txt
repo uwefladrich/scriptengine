@@ -4,6 +4,7 @@ ScriptEngine <next version>
 Fixes
 -----
 - Fix #8: Loops with empty or undefined specs
+- Fix #54: base.include task does not update context 
 
 
 ScriptEngine 0.12.2
