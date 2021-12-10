@@ -28,13 +28,33 @@ def save_copy(context):
 
 
 def context_delta(first, second):
-    """deepdiff.Delta.__add__ uses copy.deepcopy internally if Delta was created
-    with mutate=False (the default). We set mutate=True for Python 3.6 in order to
-    avoid the use of deepcopy (see above).
+    """The deepdiff.Delta's __init__ and __add__ functions use copy.deepcopy
+    internally, which does not work with the SE context (see above).
+    Therefore, we ignore context["se"]["instance"] before creating Delta. This
+    means, that for Python 3.6 this item in the context is not part of the Delta,
+    even if it was changed between first and second!
+    Also, we have to create the Delta with mutate=True to avoid another deepcopy.
     """
     if _python_version != (3, 6):
         return Delta(DeepDiff(first, second))
-    return Delta(DeepDiff(first, second), mutate=True)
+
+    singleton = object()
+    try:
+        first_se_instance = first["se"]["instance"]
+        first["se"]["instance"] = None
+    except KeyError:
+        first_se_instance = singleton
+    try:
+        second_se_instance = second["se"]["instance"]
+        second["se"]["instance"] = None
+    except KeyError:
+        second_se_instance = singleton
+    delta = Delta(DeepDiff(first, second), mutate=True)
+    if first_se_instance is not singleton:
+        first["se"]["instance"] = first_se_instance
+    if second_se_instance is not singleton:
+        second["se"]["instance"] = second_se_instance
+    return delta
 
 
 class Context(dict):
