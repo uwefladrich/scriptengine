@@ -1,7 +1,7 @@
 import yaml
 
-from scriptengine.yaml.parser import parse
 from scriptengine.engines import SimpleScriptEngine
+from scriptengine.yaml.parser import parse
 
 
 def from_yaml(string):
@@ -124,6 +124,7 @@ def test_loop_in_dict_from_context(capsys):
     assert "foo is 1" in captured.out
     assert "bar is 2" in captured.out
     assert "baz is 3" in captured.out
+
 
 def test_loop_over_list_of_dicts(capsys):
     s = from_yaml(

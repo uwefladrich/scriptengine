@@ -6,9 +6,7 @@
 
 from pathlib import Path
 
-from deepmerge import always_merger
-
-from scriptengine.context import context_delta, save_copy
+from scriptengine.context import Context, ContextUpdate, save_copy
 from scriptengine.exceptions import ScriptEngineTaskRunError
 from scriptengine.tasks.core import Task, timed_runner
 from scriptengine.yaml.parser import parse_file
@@ -46,12 +44,10 @@ class Include(Task):
         src = Path(self.getarg("src", context))
         self.log_info(f"Include script from {src}")
 
-        local_context = save_copy(context)
-
         # Search for include file in '.', old cwd, and script_path
         cwd = Path(".")
-        ocwd = Path(local_context["se"]["cli"]["cwd"])
-        script_path = (Path(p) for p in local_context["se"]["cli"]["script_path"])
+        ocwd = Path(context["se"]["cli"]["cwd"])
+        script_path = (Path(p) for p in context["se"]["cli"]["script_path"])
         search_path = (cwd, ocwd, *script_path)
         self.log_debug(
             f"Include file search path: {tuple(str(p) for p in search_path)}"
@@ -70,9 +66,10 @@ class Include(Task):
         script = parse_file(inc_file)
 
         self.log_debug(f"Execute include script: {inc_file}")
+        local_context = Context(save_copy(context))
         context_update = local_context["se"]["instance"].run(script, local_context)
+        if context_update:
+            local_context += context_update
         self.log_debug(f"Finished executing include script: {inc_file}")
 
-        return context_delta(
-            context, always_merger.merge(local_context, context_update)
-        )
+        return ContextUpdate(context, local_context)

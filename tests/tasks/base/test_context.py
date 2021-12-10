@@ -1,5 +1,6 @@
 import yaml
 
+from scriptengine.context import ContextUpdate
 from scriptengine.tasks.base.context import Context
 from scriptengine.yaml.parser import parse
 
@@ -29,10 +30,12 @@ def test_context_run_returns_dict():
             foo: 1
         """
     )
-    d = t.run({})
-    assert type(d) is dict
-    assert "foo" in d
-    assert d["foo"] == 1
+    ctx = {}
+    ctx_upd = t.run(ctx)
+    ctx += ctx_upd
+    assert type(ctx_upd) is ContextUpdate
+    assert "foo" in ctx
+    assert ctx["foo"] == 1
 
 
 def test_context_simple_set():
@@ -43,6 +46,8 @@ def test_context_simple_set():
             bar: 2
         """
     )
-    c = t.run({})
-    assert c["foo"] == 1
-    assert c["bar"] == 2
+    ctx = {}
+    ctx_upd = t.run(ctx)
+    ctx += ctx_upd
+    assert ctx["foo"] == 1
+    assert ctx["bar"] == 2

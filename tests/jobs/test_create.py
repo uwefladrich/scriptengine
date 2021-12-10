@@ -1,7 +1,7 @@
 import pytest
 import yaml
-from deepdiff import Delta
 
+from scriptengine.context import ContextUpdate
 from scriptengine.jobs import Job
 from scriptengine.tasks.base.echo import Echo
 from scriptengine.yaml.parser import parse
@@ -40,4 +40,4 @@ def test_returns_delta():
                 foo: 1
     """
     )
-    assert type(j.run({})) is Delta
+    assert type(j.run({})) is ContextUpdate

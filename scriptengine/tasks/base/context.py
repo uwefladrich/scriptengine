@@ -1,5 +1,6 @@
 """Context task for ScriptEngine."""
 
+from scriptengine.context import ContextUpdate
 from scriptengine.tasks.core import Task, timed_runner
 
 
@@ -14,8 +15,8 @@ class Context(Task):
 
     @timed_runner
     def run(self, context):
-        context_update = {
-            n: self.getarg(n, context) for n in vars(self) if not n.startswith("_")
-        }
+        context_update = ContextUpdate(
+            {n: self.getarg(n, context) for n in vars(self) if not n.startswith("_")}
+        )
         self.log_info(f"Context update: {context_update}")
         return context_update

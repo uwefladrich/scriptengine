@@ -9,10 +9,7 @@ import logging
 import sys
 from pprint import pprint
 
-from deepdiff import Delta
-from deepmerge import always_merger
-
-from scriptengine.context import save_copy
+from scriptengine.context import Context, ContextUpdate, save_copy
 from scriptengine.exceptions import (
     ScriptEngineJobError,
     ScriptEngineStopException,
@@ -67,18 +64,12 @@ class SimpleScriptEngine:
         sys.exit()
 
     def run(self, script, context):
-        mycontext = save_copy(context)
+        local_context = Context(save_copy(context))
         for todo in script if isinstance(script, list) else [script]:
-            todo_result = self._guarded_run(todo, mycontext)
-            if isinstance(todo_result, dict):
-                always_merger.merge(mycontext, todo_result)
-            elif isinstance(todo_result, Delta):
-                mycontext += todo_result
-            else:
-                always_merger.merge(
-                    mycontext, {"se": {"tasks": {"last_result": todo_result}}}
-                )
-        return mycontext
+            context_update = self._guarded_run(todo, local_context)
+            if context_update:
+                local_context += context_update
+        return ContextUpdate(context, local_context)
 
     def _log(self, level, msg):
         self.logger.log(level, msg)

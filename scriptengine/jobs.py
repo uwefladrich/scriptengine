@@ -9,10 +9,7 @@ import ast
 import logging
 import uuid
 
-from deepdiff import Delta
-from deepmerge import always_merger
-
-from scriptengine.context import context_delta, save_copy
+from scriptengine.context import Context, ContextUpdate, save_copy
 from scriptengine.exceptions import (
     ScriptEngineJobParseError,
     ScriptEngineParseJinjaError,
@@ -130,24 +127,18 @@ class Job:
 
     def run(self, context):
         if self.when(context):
-            job_context = save_copy(context)
-            for items in self.loop(job_context):
-                if set(items) & set(job_context):
+            local_context = Context(save_copy(context))
+            for items in self.loop(local_context):
+                if set(items) & set(local_context):
                     self.log_warning(
                         "The following loop variables collide with the "
-                        f"context: {set(items) & set(job_context)}"
+                        f"context: {set(items) & set(local_context)}"
                     )
                 for t in self.todo:
-                    todo_result = t.run({**job_context, **items})
-                    if isinstance(todo_result, dict):
-                        always_merger.merge(job_context, todo_result)
-                    elif isinstance(todo_result, Delta):
-                        job_context += todo_result
-                    else:
-                        always_merger.merge(
-                            job_context, {"se": {"tasks": {"last_result": todo_result}}}
-                        )
-            return context_delta(context, job_context)
+                    context_update = t.run({**local_context, **items})
+                    if context_update:
+                        local_context += context_update
+            return ContextUpdate(context, local_context)
 
     def _log(self, level, msg):
         logging.getLogger("se.job").log(level, msg, extra={"id": self.shortid})
