@@ -135,7 +135,7 @@ class Job:
                         f"context: {set(items) & set(local_context)}"
                     )
                 for t in self.todo:
-                    context_update = t.run({**local_context, **items})
+                    context_update = t.run(Context({**local_context, **items}))
                     if context_update:
                         local_context += context_update
             return ContextUpdate(context, local_context)
