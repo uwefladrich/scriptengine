@@ -60,8 +60,3 @@ jobs:
         name: Test run ScriptEngine cli (help)
         run: |
           se --help
-      -
-        name: Test run ScriptEngine cli (tutorial)
-        run: |
-          cd docs/tutorial
-          se --nocolor --loglevel debug tutorial.yml
