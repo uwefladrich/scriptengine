@@ -7,6 +7,8 @@ Fixes
 - Fix #54: base.include task does not update context 
 - Fix typo in Include task argument (ignore_not_found)
 - Fix #55: base.include messes up the context
+- Fix #56: Wrong loop variable collision warnings
+- Fix #57: Context append to list may drop items
 
 Internal changes
 ----------------

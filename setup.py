@@ -37,7 +37,7 @@ setuptools.setup(
     install_requires=[
         "python-dateutil",
         "deepmerge",
-        "deepdiff",
+        "deepdiff>=5.7.0",
         "PyYAML",
         "jinja2",
     ],
