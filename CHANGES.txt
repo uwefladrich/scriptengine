@@ -1,4 +1,4 @@
-ScriptEngine <next version>
+ScriptEngine 0.12.4
 ===================
 
 Fixes
