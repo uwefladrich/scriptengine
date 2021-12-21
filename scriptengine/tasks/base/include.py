@@ -16,14 +16,15 @@ def _file_in_paths(file, paths=None):
     if file.is_absolute():
         if file.is_file():
             return file
-    else:
-        searched_paths = []
-        for p in paths or []:
-            if p not in searched_paths:
-                searched_paths.append(p)
-                fpath = p / file
-                if fpath.is_file():
-                    return fpath
+        raise FileNotFoundError
+
+    searched_paths = []
+    for p in paths or []:
+        if p not in searched_paths:
+            searched_paths.append(p)
+            fpath = p / file
+            if fpath.is_file():
+                return fpath
     raise FileNotFoundError
 
 
