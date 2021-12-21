@@ -81,42 +81,47 @@ class Job:
             )
             raise ScriptEngineJobParseError
 
-    def loop(self, context):
-        if self._loop:
+    def loop_spec(self, context):
+        try:
+            iter = j2render(self._loop, context)
+        except ScriptEngineParseJinjaError:
+            self.log_error(
+                "Error while parsing (Jinja2) invalid loop expression "
+                f'"{self._loop}" with context "{context}"'
+            )
+            raise ScriptEngineJobParseError
+        if isinstance(iter, str):
             try:
-                loop_iter = j2render(self._loop, context)
-            except ScriptEngineParseJinjaError:
+                iter = ast.literal_eval(iter or "None")
+            except (SyntaxError, ValueError):
                 self.log_error(
-                    "Error while parsing (Jinja2) invalid loop expression "
-                    f'"{self._loop}" with context "{context}"'
+                    "Error while evaluating (AST) invalid loop expression "
+                    f'"{iter}" with context "{context}"'
                 )
                 raise ScriptEngineJobParseError
-            if isinstance(loop_iter, str):
-                try:
-                    loop_iter = ast.literal_eval(loop_iter or "None")
-                except (SyntaxError, ValueError):
-                    self.log_error(
-                        "Error while evaluating (AST) invalid loop expression "
-                        f'"{loop_iter}" with context "{context}"'
-                    )
-                    raise ScriptEngineJobParseError
-            if isinstance(loop_iter, dict):
-                loop_iter = loop_iter.items()
-                loop_vars = self._loop_vars or ("key", "value")
-            else:
-                loop_vars = self._loop_vars or ("item",)
-            if loop_iter:
-                for items in loop_iter:
+        if isinstance(iter, dict):
+            iter = iter.items()
+            vars = self._loop_vars or ("key", "value")
+        else:
+            vars = self._loop_vars or ("item",)
+        return iter, vars
+
+    def loop(self, context):
+        if self._loop:
+            iter, vars = self.loop_spec(context)
+            if iter:
+                for items in iter:
                     yield dict(
                         zip(
-                            _listy(loop_vars, type_=tuple),
+                            _listy(vars, type_=tuple),
                             (j2render(i, context) for i in _listy(items, type_=tuple)),
                         )
                     )
             else:
                 self.log_warning(
-                    "Loop descriptor evaluates to false after parsing, job is not run!"
+                    "Null loop after parsing loop descriptor, job is not run!"
                 )
+                raise StopIteration
         else:
             yield {}
 

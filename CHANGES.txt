@@ -1,3 +1,15 @@
+ScriptEngine <next version>
+===================
+
+Fixes
+-----
+
+Internal changes
+----------------
+- Some refactoring in job loop code
+- Some refactoring in Include task code
+
+
 ScriptEngine 0.12.4
 ===================
 
