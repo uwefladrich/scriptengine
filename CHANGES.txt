@@ -3,6 +3,7 @@ ScriptEngine <next version>
 
 Fixes
 -----
+- Fix #59: loop on strings tuple not working as expected
 
 Internal changes
 ----------------
