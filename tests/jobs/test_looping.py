@@ -152,7 +152,7 @@ def test_loop_over_lists(capsys):
     s = from_yaml(
         """
         - base.echo:
-            msg: '{{item[0]}} {{item[1]}}'
+            msg: '{{item[0]}} - {{item[1]}}'
           loop:
             - [1, 2]
             - [3, 4]
