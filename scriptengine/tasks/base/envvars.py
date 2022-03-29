@@ -2,11 +2,12 @@
 
 import os
 
+from scriptengine.context import ContextUpdate
 from scriptengine.tasks.core import Task, timed_runner
 
 
 class Getenv(Task):
-    """ Getenv task, reads environment variables.
+    """Getenv task, reads environment variables.
     Getenv.run() takes the list of argument name, value pairs, reads the
     environment variables given by the argument values and stores the values of
     the environment variables as context parameters with the argument names.
@@ -17,18 +18,19 @@ class Getenv(Task):
             foo: BAR
     will store $HOME in context['home'] and $BAR in context['foo'].
     """
+
     @timed_runner
     def run(self, context):
         vars_ = {
             n: os.environ[self.getarg(n, context)]
-            for n in vars(self) if not n.startswith('_')
+            for n in vars(self)
+            if not n.startswith("_")
         }
         self.log_info(
-            'Read environment variables into context '
-            f'({", ".join(vars_.keys())})'
+            "Read environment variables into context " f'({", ".join(vars_.keys())})'
         )
         self.log_debug(vars_)
-        context.update(vars_)
+        return ContextUpdate(vars_)
 
 
 class Setenv(Task):
@@ -41,11 +43,11 @@ class Setenv(Task):
             bar: 2
     will set $foo to "one" and $bar to "2".
     """
+
     @timed_runner
     def run(self, context):
         vars_ = {
-            n: str(self.getarg(n, context))
-            for n in vars(self) if not n.startswith('_')
+            n: str(self.getarg(n, context)) for n in vars(self) if not n.startswith("_")
         }
         self.log_info(f'Set environment variables ({", ".join(vars_.keys())})')
         self.log_debug(vars_)

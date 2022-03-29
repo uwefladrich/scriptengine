@@ -1,9 +1,10 @@
-ScriptEngine <next version>
+ScriptEngine 0.12.5
 ===================
 
 Fixes
 -----
 - Fix #59: loop on strings tuple not working as expected
+- Fix #61: base.getenv not returning context update
 
 Internal changes
 ----------------
