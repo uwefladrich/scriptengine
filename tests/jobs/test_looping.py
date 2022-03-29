@@ -146,3 +146,19 @@ def test_loop_over_list_of_dicts(capsys):
     captured = capsys.readouterr()
     assert "1 - 2" in captured.out
     assert "3 - 4" in captured.out
+
+
+def test_loop_over_lists(capsys):
+    s = from_yaml(
+        """
+        - base.echo:
+            msg: '{{item[0]}} - {{item[1]}}'
+          loop:
+            - [1, 2]
+            - [3, 4]
+        """
+    )
+    SimpleScriptEngine().run(s, context={})
+    captured = capsys.readouterr()
+    assert "1 - 2" in captured.out
+    assert "3 - 4" in captured.out

@@ -111,12 +111,18 @@ class Job:
             iter, vars = self.loop_spec(context)
             if iter:
                 for items in iter:
-                    yield dict(
-                        zip(
-                            _listy(vars, type_=tuple),
-                            (j2render(i, context) for i in _listy(items, type_=tuple)),
-                        )
+                    parsed_items = tuple(
+                        j2render(i, context) for i in _listy(items, type_=tuple)
                     )
+                    vars_tuple = _listy(vars, type_=tuple)
+                    if len(vars_tuple) == 1 and len(parsed_items) > 1:
+                        # If only one loop variable is given and items is listy,
+                        # assign the whole list to the variable (see #59)
+                        yield {vars_tuple[0]: parsed_items}
+                    else:
+                        # Otherwise, map (zip) loop vars with items
+                        # Note that extra vars or items are ignored!
+                        yield dict(zip(vars_tuple, parsed_items))
             else:
                 self.log_warning(
                     "Null loop after parsing loop descriptor, job is not run!"
