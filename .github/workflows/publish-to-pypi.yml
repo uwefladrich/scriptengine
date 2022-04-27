@@ -4,12 +4,10 @@ on:
     tags:
       - '*'
 
-
 jobs:
   build-n-publish:
     runs-on: ubuntu-latest
     steps:
-
       -
         name: Checkout
         uses: actions/checkout@v2
@@ -26,7 +24,6 @@ jobs:
       -
         name: Build binary wheel and source tarbal
         run: python -m build --sdist --wheel --outdir dist/ .
-
       -
         name: Publish distribution to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
@@ -40,7 +37,6 @@ jobs:
     strategy:
       matrix:
         python-version: [ '3.6', '3.7', '3.8', '3.9' ]
-
     steps:
       -
         name: Setup Python
