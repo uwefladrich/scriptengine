@@ -4,6 +4,9 @@ on: push
 jobs:
   build-n-publish:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ '3.6', '3.7', '3.8', '3.9' ]
     steps:
       -
         name: Checkout
@@ -12,7 +15,7 @@ jobs:
         name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: ${{matrix.python-version}}
       -
         name: Install pypa/build
         run: |
