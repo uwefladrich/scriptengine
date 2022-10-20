@@ -1,3 +1,11 @@
+ScriptEngine 0.12.6
+===================
+
+Fixes
+-----
+- Fix #64: deepdiff 6.2.1 breaks base.context with rrules
+
+
 ScriptEngine 0.12.5
 ===================
 
