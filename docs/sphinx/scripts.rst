@@ -48,6 +48,19 @@ This script will write "Hello, Earth!". There are two tasks: ``base.context``
 and ``base.echo``, which are the two elements of a YAML list.
 
 
+Do
+--
+
+The job specifier ``do`` allows for grouping a sequence of `tasks` inside one
+single `job`. For example::
+
+    - do:
+      - base.context:
+          planet: Earth
+      - base.echo:
+          msg: "Hello, {{planet}}!"
+
+
 Loops
 -----
 
@@ -186,8 +199,30 @@ context::
 Conditionals (`when` clauses)
 -----------------------------
 
-...
+It is possible to control that a given job runs exclusively under a certain
+condition, by using the ``when`` specifier. Here is an example::
 
+    - base.context:
+        year: 1963
+    - base.echo:
+        msg: 'Peter, Paul and Mary most famous song'
+      when: "{{year==1963}}"
+
+It is possible to combine ``when`` with ``do``, to execute a sequence of tasks
+under the same condition::
+    - base.context:
+        year: 1963
+    - when: "{{year==1963}}"
+      do:
+        - base.echo:
+            msg: 'Puff, the magic dragon'
+        - base.echo:
+            msg: 'lives by the sea'
+
+.. note::
+   The conditional ``when`` does not allow for an ``else`` syntax or similar.
+   If you need that, please add another job to the script with a ``when``
+   evaluating the complementary condition.
 
 Special YAML Features
 ---------------------
