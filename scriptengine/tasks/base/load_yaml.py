@@ -23,10 +23,12 @@ class LoadYaml(Task):
         section = self.getarg("section", context, default=None)
         self.log_debug(f"Load the yaml file {src} into the context")
 
-        with open(src, "r") as f:
-            file_dict = yaml.load(f, Loader=yaml.SafeLoader)
-
-        # log error, then raise ScriptEngineTaskRunError
+        try:
+            with open(src, "r") as f:
+                file_dict = yaml.load(f, Loader=yaml.SafeLoader)
+        except FileNotFoundError:
+            self.log_error(f"Yaml file not found: {src}")
+            raise ScriptEngineTaskRunError
 
         if section:
             esm_dict = {section: file_dict}
