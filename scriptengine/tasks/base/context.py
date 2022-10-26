@@ -2,6 +2,7 @@
 
 from scriptengine.context import ContextUpdate
 from scriptengine.tasks.core import Task, timed_runner
+from scriptengine.exceptions import ScriptEngineTaskError
 
 
 class Context(Task):
@@ -20,3 +21,41 @@ class Context(Task):
         )
         self.log_info(f"Context update: {context_update}")
         return context_update
+
+
+class ContextFrom(Task):
+    """
+    This task updates the context, just as the Context task, but from sources
+    other than direct arguments.
+
+    If the 'dict' argument is given, the argument value must be a dict and is
+    used to update the context, e.g.
+
+    - base.context:
+        upd:
+            foo: 1
+    - base.context.from:
+        dict: "{{upd}}"
+
+    If the 'file' argument is given, the argument value must be a file name and
+    the context is updated from the file context. The file format must be YAML:
+
+    - base.context.from:
+        file: update.yml
+    """
+
+    @timed_runner
+    def run(self, context):
+        ctx_dict = self.getarg("dict", context, default=False)
+        ctx_file = self.getarg("file", context, default=False)
+        if ctx_dict and ctx_file:
+            self.log_error("Task arguments 'dict' and 'file' are mutual exclusive")
+            raise ScriptEngineTaskError
+        if ctx_dict:
+            self.log_info(f"Context update from dict: {ctx_dict}")
+            return ContextUpdate(ctx_dict)
+        elif ctx_file:
+            ...
+        else:
+            self.log_error("Missing argument: either 'dict' or 'file' is needed")
+            raise ScriptEngineTaskError

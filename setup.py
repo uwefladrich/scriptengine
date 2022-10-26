@@ -66,6 +66,7 @@ setuptools.setup(
             "base.chdir = scriptengine.tasks.base.chdir:Chdir",
             "base.command = scriptengine.tasks.base.command:Command",
             "base.context = scriptengine.tasks.base.context:Context",
+            "base.context.from = scriptengine.tasks.base.context:ContextFrom",
             "base.copy = scriptengine.tasks.base.file:Copy",
             "base.echo = scriptengine.tasks.base.echo:Echo",
             "base.exit = scriptengine.tasks.base.exit:Exit",
