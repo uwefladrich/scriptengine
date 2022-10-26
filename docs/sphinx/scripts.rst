@@ -48,6 +48,22 @@ This script will write "Hello, Earth!". There are two tasks: ``base.context``
 and ``base.echo``, which are the two elements of a YAML list.
 
 
+Do
+--
+
+The job specifier ``do`` allows for grouping a `list of tasks` inside one single
+job (see :ref:`concepts:jobs`). For example::
+
+    - do:
+      - base.context:
+          planet: Earth
+      - base.echo:
+          msg: "Hello, {{planet}}!"
+
+This is most often used in order to apply a ``when`` clause or a ``loop`` to a
+sequence of tasks.
+
+
 Loops
 -----
 
@@ -183,10 +199,44 @@ context::
         in: '{{people}}'
 
 
-Conditionals (`when` clauses)
------------------------------
+Conditionals
+------------
 
-...
+It is possible to control that a given job runs exclusively under a certain
+condition, by using a ``when`` clause. Here is an example::
+
+    - base.context:
+        year: 1963
+    - base.echo:
+        msg: 'Peter, Paul and Mary most famous song'
+      when: "{{year==1963}}"
+
+.. hint::
+    Because dict keys are not ordered in YAML, the second task in the previous
+    example is equivalent to::
+
+        - when: "{{year==1963}}"
+          base.echo:
+            msg: 'Peter, Paul and Mary most famous song'
+
+    Some might find it easier to read if the condition preceeds the task body.
+
+The ``when`` clause can be combined with the ``do`` keyword, to execute a
+sequence of tasks conditionally::
+
+    - base.context:
+        year: 1963
+    - when: "{{year==1963}}"
+      do:
+        - base.echo:
+            msg: 'Puff, the magic dragon'
+        - base.echo:
+            msg: 'lives by the sea'
+
+.. note::
+    There is no `else` clause in ScriptEngine. If the equivalent to an
+    if-then-else logic is needed, two ``when`` clauses with complementary
+    expressions must be used.
 
 
 Special YAML Features

@@ -13,7 +13,7 @@ Tasks
 -----
 
 A task is the basic unit of work for ScriptEngine. It is the building block for
-scripts (see next section) and also the individual item a ScriptEngine instance
+scripts (see `Scripts` section) and also the individual item a ScriptEngine instance
 (see even later) will handle.
 
 Tasks "do things". This can be simple things, like copying a file or writing
@@ -38,6 +38,21 @@ packages.
 Technically, a task is a Python class that is derived from the ``Task`` class
 that ScriptEngine provides. In fact, it is possible to use ScriptEngine from
 within other Python programs, without ever defining tasks in YAML scripts.
+
+
+Jobs
+----
+
+Similar to tasks, `jobs` are units of work for ScriptEngine. Jobs can extend
+tasks in two ways:
+
+    * jobs can join a number of tasks into a sequence, and
+    * jobs can add contitionals and loops to tasks.
+
+Corresponding to these two cases, jobs use the special ``do`` keyword to specify
+sequences of tasks (see :ref:`scripts:Do`), and/or ``when`` or ``loop`` clauses
+clauses to specify :ref:`scripts:conditionals` and :ref:`scripts:loops`,
+respectively.
 
 
 Scripts

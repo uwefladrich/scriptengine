@@ -202,7 +202,7 @@ Example::
         name: USER
         home: HOME
     - base.echo:
-        msg: "I am {name} and {{home}} is my castle."
+        msg: "I am {{name}} and {{home}} is my castle."
 
 .. warning::
    Only simple, non-nested context parameters can be used in ``base.getenv``!
@@ -214,7 +214,7 @@ Sets one or more environment variables from values of the ScriptEngine context.
 
 Usage::
 
-    - base.getenv:
+    - base.setenv:
         <ENV_VAR_NAME>: <CONTEXT_PARAMETER>
         [...]
 
