@@ -1,3 +1,11 @@
+ScriptEngine X.Y.Z
+===================
+
+Fixes
+-----
+- Fix #66: Some fixes and completions to documentation
+
+
 ScriptEngine 0.12.7
 ===================
 
