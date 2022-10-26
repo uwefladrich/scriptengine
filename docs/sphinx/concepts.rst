@@ -43,10 +43,16 @@ within other Python programs, without ever defining tasks in YAML scripts.
 Jobs
 ----
 
-Similarly to the `Tasks`, `Jobs` are also units of work for ScriptEngine, with
-the difference that `Jobs` use specifiers to manage the `task` (e.g. add
-conditionals) or `sequence of tasks` (see :ref:`Writing Scripts:Conditionals
-(\`when\` clauses)` and :ref:`Writing Scripts:Do`).
+Similar to tasks, `jobs` are units of work for ScriptEngine. Jobs can extend
+tasks in two ways:
+
+    * jobs can join a number of tasks into a sequence, and
+    * jobs can add contitionals and loops to tasks.
+
+Corresponding to these two cases, jobs use the special ``do`` keyword to specify
+sequences of tasks (see :ref:`scripts:Do`), and/or ``when`` or ``loop`` clauses
+clauses to specify :ref:`scripts:conditionals` and :ref:`scripts:loops`,
+respectively.
 
 
 Scripts

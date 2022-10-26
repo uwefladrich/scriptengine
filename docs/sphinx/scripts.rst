@@ -51,14 +51,17 @@ and ``base.echo``, which are the two elements of a YAML list.
 Do
 --
 
-The job specifier ``do`` allows for grouping a sequence of `tasks` inside one
-single `job`. For example::
+The job specifier ``do`` allows for grouping a `list of tasks` inside one single
+job (see :ref:`concepts:jobs`). For example::
 
     - do:
       - base.context:
           planet: Earth
       - base.echo:
           msg: "Hello, {{planet}}!"
+
+This is most often used in order to apply a ``when`` clause or a ``loop`` to a
+sequence of tasks.
 
 
 Loops
@@ -196,11 +199,11 @@ context::
         in: '{{people}}'
 
 
-Conditionals (`when` clauses)
------------------------------
+Conditionals
+------------
 
 It is possible to control that a given job runs exclusively under a certain
-condition, by using the ``when`` specifier. Here is an example::
+condition, by using a ``when`` clause. Here is an example::
 
     - base.context:
         year: 1963
@@ -208,8 +211,19 @@ condition, by using the ``when`` specifier. Here is an example::
         msg: 'Peter, Paul and Mary most famous song'
       when: "{{year==1963}}"
 
-It is possible to combine ``when`` with ``do``, to execute a sequence of tasks
-under the same condition::
+.. hint::
+    Because dict keys are not ordered in YAML, the second task in the previous
+    example is equivalent to::
+
+        - when: "{{year==1963}}"
+          base.echo:
+            msg: 'Peter, Paul and Mary most famous song'
+
+    Some might find it easier to read if the condition preceeds the task body.
+
+The ``when`` clause can be combined with the ``do`` keyword, to execute a
+sequence of tasks conditionally::
+
     - base.context:
         year: 1963
     - when: "{{year==1963}}"
@@ -220,9 +234,10 @@ under the same condition::
             msg: 'lives by the sea'
 
 .. note::
-   The conditional ``when`` does not allow for an ``else`` syntax or similar.
-   If you need that, please add another job to the script with a ``when``
-   evaluating the complementary condition.
+    There is no `else` clause in ScriptEngine. If the equivalent to an
+    if-then-else logic is needed, two ``when`` clauses with complementary
+    expressions must be used.
+
 
 Special YAML Features
 ---------------------
