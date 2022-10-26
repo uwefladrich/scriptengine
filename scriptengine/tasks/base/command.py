@@ -6,16 +6,17 @@
             args: [-l, -a]
 """
 
+import os
 import subprocess
 import threading
-import os
 from contextlib import contextmanager
 
-from scriptengine.tasks.core import Task, timed_runner
+from scriptengine.context import ContextUpdate
 from scriptengine.exceptions import (
-    ScriptEngineTaskRunError,
     ScriptEngineTaskArgumentInvalidError,
+    ScriptEngineTaskRunError,
 )
+from scriptengine.tasks.core import Task, timed_runner
 
 
 class LogPipe(threading.Thread):
@@ -126,7 +127,9 @@ class Command(Task):
                     self.log_error(f"Command returned error code {e.returncode}")
                     raise ScriptEngineTaskRunError
             else:
+                context_update = {}
                 if isinstance(stdout_mode, str):
-                    context[stdout_mode] = cmd_proc.stdout.split("\n")
+                    context_update[stdout_mode] = cmd_proc.stdout.split("\n")
                 if isinstance(stderr_mode, str):
-                    context[stderr_mode] = cmd_proc.stderr.split("\n")
+                    context_update[stderr_mode] = cmd_proc.stderr.split("\n")
+        return ContextUpdate(context_update)

@@ -1,3 +1,11 @@
+ScriptEngine 0.12.7
+===================
+
+Fixes
+-----
+- Fix #68: Saving stderr/stdout from base.command fails in jobs
+
+
 ScriptEngine 0.12.6
 ===================
 
