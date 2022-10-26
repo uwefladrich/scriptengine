@@ -29,12 +29,12 @@ def test_echo_updates_context_in_job(capsys):
         - do:
             - base.command:
                 name: echo
-                args: [Hello, world!]
+                args: [-n, Hello, world!]
                 stdout: message
             - base.echo:
-                msg: "stdout is '{{message}}'"
+                msg: "{{message}}"
         """
     )
     SimpleScriptEngine().run(s, context={})
     captured = capsys.readouterr()
-    assert "stdout is 'Hello world!'" in captured.out
+    assert "Hello world!" in captured.out
