@@ -70,8 +70,15 @@ jobs:
           python -m pip install --editable .
           python -m pip install pytest
           python -m pip install coverage
+          python -m pip install coveralls
       -
         name: Run coverage
         run: |
           coverage run -m pytest
           coverage lcov
+      -
+        name: Run coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: coverage.lcov
