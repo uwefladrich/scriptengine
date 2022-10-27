@@ -1,4 +1,4 @@
-name: Run pytest
+name: Tests
 on: push
 
 jobs:
@@ -31,5 +31,5 @@ jobs:
           # All other stuff
           flake8 --exit-zero --count --statistics --exclude=__init__.py --max-line-length=88 scriptengine/
       -
-        name: Run PyTest
+        name: Run pytest
         run: python -m pytest --import-mode=append tests/
