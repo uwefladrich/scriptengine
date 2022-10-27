@@ -350,6 +350,77 @@ all line breaks. If there hadn't been a Jinja2 command in the string, just
 ``!noparse`` had been working as well.
 
 
+Jinja2 filters
+--------------
+
+ScriptEngine defines a number of additional `Jinja2 filters`_, which might be
+useful for writing scripts.
+
+Filters to handle dates and times
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+datetime
+    Converts a string to a ``datetime.datetime`` object, for example::
+
+        base.context:
+            date_time: "{{ '2022-01-01 00:00:00' | datetime }}""
+
+    The format of the string defaults to ``%Y-%m-%d %H:%M:%S``, but it can be
+    changed::
+
+        base.context:
+            date_time: "{{ '2022/01/01 00:00:00' | datetime('%Y/%m/%d %H:%M:%S') }}""
+
+date
+    Converts a string to a ``datetime.date`` object::
+
+        base.context:
+            start_date: "{{ '2022-01-01 00:00:00' | date }}""
+
+    The format of the date string can be changed the same way as for the
+    **datetime** filter.
+
+Filters to handle paths and filenames
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+basename
+    Returns the base name of a part (i.e. the path with all but the last part
+    removed)::
+
+        - base.context:
+            file: /path/to/file.txt
+        - base.copy:
+            src: "{{ file }}"
+            dst: "/new/path/to/{{ file | basename }}"
+
+
+dirname
+    Returns the directory part of a path (i.e. the parth with the base name
+    removed)::
+
+        - base.context:
+            file: /path/to/file.txt
+        - base.copy:
+            src: "{{ file }}"
+            dst: "{{ file | dirname }}/new_file.txt"
+
+
+exists
+    Returns true if the path exists, otherwise false::
+
+        when: "{{ '/path/to/file' | exists }}"
+        echo:
+            msg: Yes, file exists!
+
+
+path_join
+    Composes path from components::
+
+        base.echo:
+            msg: "{{ ['foo', 'bar.txt'] | path_join }}"
+
+
 .. _PyYAML: https://pyyaml.org
 .. _RFC5545: https://tools.ietf.org/html/rfc5545
 .. _dateutil: https://dateutil.readthedocs.io/en/stable/rrule.html
+.. _`Jinja2 filters`: https://jinja.palletsprojects.com/en/3.1.x/templates/#builtin-filters
