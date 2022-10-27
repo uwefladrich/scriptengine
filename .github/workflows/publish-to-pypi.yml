@@ -1,4 +1,4 @@
-name: Package, publish to and test from PyPI
+name: PyPI package
 on:
   push:
     tags:

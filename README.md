@@ -1,4 +1,5 @@
 ![Tests](https://github.com/uwefladrich/scriptengine/actions/workflows/pytest.yml/badge.svg)
+![PyPI package](https://github.com/uwefladrich/scriptengine/actions/workflows/publish-to-pypi.yml/badge.svg)
 
 # ScriptEngine
 
