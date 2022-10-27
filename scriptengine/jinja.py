@@ -27,6 +27,10 @@ def dirname(path):
     """Jinja2 filter that returns a path's dir name"""
     return os.path.dirname(path)
 
+def exists(path):
+    """Jinja2 filter that returns whether a path exists or not"""
+    return os.path.exists(path)
+
 def path_join(pathlist):
     """Jinja2 filter that composes a path from components"""
     return os.path.join(*pathlist)
@@ -39,6 +43,7 @@ def filters():
         'date': string_to_date,
         'basename': basename,
         'dirname': dirname,
+        'exists': exists,
         'path_join': path_join,
     }
 
