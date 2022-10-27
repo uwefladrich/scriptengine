@@ -1,3 +1,5 @@
+![Tests](https://github.com/uwefladrich/scriptengine/actions/workflows/pytest.yml/badge.svg)
+
 # ScriptEngine
 
 ScriptEngine is a lightweight and extensible framework for executing scripts
