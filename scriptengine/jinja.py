@@ -27,6 +27,9 @@ def dirname(path):
     """Jinja2 filter that returns a path's dir name"""
     return os.path.dirname(path)
 
+def path_join(pathlist):
+    """Jinja2 filter that composes a path from components"""
+    return os.path.join(*pathlist)
 
 def filters():
     """Return all defined Jinja2 filters by their name and corresponding function
@@ -36,6 +39,7 @@ def filters():
         'date': string_to_date,
         'basename': basename,
         'dirname': dirname,
+        'path_join': path_join,
     }
 
 
