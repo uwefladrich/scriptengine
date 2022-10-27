@@ -1,9 +1,10 @@
 """ScriptEngine helpers: Jinja2 rendering"""
 
-import jinja2
-import os
 import datetime
 import distutils.util
+import os
+
+import jinja2
 
 from scriptengine.exceptions import ScriptEngineParseJinjaError
 
@@ -27,24 +28,26 @@ def dirname(path):
     """Jinja2 filter that returns a path's dir name"""
     return os.path.dirname(path)
 
+
 def exists(path):
     """Jinja2 filter that returns whether a path exists or not"""
     return os.path.exists(path)
+
 
 def path_join(pathlist):
     """Jinja2 filter that composes a path from components"""
     return os.path.join(*pathlist)
 
+
 def filters():
-    """Return all defined Jinja2 filters by their name and corresponding function
-    """
+    """Return all defined Jinja2 filters by their name and corresponding function"""
     return {
-        'datetime': string_to_datetime,
-        'date': string_to_date,
-        'basename': basename,
-        'dirname': dirname,
-        'exists': exists,
-        'path_join': path_join,
+        "datetime": string_to_datetime,
+        "date": string_to_date,
+        "basename": basename,
+        "dirname": dirname,
+        "exists": exists,
+        "path_join": path_join,
     }
 
 
@@ -55,7 +58,7 @@ for name, function in filters().items():
 
 
 def render(arg, context, recursive=True, boolean=False):
-    """ Renders a string with Jinja2.
+    """Renders a string with Jinja2.
 
     The argument is rendered via jinja2.Template().render() if it is a string,
     or returned unchanged otherwise. Rendering is done either once or
@@ -86,9 +89,10 @@ def render(arg, context, recursive=True, boolean=False):
             return _param_env.from_string(string_arg).render(context)
         except jinja2.TemplateSyntaxError:
             raise ScriptEngineParseJinjaError(
-                        'Syntax error while rendering template string '
-                        f'"{string_arg}"'
-                        f'{" in boolean context" if boolean else ""}')
+                "Syntax error while rendering template string "
+                f'"{string_arg}"'
+                f'{" in boolean context" if boolean else ""}'
+            )
 
     if isinstance(arg, str):
         rendered_string = render_with_context(arg)
@@ -98,12 +102,8 @@ def render(arg, context, recursive=True, boolean=False):
                 rendered_string = next_rendered_string
                 next_rendered_string = render_with_context(rendered_string)
         if boolean:
-            expr = f'{{% if {rendered_string} %}}1{{% else %}}0{{% endif %}}'
-            return bool(
-                distutils.util.strtobool(
-                    render_with_context(expr)
-                )
-            )
+            expr = f"{{% if {rendered_string} %}}1{{% else %}}0{{% endif %}}"
+            return bool(distutils.util.strtobool(render_with_context(expr)))
         return rendered_string
     else:
         return arg
