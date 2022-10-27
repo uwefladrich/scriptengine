@@ -1,9 +1,14 @@
 ScriptEngine X.Y.Z
 ===================
 
+Features
+--------
+- Fix #71: Add Jinja2 filters 'exists' and 'path_join' (thanks @jmrgonza)
+- Add documentation for SE filters for Jinja2
+
 Fixes
 -----
-- Fix #66: Some fixes and completions to documentation
+- Fix #66: Some fixes and completions to documentation (thanks @mandresm)
 
 
 ScriptEngine 0.12.7
@@ -12,6 +17,7 @@ ScriptEngine 0.12.7
 Fixes
 -----
 - Fix #68: Saving stderr/stdout from base.command fails in jobs
+  (thanks @jmrgonza for reporting)
 
 
 ScriptEngine 0.12.6
@@ -20,6 +26,7 @@ ScriptEngine 0.12.6
 Fixes
 -----
 - Fix #64: deepdiff 6.2.1 breaks base.context with rrules
+  (thanks @madnresm and @JanStreffing for reporting)
 
 
 ScriptEngine 0.12.5
