@@ -1,4 +1,5 @@
 ![Tests](https://github.com/uwefladrich/scriptengine/actions/workflows/pytest.yml/badge.svg)
+![Test coverage](https://coveralls.io/repos/github/uwefladrich/scriptengine/badge.svg)
 ![PyPI package](https://github.com/uwefladrich/scriptengine/actions/workflows/publish-to-pypi.yml/badge.svg)
 
 # ScriptEngine
