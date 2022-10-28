@@ -58,6 +58,12 @@ class ContextFrom(Task):
 
         if dict_arg:
             self.log_info(f"Context update from dict: {dict_arg}")
+            if not isinstance(dict_arg, dict):
+                self.log_error(
+                    "The 'dict' argument must be a dictionary "
+                    f"(was  a '{type(dict_arg).__name__}')"
+                )
+                raise ScriptEngineTaskRunError
             context_update_d = dict_arg
 
         elif file_arg:
