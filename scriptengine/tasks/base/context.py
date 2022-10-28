@@ -1,8 +1,10 @@
 """Context task for ScriptEngine."""
 
+import yaml
+
 from scriptengine.context import ContextUpdate
+from scriptengine.exceptions import ScriptEngineTaskError, ScriptEngineTaskRunError
 from scriptengine.tasks.core import Task, timed_runner
-from scriptengine.exceptions import ScriptEngineTaskError
 
 
 class Context(Task):
@@ -46,16 +48,43 @@ class ContextFrom(Task):
 
     @timed_runner
     def run(self, context):
-        ctx_dict = self.getarg("dict", context, default=False)
-        ctx_file = self.getarg("file", context, default=False)
-        if ctx_dict and ctx_file:
+
+        dict_arg = self.getarg("dict", context, default=False)
+        file_arg = self.getarg("file", context, default=False)
+
+        if dict_arg and file_arg:
             self.log_error("Task arguments 'dict' and 'file' are mutual exclusive")
             raise ScriptEngineTaskError
-        if ctx_dict:
-            self.log_info(f"Context update from dict: {ctx_dict}")
-            return ContextUpdate(ctx_dict)
-        elif ctx_file:
-            ...
+
+        if dict_arg:
+            self.log_info(f"Context update from dict: {dict_arg}")
+            context_update_d = dict_arg
+
+        elif file_arg:
+            self.log_info(f"Context update from file: {file_arg}")
+            try:
+                with open(file_arg) as f:
+                    dict_from_file = yaml.load(f, Loader=yaml.SafeLoader)
+            except (FileNotFoundError, PermissionError, IsADirectoryError) as e:
+                self.log_error(e)
+                raise ScriptEngineTaskRunError
+            except yaml.scanner.ScannerError as e:
+                self.log_error("Error reading the file as YAML, error message follows:")
+                self.log_error(f"  {''.join(str(e).splitlines())}")
+                self.log_error(
+                    "Note that only YAML file are supported by base.context.from"
+                )
+                raise ScriptEngineTaskRunError
+            if not isinstance(dict_from_file, dict):
+                self.log_error(
+                    "Reading YAML file succeeded, but the content must be a dict "
+                    f"(was a '{type(dict_from_file).__name__}')"
+                )
+                raise ScriptEngineTaskRunError
+            context_update_d = dict_from_file
+
         else:
             self.log_error("Missing argument: either 'dict' or 'file' is needed")
             raise ScriptEngineTaskError
+
+        return ContextUpdate(context_update_d)
