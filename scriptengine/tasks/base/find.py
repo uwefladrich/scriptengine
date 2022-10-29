@@ -5,6 +5,7 @@ import fnmatch
 
 from scriptengine.tasks.core import Task, timed_runner
 from scriptengine.exceptions import ScriptEngineTaskArgumentInvalidError
+from scriptengine.context import ContextUpdate
 
 
 class Find(Task):
@@ -58,4 +59,5 @@ class Find(Task):
             self.log_debug('Nothing found')
         result_key = self.getarg('set', context, default='result')
         self.log_debug(f'Store result under context key "{result_key}"')
-        context[result_key] = result
+
+        return ContextUpdate({result_key: result})
