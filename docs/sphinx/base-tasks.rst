@@ -141,11 +141,11 @@ particular, ``base.context.from`` accepts one of two arguments, ``dict`` or
         file: <FILE_NAME>  # optional, mutual exclusive
 
 
-If given the ``dict`` argument, the context update is specified by the
-dictionary given as argument value. This may sound rather similar to the
-standard ``base.context``, but it allows greater flexibility, because the
-argument value can be taken from the context itself. This could be used, for
-example, to allow script users to overwrite default values::
+If given the ``dict`` argument, the context update is specified by the argument
+value, which must be a dictionary. This may sound rather similar to the standard
+``base.context``, but it allows greater flexibility because the argument value
+can be taken from the context itself. For example, one could implement
+overwriteable default settings using this feature::
 
     # Let the user set preferred values
     - base.context:
@@ -388,7 +388,7 @@ and::
         False:   No time logging after each task. Does not affect statistic
                  collection.
         'info':  Logging to the info logger.
-        'debug': Logging to the debug logger§
+        'debug': Logging to the debug logger
 
 
 Template task
