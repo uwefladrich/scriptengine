@@ -2,7 +2,9 @@
 
 ![Tests](https://github.com/uwefladrich/scriptengine/actions/workflows/pytest.yml/badge.svg)
 ![Test coverage](https://coveralls.io/repos/github/uwefladrich/scriptengine/badge.svg)
-![PyPI package](https://github.com/uwefladrich/scriptengine/actions/workflows/publish-to-pypi.yml/badge.svg)
+![PyPI package](https://img.shields.io/pypi/v/scriptengine?color=green)
+![Conda-forge package](https://img.shields.io/conda/vn/conda-forge/scriptengine?color=green)
+
 
 ScriptEngine is a lightweight and extensible framework for executing scripts
 written in YAML. The main purpose of ScriptEngine is to replace shell scripts
