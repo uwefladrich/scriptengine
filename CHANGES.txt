@@ -1,3 +1,16 @@
+ScriptEngine 0.13.1
+===================
+
+Features
+--------
+- Add coverage+coverall to CI (#72)
+- Add badges to README (#72)
+
+Fixes
+-----
+- Fix #74: base.find correct update context
+
+
 ScriptEngine 0.13.0
 ===================
 
