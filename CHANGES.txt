@@ -1,3 +1,11 @@
+ScriptEngine 0.Y.Z
+===================
+
+Features
+--------
+- #77: Add base.context.from (thanks @mandresm for suggesting)
+
+
 ScriptEngine 0.13.1
 ===================
 
