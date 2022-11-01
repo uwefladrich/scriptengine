@@ -19,29 +19,6 @@ def _getarg_path(self, name, context={}, **kwargs):
         raise ScriptEngineTaskRunError
 
 
-class Move(Task):
-    """ScriptEngine Move task: Moves files or directories. It needs 'src' and
-    'dst' parameters when it is created, providing the source and destination
-    paths for the move operation.
-    """
-
-    _required_arguments = (
-        "src",
-        "dst",
-    )
-
-    def __init__(self, arguments):
-        Move.check_arguments(arguments)
-        super().__init__(arguments)
-
-    @timed_runner
-    def run(self, context):
-        src = _getarg_path(self, "src", context)
-        dst = _getarg_path(self, "dst", context)
-        self.log_info(f"Move file: {src} --> {dst}")
-        shutil.move(str(src), str(dst))
-
-
 class Link(Task):
     """ScriptEngine Link task: Creates symlinks. It needs 'src' and 'dst'
     parameters when it is created, providing the source and destination paths
