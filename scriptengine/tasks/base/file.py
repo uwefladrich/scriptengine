@@ -19,53 +19,6 @@ def _getarg_path(self, name, context={}, **kwargs):
         raise ScriptEngineTaskRunError
 
 
-class Copy(Task):
-    """ScriptEngine Copy task: Copies files or directories. It needs 'src' and
-    'dst' parameters when it is created, providing the source and destination
-    paths for the copy operation. Directories are copied recursively,
-    maintaining symlinks.
-    """
-
-    _required_arguments = (
-        "src",
-        "dst",
-    )
-
-    def __init__(self, arguments):
-        Copy.check_arguments(arguments)
-        super().__init__(arguments)
-
-    @timed_runner
-    def run(self, context):
-
-        src = _getarg_path(self, "src", context)
-        dst = _getarg_path(self, "dst", context)
-
-        if src.is_file():
-            self.log_info(f"Copy file: {src} --> {dst}")
-            if dst.exists():
-                self.log_warning(
-                    f'Destination file "{dst}" exists already; overwriting'
-                )
-            shutil.copy(src, dst)
-        elif src.is_dir():
-            self.log_info(f"Copy directory: {src} --> {dst}")
-            if dst.exists():
-                self.log_error(f'Target directory "{dst}" exists')
-                raise ScriptEngineTaskRunError
-            shutil.copytree(str(src), str(dst), symlinks=True)
-        elif not src.exists():
-            ignore = self.getarg("ignore_not_found", context, default=False)
-            if ignore:
-                self.log_warning(f'"src" does not exist: {src}')
-            else:
-                self.log_error(f'"src" does not exist: {src}')
-                raise ScriptEngineTaskRunError
-        else:
-            self.log_error(f'"src" is not a file or directory: {src}')
-            raise ScriptEngineTaskRunError
-
-
 class Move(Task):
     """ScriptEngine Move task: Moves files or directories. It needs 'src' and
     'dst' parameters when it is created, providing the source and destination
