@@ -68,29 +68,3 @@ class Remove(Task):
                 path.unlink()
         else:
             self.log_info(f'Non-existing path "{path}"; nothing removed')
-
-
-class MakeDir(Task):
-    """ScriptEngine MakeDir task: Creates a directory. It needs the 'path'
-    parameter when it is created, providing the path of the new directory
-    """
-
-    _required_arguments = ("path",)
-
-    def __init__(self, arguments):
-        MakeDir.check_arguments(arguments)
-        super().__init__(arguments)
-
-    @timed_runner
-    def run(self, context):
-        path = _getarg_path(self, "path", context)
-        try:
-            path.mkdir(parents=True)
-        except FileExistsError:
-            if path.is_dir():
-                self.log_info(f'Directory "{path}" exists already')
-            else:
-                self.log_error(f'A file in the way of creating directory "{path}"')
-                raise ScriptEngineTaskRunError
-        else:
-            self.log_info(f'Created directory "{path}"')
