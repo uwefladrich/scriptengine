@@ -42,29 +42,3 @@ class Link(Task):
         dst.symlink_to(src)
         if not dst.exists():
             self.log_warning(f"Created dangling symlink: {dst}-->{src}")
-
-
-class Remove(Task):
-    """ScriptEngine Remove task: Removes (deletes) files or directories.
-    Directories are removed recursively. It needs the 'path' parameter when it
-    is created, providing the path to the file or directory to be removed.
-    """
-
-    _required_arguments = ("path",)
-
-    def __init__(self, arguments):
-        Remove.check_arguments(arguments)
-        super().__init__(arguments)
-
-    @timed_runner
-    def run(self, context):
-        path = _getarg_path(self, "path", context)
-        if path.exists():
-            if path.is_dir():
-                self.log_info(f'Removing directory "{path}"')
-                shutil.rmtree(str(path))
-            else:
-                self.log_info(f'Removing "{path}"')
-                path.unlink()
-        else:
-            self.log_info(f'Non-existing path "{path}"; nothing removed')
