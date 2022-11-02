@@ -165,8 +165,8 @@ def test_link_simple_legacy(tmp_path, caplog):
         from_yaml(
             """
             base.link:
-                dst: foo
-                src: bar
+                src: foo
+                dst: bar
             """
         ).run({})
     assert "argument is deprecated" in caplog.text
