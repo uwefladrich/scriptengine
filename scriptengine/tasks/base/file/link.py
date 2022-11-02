@@ -33,18 +33,18 @@ class Link(Task):
     @timed_runner
     def run(self, context):
 
-        target_arg = self.getarg("dst", context, default=False)
+        target_arg = self.getarg("src", context, default=False)
         if target_arg:
-            self.log_warning("The 'dst' argument is deprecated, use 'target' instead!")
+            self.log_warning("The 'src' argument is deprecated, use 'target' instead!")
         else:
             target_arg = self.getarg("target", context, default=False)
             if not target_arg:
                 self.log_error("Missing 'target' argument")
                 raise ScriptEngineTaskArgumentMissingError
 
-        link_arg = self.getarg("src", context, default=False)
+        link_arg = self.getarg("dst", context, default=False)
         if link_arg:
-            self.log_warning("The 'src' argument is deprecated, use 'link' instead!")
+            self.log_warning("The 'dst' argument is deprecated, use 'link' instead!")
         else:
             link_arg = self.getarg("link", context, default=".")
 
