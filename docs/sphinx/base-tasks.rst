@@ -127,6 +127,60 @@ current values in the ScriptEngine context. This can be used to clean data::
     # mylist is now [3, 4]
 
 
+Context.from task
+-----------------
+This is an extension of ``base.context``. It updates the ScriptEngine context in
+the same way, but it allows to "read" the context update from another source
+instead of explicitly specifying the name-value pairs as task arguments. In
+particular, ``base.context.from`` accepts one of two arguments, ``dict`` or
+``file``. The arguments are mutual exclusive::
+
+    base.context.from:
+        # exactly one of the two arguments:
+        dict: <DICTIONARY>  # optional, mutual exclusive
+        file: <FILE_NAME>  # optional, mutual exclusive
+
+
+If given the ``dict`` argument, the context update is specified by the argument
+value, which must be a dictionary. This may sound rather similar to the standard
+``base.context``, but it allows greater flexibility because the argument value
+can be taken from the context itself. For example, one could implement
+overwriteable default settings using this feature::
+
+    # Let the user set preferred values
+    - base.context:
+        user_config:
+            foo: 5
+    # [... later (could be in another script) ...]
+    # Set default values
+    - base.context:
+        foo: 1
+        bar: 2
+    # Overwrite defaults with user preferences
+    - base.context.from:
+        dict: "{{ user_config  }}"
+    # result: foo==5, bar==2
+
+The ``file`` argument of ``base.context.from`` can be used to read context
+values from a YAML file::
+
+    # data.yml
+    foo: 4
+    bar: 5
+
+    # script.yml
+    - base.context.from:
+        file: data.yml
+
+When running the scripte with ``se script.yml``, the context will contain
+``foo==4`` and ``bar==5``, provided that the file ``data.yml`` can be found in
+the current directory.
+
+The only supported file format for the time being is YAML. The content of the
+file must be a, possibly nested, dictionary (i.e. single values or lists are not
+allowed).
+
+
 Copy task
 ---------
 This task copies the file or directory given by ``src`` to ``dst``. If ``src``
@@ -334,7 +388,7 @@ and::
         False:   No time logging after each task. Does not affect statistic
                  collection.
         'info':  Logging to the info logger.
-        'debug': Logging to the debug logger§
+        'debug': Logging to the debug logger
 
 
 Template task

@@ -1,6 +1,8 @@
+import pytest
 import yaml
 
 from scriptengine.context import ContextUpdate
+from scriptengine.exceptions import ScriptEngineTaskError, ScriptEngineTaskRunError
 from scriptengine.tasks.base.context import Context
 from scriptengine.yaml.parser import parse
 
@@ -51,3 +53,173 @@ def test_context_simple_set():
     ctx += ctx_upd
     assert ctx["foo"] == 1
     assert ctx["bar"] == 2
+
+
+def test_context_from_dict():
+    t = from_yaml(
+        """
+        base.context.from:
+            dict: {'foo': 1, 'bar': 2}
+        """
+    )
+    ctx = {}
+    ctx_upd = t.run(ctx)
+    ctx += ctx_upd
+    assert ctx["foo"] == 1
+    assert ctx["bar"] == 2
+
+
+def test_context_from_context_dict():
+    t1 = from_yaml(
+        """
+        base.context:
+            update:
+                foo: 1
+                bar: 2
+        """
+    )
+    t2 = from_yaml(
+        """
+        base.context.from:
+            dict: '{{update}}'
+        """
+    )
+    ctx = {}
+    ctx_upd = t1.run(ctx)
+    ctx += ctx_upd
+    ctx_upd = t2.run(ctx)
+    ctx += ctx_upd
+    assert ctx["foo"] == 1
+    assert ctx["bar"] == 2
+
+
+def test_context_update_from_context_dict():
+    t1 = from_yaml(
+        """
+        base.context:
+            update:
+                foo: 5
+        """
+    )
+    t2 = from_yaml(
+        """
+        base.context:
+            foo: 1
+            bar: 2
+        """
+    )
+    t3 = from_yaml(
+        """
+        base.context.from:
+            dict: '{{update}}'
+        """
+    )
+    ctx = {}
+    ctx_upd = t1.run(ctx)
+    ctx += ctx_upd
+    ctx_upd = t2.run(ctx)
+    ctx += ctx_upd
+    ctx_upd = t3.run(ctx)
+    ctx += ctx_upd
+    assert ctx["foo"] == 5
+    assert ctx["bar"] == 2
+
+
+def test_context_from_file(tmp_path):
+    f = tmp_path / "f.yml"
+    f.write_text(
+        """
+        foo: 1
+        bar: 2
+        """
+    )
+    t = from_yaml(
+        f"""
+        base.context.from:
+            file: {f}
+        """
+    )
+    ctx = {}
+    ctx_upd = t.run(ctx)
+    ctx += ctx_upd
+    assert ctx["foo"] == 1
+    assert ctx["bar"] == 2
+
+
+def test_context_from_no_args():
+    t = from_yaml(
+        """
+        base.context.from:
+        """
+    )
+    with pytest.raises(ScriptEngineTaskError):
+        t.run({})
+
+
+def test_context_from_double_args():
+    t = from_yaml(
+        """
+        base.context.from:
+            dict: foo
+            file: bar
+        """
+    )
+    with pytest.raises(ScriptEngineTaskError):
+        t.run({})
+
+
+def test_context_from_dict_not_a_dict():
+    t = from_yaml(
+        """
+        base.context.from:
+            dict: [1, 2, 3]
+        """
+    )
+    with pytest.raises(ScriptEngineTaskRunError):
+        t.run({})
+
+
+def test_context_from_file_not_found():
+    t = from_yaml(
+        """
+        base.context.from:
+            file: foo
+        """
+    )
+    with pytest.raises(ScriptEngineTaskRunError):
+        t.run({})
+
+
+def test_context_from_file_not_yaml(tmp_path):
+    f = tmp_path / "f.yml"
+    f.write_text(
+        """
+        @@@
+        """
+    )
+    t = from_yaml(
+        f"""
+        base.context.from:
+            file: {f}
+        """
+    )
+    with pytest.raises(ScriptEngineTaskRunError):
+        t.run({})
+
+
+def test_context_from_file_not_dict(tmp_path):
+    f = tmp_path / "f.yml"
+    f.write_text(
+        """
+        - foo
+        - bar
+        """
+    )
+    t = from_yaml(
+        f"""
+        base.context.from:
+            file: {f}
+        """
+    )
+    with pytest.raises(ScriptEngineTaskRunError):
+        t.run({})
