@@ -1,8 +1,9 @@
-ScriptEngine 0.Y.Z
-===================
+Next release
+============
 
 Features
 --------
+- #70: Support wildcards and lists in file tasks
 - #77: Add base.context.from (thanks @mandresm for suggesting)
 
 
