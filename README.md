@@ -35,7 +35,7 @@ available to get the actual work done easily and efficiently.
 ScriptEngine is [open source](LICENSE) software, hosted at
 [GitHub](https://github.com/uwefladrich/scriptengine). Up-to-date ScriptEngine
 packages are provided at [PyPI](https://pypi.org/project/scriptengine/) and
-(conda-forge)[https://conda-forge.org], so installation is as easy as `pip
+[conda-forge](https://conda-forge.org), so installation is as easy as `pip
 install scriptengine` or `conda install scriptengine`. Documentation, including
 more detailed installation instructions, is published at
 [ReadtheDocs](https://scriptengine.readthedocs.io/en/latest/).
