@@ -1,3 +1,11 @@
+ScriptEngine 0.14.1
+===================
+
+Fixes
+-----
+- Fix module not found error for scriptengine.tasks.base.file
+
+
 ScriptEngine 0.14.0
 ===================
 
