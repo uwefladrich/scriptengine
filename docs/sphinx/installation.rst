@@ -83,18 +83,12 @@ environment (named ``se`` in the following example) for ScriptEngine:
     > conda create -n se
     > activate se
 
-Install ``pip`` in the virtual environment. This is needed, since ScriptEngine
-is still installed from PyPI:
+ScriptEngine is available as package from the ``conda-forge`` channel, so
+installation is as easy as
 
 .. code-block:: shell
 
-    (se)> conda install pip
-
-Finally, install ScriptEngine in the ``conda`` environmen:
-
-.. code-block:: shell
-
-    (se)> pip install scriptengine
+    (se)> conda install -c conda-forge scriptengine
 
 Test if ScriptEngine works in your ``conda`` environment:
 
