@@ -1,3 +1,11 @@
+ScriptEngine 0.14.2
+===================
+
+Fixes
+-----
+- Fix base.remove breaks without ignore_not_found #79
+
+
 ScriptEngine 0.14.1
 ===================
 
