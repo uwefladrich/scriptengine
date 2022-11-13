@@ -46,8 +46,15 @@ class Remove(Task):
                 self.log_warning("Non-existing path, nothing to remove")
                 return
             else:
-                self.log_error("Non-existing path")
-                raise ScriptEngineTaskRunError
+                self.log_warning("Non-existing path")
+                self.log_warning(
+                    "Deprecation warning! base.remove has not found anything to "
+                    "delete but ignore_not_found was not true. In the future, "
+                    "this will lead to an error!"
+                )
+                return
+            #   self.log_error("Non-existing path")
+            #   raise ScriptEngineTaskRunError
 
         for path in (Path(p) for p in path_list):
             if path.is_dir():
