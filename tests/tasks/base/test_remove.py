@@ -1,3 +1,4 @@
+import logging
 import os
 
 import pytest
@@ -83,7 +84,7 @@ def test_remove_with_wildcard(tmp_path):
         assert (tmp_path / f).exists()
 
 
-def test_remove_ignore_not_found(tmp_path):
+def test_remove_ignore_not_found(tmp_path, caplog):
     os.chdir(tmp_path)
 
     from_yaml(
@@ -94,13 +95,23 @@ def test_remove_ignore_not_found(tmp_path):
         """
     ).run({})
 
-    with pytest.raises(ScriptEngineTaskRunError):
+    #   with pytest.raises(ScriptEngineTaskRunError):
+    #       from_yaml(
+    #           """
+    #           base.remove:
+    #               path: foo
+    #           """
+    #       ).run({})
+
+    with caplog.at_level(logging.WARNING, logger="se.task"):
         from_yaml(
             """
             base.remove:
                 path: foo
             """
         ).run({})
+
+    assert "Deprecation warning! base.remove has not found anything" in caplog.text
 
 
 def test_remove_permission_denied(tmp_path):
