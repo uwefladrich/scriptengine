@@ -29,8 +29,8 @@ __license__ = "GPLv3+"
 import os
 import argparse
 import logging
+import pkg_resources
 
-import scriptengine.version
 import scriptengine.helpers.terminal_colors
 import scriptengine.logging
 
@@ -40,15 +40,14 @@ from scriptengine.yaml.parser import parse_file as parse_yaml_file
 from scriptengine.engines import SimpleScriptEngine
 from scriptengine.exceptions import ScriptEngineParseError, ScriptEngineParseFileError
 
-__version__ = scriptengine.version.__version__
+__version__ = pkg_resources.get_distribution("scriptengine").version
 
 
 def parse_cmd_line_args():
     """Parses the command line arguments with argparse"""
     arg_parser = argparse.ArgumentParser(
         description="ScriptEngine command line tool",
-        epilog="Available ScriptEngine tasks: "
-        + ", ".join(load_tasks().keys()),
+        epilog="Available ScriptEngine tasks: " + ", ".join(load_tasks().keys()),
     )
     arg_parser.add_argument(
         "-V",
