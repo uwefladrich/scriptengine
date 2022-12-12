@@ -17,7 +17,7 @@
     dependencies = [
         "python-dateutil",
         "deepmerge",
-        "deepdiff>=5.7.0,<6.2.0",
+        "deepdiff>=6.2.2",
         "PyYAML",
         "jinja2",
     ]
