@@ -5,6 +5,7 @@ Internal changes
 ----------------
 - Base package build on pyproject.toml (#80)
 - #82: Use ubuntu-20.04 in Github actions (keep Python3.6 support)
+- #64: Require deepdiff 6.2.2
 
 
 ScriptEngine 0.14.2
