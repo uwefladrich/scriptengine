@@ -2,6 +2,7 @@ import os
 
 import yaml
 
+from scriptengine.engines import SimpleScriptEngine
 from scriptengine.yaml.parser import parse
 
 
@@ -33,3 +34,16 @@ def test_getenv():
     ctxt_upd = t.run(ctxt)
     ctxt += ctxt_upd
     assert ctxt["foo"] == "foo"
+
+
+def test_getenv_not_exists():
+    t = _from_yaml(
+        """
+        base.getenv:
+            bar: BAR
+        """
+    )
+    ctxt = {}
+    ctxt_upd = t.run(ctxt)
+    ctxt += ctxt_upd
+    assert "bar" not in ctxt
