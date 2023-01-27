@@ -273,6 +273,9 @@ for example::
     - base.echo:
         msg: "I am {{ name }} and {{ home }} is my castle."
 
+When a requested environment variable does not exist, a warning is given and no
+corresponding context changes are made.
+
 .. warning::
    Only simple, non-nested context parameters (without dots) can be used in
    ``base.getenv``

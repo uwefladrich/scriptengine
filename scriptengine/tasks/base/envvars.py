@@ -21,16 +21,19 @@ class Getenv(Task):
 
     @timed_runner
     def run(self, context):
-        vars_ = {
-            n: os.environ[self.getarg(n, context)]
-            for n in vars(self)
-            if not n.startswith("_")
+        wanted = {
+            n: self.getarg(n, context) for n in vars(self) if not n.startswith("_")
         }
         self.log_info(
-            "Read environment variables into context " f'({", ".join(vars_.keys())})'
+            f"Read environment variables to context: {', '.join(wanted.values())}"
         )
-        self.log_debug(vars_)
-        return ContextUpdate(vars_)
+        valid = {}
+        for n, v in wanted.items():
+            try:
+                valid[n] = os.environ[v]
+            except KeyError:
+                self.log_warning(f"Environment variable {v} does not exist")
+        return ContextUpdate(valid)
 
 
 class Setenv(Task):
