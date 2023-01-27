@@ -4,7 +4,7 @@
 
 [project]
     name = "scriptengine"
-    version = "0.14.3"
+    version = "0.14.4"
     authors = [{ name = "Uwe Fladrich", email = "uwe.fladrich@protonmail.com" }]
     description = "A lightweight and extensible framework for executing scripts written in YAML"
     readme = "README.md"

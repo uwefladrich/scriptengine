@@ -4,6 +4,14 @@ Next release
 [...]
 
 
+ScriptEngine 0.14.4
+===================
+
+Fixes
+-----
+- #86: Installation from package fails
+
+
 ScriptEngine 0.14.3
 ===================
 
