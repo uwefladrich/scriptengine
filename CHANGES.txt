@@ -1,6 +1,10 @@
 Next release
 ============
 
+Fixes
+-----
+- #83: Prevent base.getenv from failing when environment variable does not exist
+
 Internal changes
 ----------------
 - Base package build on pyproject.toml (#80)
