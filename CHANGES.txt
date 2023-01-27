@@ -1,7 +1,9 @@
 Next release
 ============
 
-[...]
+Fixes
+-----
+- #87: Update deepdiff dependencies
 
 
 ScriptEngine 0.14.4
