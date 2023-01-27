@@ -12,7 +12,7 @@ if __name__ == "__main__":
         install_requires=[
             "python-dateutil",
             "deepmerge",
-            "deepdiff>=5.7.0,<6.2.0",
+            "deepdiff>=5.7.0,!=6.2.0,!=6.2.1",
             "PyYAML",
             "jinja2",
         ],
