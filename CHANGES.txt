@@ -4,6 +4,7 @@ Next release
 Fixes
 -----
 - #83: Prevent base.getenv from failing when environment variable does not exist
+- #84: base.command fails if ignore_error is true
 
 Internal changes
 ----------------
