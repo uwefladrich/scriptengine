@@ -1,6 +1,12 @@
 Next release
 ============
 
+[...]
+
+
+ScriptEngine 0.14.3
+===================
+
 Fixes
 -----
 - #83: Prevent base.getenv from failing when environment variable does not exist
