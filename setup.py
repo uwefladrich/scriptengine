@@ -9,7 +9,6 @@ if __name__ == "__main__":
         # ScriptEngine drops support for Python 3.6
         name="scriptengine",
         version="0.14.3",
-        packages=["scriptengine"],
         install_requires=[
             "python-dateutil",
             "deepmerge",
