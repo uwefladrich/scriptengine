@@ -12,14 +12,14 @@ default Python installation, run:
     > python --version
 
 If the version is 3.6 or larger, everything is fine. If the default Python
-version is 2, check if Python3 is still avalable:
+version is 2, check if Python3 is still available:
 
 .. code-block:: shell
 
     > python3 --version
 
-If that returns a verison >=3.6, you need to specify the Python3 interpreter
-explicitely in the installation below.
+If that returns a version >=3.6, you need to specify the Python3 interpreter
+explicitly in the installation below.
 
 
 Install in a Python Virtual Environment
@@ -51,7 +51,7 @@ Activate the created virtual environment:
 
 The ``venv`` module will also install the ``pip`` package manager in the
 virtual environment. Once the virtual environment is activated, use ``pip`` to
-install ScriptEngine, along with it's dependencies, from the Python Package
+install ScriptEngine, along with its dependencies, from the Python Package
 Index (PyPI_):
 
 .. code-block:: shell
@@ -111,7 +111,7 @@ from a clone of the Github repository:
     (.se)> cd scriptengine
     (.se)> pip install -e .
 
-This will install ScriptEngine along with it's dependencies very similar to
+This will install ScriptEngine along with its dependencies very similar to
 installing from PyPI. However, any changes made in the local directory will
 immediately affect the ScriptEngine installation.
 

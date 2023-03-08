@@ -32,7 +32,7 @@ developed because it met almost, but not quite, the needs of the author. Here
 are some important differences:
 
 - Tasks are executed on a single host, often the host where the ScriptEngine
-  command line tool is runnning. This is not an implication of any ScriptEngine
+  command line tool is running. This is not an implication of any ScriptEngine
   concept, though. It would be possible to implement ScriptEngine instances
   that execute tasks remotely, or on multiple hosts.
 

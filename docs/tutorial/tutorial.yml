@@ -4,7 +4,7 @@
 # The ScriptEngine tutorial file
 # -------------------------------------------------------------------------------------------------
 # This tutorial file is about using the ScriptEngine via the 'se' command and Yaml files.
-# It explaines (most of) the features implemented in ScriptEngine/se. Read it, run it
+# It explains (most of) the features implemented in ScriptEngine/se. Read it, run it
 # ('se tutorial.yml'), play around with it and enjoy using ScriptEngine!
 # =================================================================================================
 
@@ -120,7 +120,7 @@
 # Composite jobs
 # -------------------------------------------------------------------------------------------------
 
-# Jobs can be grouped by using *do*, which is usefull when when you want to apply *loop*s or *when*
+# Jobs can be grouped by using *do*, which is useful when you want to apply *loop*s or *when*
 # clauses to multiple tasks/jobs
 - do:
     - base.echo: {msg: "We can do something with '{{item}}'"}

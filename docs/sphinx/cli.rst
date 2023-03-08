@@ -31,7 +31,7 @@ flag:
     base.include, base.link, base.make_dir, base.move, base.remove,
     base.task_timer, base.template, base.time
 
-Using the ``-V`` or ``--version`` option displayes the current ScriptEngine version:
+Using the ``-V`` or ``--version`` option displays the current ScriptEngine version:
 
 .. code-block:: shell
 

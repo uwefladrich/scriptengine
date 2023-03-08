@@ -1,7 +1,7 @@
 """ScriptEngine command line interface (cli).
 
 The se command provides a command line interface to ScriptEngine, allowing for
-the creation of scripts from YAML files and runnig the scripts via the
+the creation of scripts from YAML files and running the scripts via the
 SimpleScriptEngine.
 """
 

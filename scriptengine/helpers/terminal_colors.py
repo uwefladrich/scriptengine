@@ -1,4 +1,4 @@
-"""ScripteEngine helpers: Colored terminal output
+"""ScriptEngine helpers: Colored terminal output
 
 Terminal markup and colors by using ANSI escape sequences. To print colored
 text, use, for example:
