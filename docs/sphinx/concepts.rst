@@ -76,7 +76,7 @@ is run like this:
     > se hello-world.yml
 
 provided the little YAML snippet was stored in a file called
-``hello-world.yml``. Please not that ScriptEngine uses a dot notation for the
+``hello-world.yml``. Please note that ScriptEngine uses a dot notation for the
 naming of tasks. This allows tasks from different task packages to coexist
 without conflict. The tasks in the above example come from the ``base`` task
 package, which is an integral part of ScriptEngine. Nevertheless, beside
