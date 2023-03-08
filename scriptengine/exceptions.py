@@ -15,7 +15,7 @@ class ScriptEngineParseError(ScriptEngineError):
 
 
 class ScriptEngineParseFileError(ScriptEngineParseError):
-    """An file error while acessing an SE script"""
+    """An file error while accessing an SE script"""
 
 
 class ScriptEngineParseJinjaError(ScriptEngineParseError):

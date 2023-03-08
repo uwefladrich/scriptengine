@@ -5,7 +5,7 @@ import functools
 from scriptengine.exceptions import ScriptEngineTaskLoaderError
 
 
-# The load function goest through entry points, searching for ScriptEngine
+# The load function goes through entry points, searching for ScriptEngine
 # tasks. Since the function can be called quite frequently and modules are
 # *usually* not loaded while SE is run, the result is cached.
 # Note that this means that dynamic module is *not supported* by the loading

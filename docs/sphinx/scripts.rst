@@ -25,7 +25,7 @@ ScriptEngine will run the ``exit`` task and, well, exit. Technically, the script
 contains the YAML dictionary ``{exit: null}``, which will be parsed by
 ScriptEngine into the ``exit`` task.
 
-Let't look at a slightly more useful example::
+Let's look at a slightly more useful example::
 
     base.echo:
         msg: Hello, world!
@@ -97,14 +97,14 @@ The list can also be specified in a separate ``base.context`` task, as in::
 Note that the string defining the loop list must be enclosed in quotes because
 of the braces.
 
-In all of the above examples, the loop index variable was not explicitely
-named, which means it takes on it's default name, ``item``. The ``item``
+In all of the above examples, the loop index variable was not explicitly
+named, which means it takes on its default name, ``item``. The ``item``
 variable is added to the context for all jobs or tasks within the loop and can
 be accessed using the usual syntax, as shown in the previous examples. After
 the loop is completed, the variable is removed from the context, i.e. it is
 *not* possible to access it from jobs or tasks that follow the loop.
 
-It is possible to explicitely
+It is possible to explicitly
 define another name to the loop index variable, by using an extended loop
 specifier. Here is an example::
 
@@ -118,7 +118,7 @@ In that example, the loop index variable is named ``foo`` and it is added to
 the context of all jobs and tasks defined in the loop, in the same manner as
 the default ``item`` variable.
 
-In case a loop variable (explicitely given or ``item``, by default) already
+In case a loop variable (explicitly given or ``item``, by default) already
 exists in the context when a loop is entered, ScriptEngine will issue a warning
 about a colliding loop index variable. Nevertheless, the loop will still be
 processed, with the loop variable value *hiding* the value of the variable with
@@ -137,7 +137,7 @@ It is also possible to nest loops::
       with: bar
       in:   [4,5,6]
 
-In most cases, it will make sense to explicitely define the name of the loop
+In most cases, it will make sense to explicitly define the name of the loop
 index variables in nested loops, although it *is* possible to rely on the
 default variables. So the following example would work::
 
@@ -149,7 +149,7 @@ default variables. So the following example would work::
 
 Nevertheless, ScriptEngine will, again, issue a warning about a loop index
 variable collision. When using nested loops with the same loop index variable
-(explicitely or by default), the variable values from outer loops will not be
+(explicitly or by default), the variable values from outer loops will not be
 accessible in the inner loops.
 
 It is also possible to loop over dicts in ScriptEngine, like in the following
@@ -170,10 +170,10 @@ which would yield::
     Paul is 39 years old.
 
 The example shows that the extended loop specifier with ``in:`` must be used
-when looping over dicts, otherwise an *invalid loop decriptor error* error
-occurs. Futhermore, the example shows that the default loop variables for loops
+when looping over dicts, otherwise an *invalid loop descriptor error* error
+occurs. Furthermore, the example shows that the default loop variables for loops
 over dicts are ``key`` and ``value``. If the dict loop should use other
-variables, their names can be given explicitely::
+variables, their names can be given explicitly::
 
     - base.echo:
         msg: "{{name}} is {{age}} years old."
@@ -219,7 +219,7 @@ condition, by using a ``when`` clause. Here is an example::
           base.echo:
             msg: 'Peter, Paul and Mary most famous song'
 
-    Some might find it easier to read if the condition preceeds the task body.
+    Some might find it easier to read if the condition precedes the task body.
 
 The ``when`` clause can be combined with the ``do`` keyword, to execute a
 sequence of tasks conditionally::
@@ -279,7 +279,7 @@ To avoid parsing of an argument, use the ``!noparse`` YAML constructor::
     last_name: Bar
     full_name: !noparse "{{first_name}} {{last_name}}"
 
-which assignes the argument string ``{{first_name}} {{last_name}}`` literally
+which assigns the argument string ``{{first_name}} {{last_name}}`` literally
 to ``full_name`` and delays parsing until later, when ``first_name`` and
 ``last_name`` are available from the context.
 
@@ -330,7 +330,7 @@ Multi-line strings
 ^^^^^^^^^^^^^^^^^^
 Multi-line strings are defined in YAML and not a special feature of
 ScriptEngine. They can be useful for writing scripts by allowing to split
-long strings and make scripte more readable, or make it possible to format
+long strings and make script more readable, or make it possible to format
 output.
 This is an example for using multi-line strings to format output::
 
@@ -395,7 +395,7 @@ basename
 
 
 dirname
-    Returns the directory part of a path (i.e. the parth with the base name
+    Returns the directory part of a path (i.e. the part with the base name
     removed)::
 
         - base.context:

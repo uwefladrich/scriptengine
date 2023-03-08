@@ -39,7 +39,7 @@ class Getenv(Task):
 class Setenv(Task):
     """Setenv task, sets environment variables from context.
     Setenv.run() takes the list of argument name, value pairs, and sets the
-    environemt variables given by the argument names to the values given by the
+    environment variables given by the argument names to the values given by the
     argument values. For example,
         base.setenv:
             foo: one

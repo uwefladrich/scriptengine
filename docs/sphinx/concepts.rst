@@ -1,7 +1,7 @@
 Concepts
 ========
 
-Working with ScriptEngine does not require knowledge about it's underlying
+Working with ScriptEngine does not require knowledge about its underlying
 implementation architecture in detail, but it is useful to understand a few
 basic concepts and terms. It is, for example, good to know how `tasks` and
 `scripts` are understood in the ScriptEngine world. Furthermore, a few
@@ -20,8 +20,8 @@ Tasks "do things". This can be simple things, like copying a file or writing
 a message on the terminal. It could also be more complex things, involving
 more complex computations, file operations, or interactions with services.
 But whatever the actual complexity of a task is, it will be hidden. A task is
-listed in a script by it's name and some arguments, and later it is run by a
-ScriptEngine instance to do it's actual work.
+listed in a script by its name and some arguments, and later it is run by a
+ScriptEngine instance to do its actual work.
 
 A number of different tasks are available when using ScriptEngine. In fact, one
 of the main ideas with ScriptEngine is that it should be easy to develop and
@@ -47,7 +47,7 @@ Similar to tasks, `jobs` are units of work for ScriptEngine. Jobs can extend
 tasks in two ways:
 
     * jobs can join a number of tasks into a sequence, and
-    * jobs can add contitionals and loops to tasks.
+    * jobs can add conditionals and loops to tasks.
 
 Corresponding to these two cases, jobs use the special ``do`` keyword to specify
 sequences of tasks (see :ref:`scripts:Do`), and/or ``when`` or ``loop`` clauses
@@ -113,7 +113,7 @@ Usually, the context will be populated with information as tasks are processed.
 
 We have already seen the usage of the context in the "Hello world" example
 above. The ``context`` task stored a parameter named ``planet`` in the context
-and the ``echo`` task used the information from the context to display it's
+and the ``echo`` task used the information from the context to display its
 message.
 
 Since the context is a Python dictionary, it can store any Python data types.

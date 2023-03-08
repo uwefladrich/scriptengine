@@ -132,7 +132,7 @@ values from a YAML file::
     - base.context.from:
         file: data.yml
 
-When running the scripte with ``se script.yml``, the context will contain
+When running the script with ``se script.yml``, the context will contain
 ``foo==4`` and ``bar==5``, provided that the file ``data.yml`` can be found in
 the current directory.
 
@@ -318,7 +318,7 @@ The ScriptEngine base task package provides tasks to create, copy/move/link and
 remove files and directories, as described in detail below in this section.
 
 Whenever it makes sense, the tasks will accept as their argument values single
-file or directory names, as well as YAML lists of such. Furhtermore, instead of
+file or directory names, as well as YAML lists of such. Furthermore, instead of
 full names, also Unix shell wildcard expressions are accepted.
 
 
@@ -462,7 +462,7 @@ This task can be used to find files or directories in the file system::
         depth: <NUMBER>  # optional, default -1
         set: <CONTEXT_PARAMETER>  # optional, default "result"
 
-Files and directories are searched starting at ``path`` and decending at most
+Files and directories are searched starting at ``path`` and descending at most
 ``depth`` levels down the directory hierarchy. If ``depth`` is less than zero,
 no limit is used for the search. Files and directories are matched against the
 Unix shell-style wildcards ``pattern``, which may include:

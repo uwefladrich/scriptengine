@@ -50,7 +50,7 @@ yaml.add_constructor("!rrule", rrule_constructor)
 
 
 def parse(data):
-    """Recursively parses data and returns a ScriptEnginge Task or Job, or a list of those.
+    """Recursively parses data and returns a ScriptEngine Task or Job, or a list of those.
     The data is supposed to come from YAML-parsing a ScriptEngine script."""
 
     def build_job(todo, spec):
