@@ -3,7 +3,7 @@ The base task package
 The ScriptEngine **base** task package collects essential tasks that are
 commonly needed to write scripts. The base task package is pre-installed in
 ScriptEngine and any task within the ``base.*`` namespace can be used without
-further installation or set up. Many useful ScriptEngine scripts can be written
+further installation or setup. Many useful ScriptEngine scripts can be written
 with just the base task package.
 
 The base task package contains the following tasks, described in more detail below::
