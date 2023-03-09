@@ -22,6 +22,22 @@
         "jinja2",
     ]
 
+    [project.optional-dependencies]
+        tests = [
+            "coverage",
+            "coveralls",
+            "pytest"
+        ]
+
+        docs = [
+            "sphinx",
+            "sphinx-rtd-theme"
+        ]
+
+        all = [
+            "scriptengine[tests,docs]"
+        ]
+
     [project.urls]
         "Homepage" = "https://github.com/uwefladrich/scriptengine"
         "Bug Tracker" = "https://github.com/uwefladrich/scriptengine/issues"
