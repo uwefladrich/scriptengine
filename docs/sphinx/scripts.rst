@@ -346,8 +346,8 @@ preserving line breaks, or by ``>``, in which case they are not.
 
 Note that in the example above, it is necessary to add ``!noparse_yaml``
 because ScriptEngine would re-parse the multi-line string otherwise, removing
-all line breaks. If there hadn't been a Jinja2 command in the string, just
-``!noparse`` had been working as well.
+all line breaks. If there hadn't been a Jinja2 command in the string,
+``!noparse`` would have been enough.
 
 
 Jinja2 filters
