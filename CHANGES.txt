@@ -4,7 +4,7 @@ Next release
 Fixes
 -----
 - #87: Update deepdiff dependencies
-- #89: Fix typos in sources and docs (thanks @kinow)
+- #89, #92, #93: Fix typos in sources and docs (thanks @kinow)
 
 
 ScriptEngine 0.14.4
