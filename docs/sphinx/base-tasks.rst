@@ -186,7 +186,7 @@ the given directory::
         args: [-l]
         cwd: /tmp
 
-When the ``stdout`` is given, it can be eiter true, false, or a string that
+When the ``stdout`` is given, it can be either true, false, or a string that
 makes for a valid name in the ScriptEngine context. If ``stdout`` is set to true
 (the default), then the standard output of the command is printed as log
 messages on the INFO level. When ``stdout`` is false, the standard output of the
@@ -216,7 +216,7 @@ used::
     (see `base.context`_). This implies, among other things, that list items are
     *appended* if the list is already defined in the context. This mechanism
     applies also to ``base.command`` and consequently output lines are appended
-    to the context variable if it already exist.
+    to the context variable if it already exists.
 
 The ``stderr`` argument works exactly as ``stdout``, but for standard error
 output.
@@ -330,7 +330,8 @@ Creates a new directory at the given ``path``::
         path: <PATH>
 
 If ``path`` already exists, an info message is displayed (no warning or error).
-When ``path`` is a file or symbolic link, an error occurs.
+This task creates parent directories as needed. An error is raised when
+``path`` is a file or symbolic link.
 
 A list of names is accepted for the ``path`` argument.
 
@@ -346,11 +347,11 @@ This task copies the file or directory given by ``src`` to ``dst``::
 
 If ``src`` is a file and ``dst`` is a directory, the ``src`` file is copied into
 the ``dst/`` directory. If ``src`` is a directory, ``dst`` must be a directory
-as well and ``src`` is copied recursively into ``dst/``. When a directory is
+as well and ``src`` is copied recursively into ``dst``. When a directory is
 copied, symbolic links are preserved.
 
 When copying a file and the ``dst`` exists already, it is overwritten and a
-waring is issued. Copying a directory when ``dst`` already exists results in
+warning is issued. Copying a directory when ``dst`` already exists results in
 an error. An error occurs if ``src`` does not exist, unless ``ignore_not_found``
 is ``true``.
 
