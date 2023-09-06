@@ -1,0 +1,12 @@
+channels:
+  - conda-forge
+  - nodefaults
+
+dependencies:
+  - pytest
+  - coverage
+  - coveralls
+  - sphinx
+  - sphinx-rtd-theme
+  - black
+  - isort
