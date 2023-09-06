@@ -2,6 +2,9 @@
 requires = ["setuptools>=58", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+packages = ["scriptengine"]
+
 [project]
 name = "scriptengine"
 version = "0.14.4"
