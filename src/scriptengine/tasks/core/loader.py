@@ -26,7 +26,7 @@ def load():
                 if clash_ep.name == ep.name
             )
             logging.getLogger("se.task.loader").error(
-                f'Same task name "{ep.name} defined in modules '
+                f'Same task name "{ep.name}" defined in modules '
                 f'"{ep.module_name}" and "{clash}"'
             )
             raise ScriptEngineTaskLoaderError
