@@ -3,7 +3,7 @@ import logging
 
 try:
     from importlib.metadata import entry_points
-except ModuleNotFoundError:
+except ModuleNotFoundError:  # Python prior to 3.8
     from importlib_metadata import entry_points
 
 from scriptengine.exceptions import ScriptEngineTaskLoaderError
@@ -17,18 +17,20 @@ from scriptengine.exceptions import ScriptEngineTaskLoaderError
 @functools.lru_cache(maxsize=None)
 def load():
     loaded_tasks = dict()
-    for ep in entry_points(group="scriptengine.tasks"):
+    try:
+        eps = entry_points(group="scriptengine.tasks")
+    except TypeError:  # importlib.metadata prior to Python 3.10
+        eps = set(entry_points().get("scriptengine.tasks", []))
+    for ep in eps:
         if ep.name not in loaded_tasks:
             loaded_tasks[ep.name] = ep.load()
         else:
-            clash = next(
-                clash_ep.module_name
-                for clash_ep in entry_points(group="scriptengine.tasks")
-                if clash_ep.name == ep.name
-            )
+            existing_ep = next(cep for cep in eps if cep.name == ep.name)
+            existing_mod = existing_ep.value.partition(":")[0]
+            clashing_mod = ep.value.partition(":")[0]
             logging.getLogger("se.task.loader").error(
                 f'Same task name "{ep.name}" defined in modules '
-                f'"{ep.module_name}" and "{clash}"'
+                f'"{existing_mod}" and "{clashing_mod}"'
             )
             raise ScriptEngineTaskLoaderError
 
