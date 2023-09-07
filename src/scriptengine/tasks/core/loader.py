@@ -1,6 +1,7 @@
-import pkg_resources
-import logging
 import functools
+import logging
+
+import pkg_resources
 
 from scriptengine.exceptions import ScriptEngineTaskLoaderError
 
@@ -12,19 +13,19 @@ from scriptengine.exceptions import ScriptEngineTaskLoaderError
 # mechanism!
 @functools.lru_cache(maxsize=None)
 def load():
-
-    entry_point = 'scriptengine.tasks'
+    entry_point = "scriptengine.tasks"
 
     loaded_tasks = dict()
     for ep in pkg_resources.iter_entry_points(entry_point):
         if ep.name not in loaded_tasks:
             loaded_tasks[ep.name] = ep.load()
         else:
-            clash = next(clash_ep.module_name
-                         for clash_ep
-                         in pkg_resources.iter_entry_points(entry_point)
-                         if clash_ep.name == ep.name)
-            logging.getLogger('se.task.loader').error(
+            clash = next(
+                clash_ep.module_name
+                for clash_ep in pkg_resources.iter_entry_points(entry_point)
+                if clash_ep.name == ep.name
+            )
+            logging.getLogger("se.task.loader").error(
                 f'Same task name "{ep.name} defined in modules '
                 f'"{ep.module_name}" and "{clash}"'
             )
