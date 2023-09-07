@@ -1,7 +1,10 @@
 import functools
 import logging
 
-import importlib.metadata
+try:
+    from importlib.metadata import entry_points
+except ModuleNotFoundError:
+    from importlib_metadata import entry_points
 
 from scriptengine.exceptions import ScriptEngineTaskLoaderError
 
@@ -14,15 +17,13 @@ from scriptengine.exceptions import ScriptEngineTaskLoaderError
 @functools.lru_cache(maxsize=None)
 def load():
     loaded_tasks = dict()
-    for ep in importlib.metadata.entry_points(group="scriptengine.tasks"):
+    for ep in entry_points(group="scriptengine.tasks"):
         if ep.name not in loaded_tasks:
             loaded_tasks[ep.name] = ep.load()
         else:
             clash = next(
                 clash_ep.module_name
-                for clash_ep in importlib.metadata.entry_points(
-                    group="scriptengine.tasks"
-                )
+                for clash_ep in entry_points(group="scriptengine.tasks")
                 if clash_ep.name == ep.name
             )
             logging.getLogger("se.task.loader").error(
