@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=58", "wheel"]
+requires = ["setuptools>=60", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,14 +8,14 @@ version = "0.14.4"
 authors = [{ name = "Uwe Fladrich", email = "uwe.fladrich@protonmail.com" }]
 description = "A lightweight and extensible framework for executing scripts written in YAML"
 readme = "README.md"
-requires-python = ">=3.6"
+requires-python = ">=3.7"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "importlib_metadata",              # needed for Python 3.6 and 3.7 as backport for importlib.metadata
+    "importlib_metadata",              # needed for Python 3.7 as backport for importlib.metadata
     "python-dateutil",
     "deepmerge",
     "deepdiff>=5.7.0,!=6.2.0,!=6.2.1",
