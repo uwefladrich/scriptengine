@@ -1,15 +1,8 @@
 import setuptools
 
 if __name__ == "__main__":
-    tests = [
-        "coverage",
-        "coveralls",
-        "pytest"
-    ]
-    docs = [
-        "sphinx",
-        "sphinx-rtd-theme"
-    ]
+    tests = ["coverage", "coveralls", "pytest"]
+    docs = ["sphinx", "sphinx-rtd-theme"]
     setuptools.setup(
         # The information below is duplicated from pyproject.toml.
         # This is because, for Python 3.6, we are stuck with older versions of
@@ -26,11 +19,7 @@ if __name__ == "__main__":
             "PyYAML",
             "jinja2",
         ],
-        extras_require={
-            "tests": tests,
-            "docs": docs,
-            "all": tests + docs
-        },
+        extras_require={"tests": tests, "docs": docs, "all": tests + docs},
         entry_points={
             "console_scripts": [
                 "se = scriptengine.cli.se:main",
