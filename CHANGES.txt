@@ -1,11 +1,24 @@
 Next release
 ============
 
+IMPORTANT: This release will drop Python3.6 support! (#88, #95)
+
 Fixes
 -----
 - #87: Update deepdiff dependencies
 - #89, #92, #93: Fix typos in sources and docs (thanks @kinow)
 - #90: Add and install optional/extra dependencies (thanks @kinow)
+
+
+Internal changes
+----------------
+- #88 Drop Python3.6 support
+- #95 Improve packaging and CI
+  + switch to src-layout
+  + drop Python3.6 support
+  + add Python3.11 support
+  + add environment files for conda
+  + migrate from pkg_resources to importlib.metadata
 
 
 ScriptEngine 0.14.4
