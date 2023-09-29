@@ -3,34 +3,28 @@ on: push
 
 jobs:
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ '3.6', '3.7', '3.8', '3.9', '3.10' ]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v3
-      -
-        name: Setup Python
+      - name: Setup Python
         uses: actions/setup-python@v3
         with:
           python-version: ${{matrix.python-version}}
-      -
-        name: Install Dependencies and ScriptEngine
+      - name: Install dependencies and ScriptEngine
         run: |
           python -m pip install --upgrade pip
           python -m pip install --editable .
-      -
-        name: Test run ScriptEngine cli (version)
+      - name: Test run ScriptEngine cli (version)
         run: |
           se --version
-      -
-        name: Test run ScriptEngine cli (help)
+      - name: Test run ScriptEngine cli (help)
         run: |
           se --help
-      -
-        name: Test run ScriptEngine cli (tutorial)
+      - name: Test run ScriptEngine cli (tutorial)
         run: |
           cd docs/tutorial
           se --nocolor --loglevel debug tutorial.yml

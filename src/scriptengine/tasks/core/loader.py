@@ -1,6 +1,10 @@
-import pkg_resources
-import logging
 import functools
+import logging
+
+try:
+    from importlib.metadata import entry_points
+except ModuleNotFoundError:  # Python prior to 3.8
+    from importlib_metadata import entry_points
 
 from scriptengine.exceptions import ScriptEngineTaskLoaderError
 
@@ -12,21 +16,21 @@ from scriptengine.exceptions import ScriptEngineTaskLoaderError
 # mechanism!
 @functools.lru_cache(maxsize=None)
 def load():
-
-    entry_point = 'scriptengine.tasks'
-
     loaded_tasks = dict()
-    for ep in pkg_resources.iter_entry_points(entry_point):
+    try:
+        eps = entry_points(group="scriptengine.tasks")
+    except TypeError:  # importlib.metadata prior to Python 3.10
+        eps = set(entry_points().get("scriptengine.tasks", []))
+    for ep in eps:
         if ep.name not in loaded_tasks:
             loaded_tasks[ep.name] = ep.load()
         else:
-            clash = next(clash_ep.module_name
-                         for clash_ep
-                         in pkg_resources.iter_entry_points(entry_point)
-                         if clash_ep.name == ep.name)
-            logging.getLogger('se.task.loader').error(
-                f'Same task name "{ep.name} defined in modules '
-                f'"{ep.module_name}" and "{clash}"'
+            existing_ep = next(cep for cep in eps if cep.name == ep.name)
+            existing_mod = existing_ep.value.partition(":")[0]
+            clashing_mod = ep.value.partition(":")[0]
+            logging.getLogger("se.task.loader").error(
+                f'Same task name "{ep.name}" defined in modules '
+                f'"{existing_mod}" and "{clashing_mod}"'
             )
             raise ScriptEngineTaskLoaderError
 

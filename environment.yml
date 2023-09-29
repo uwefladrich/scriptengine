@@ -1,0 +1,12 @@
+channels:
+  - conda-forge
+  - nodefaults
+
+dependencies:
+  - python>=3.8
+  - pyyaml
+  - jinja2
+  - python-dateutil
+  - deepmerge
+  - deepdiff>=5.7.0,!=6.2.0,!=6.2.1
+  - pip

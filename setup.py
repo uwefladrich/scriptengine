@@ -1,15 +1,8 @@
 import setuptools
 
 if __name__ == "__main__":
-    tests = [
-        "coverage",
-        "coveralls",
-        "pytest"
-    ]
-    docs = [
-        "sphinx",
-        "sphinx-rtd-theme"
-    ]
+    tests = ["coverage", "coveralls", "pytest"]
+    docs = ["sphinx", "sphinx-rtd-theme"]
     setuptools.setup(
         # The information below is duplicated from pyproject.toml.
         # This is because, for Python 3.6, we are stuck with older versions of
@@ -19,17 +12,14 @@ if __name__ == "__main__":
         name="scriptengine",
         version="0.14.4",
         install_requires=[
+            "importlib_metadata; python_version<'3.8'",
             "python-dateutil",
             "deepmerge",
             "deepdiff>=5.7.0,!=6.2.0,!=6.2.1",
             "PyYAML",
             "jinja2",
         ],
-        extras_require={
-            "tests": tests,
-            "docs": docs,
-            "all": tests + docs
-        },
+        extras_require={"tests": tests, "docs": docs, "all": tests + docs},
         entry_points={
             "console_scripts": [
                 "se = scriptengine.cli.se:main",

@@ -3,24 +3,20 @@ on: push
 
 jobs:
   build-n-publish:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ '3.6', '3.7', '3.8', '3.9', '3.10' ]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v3
-      -
-        name: Setup Python
+      - name: Setup Python
         uses: actions/setup-python@v3
         with:
           python-version: ${{matrix.python-version}}
-      -
-        name: Install pypa/build
+      - name: Install pypa/build
         run: |
           python -m pip install --upgrade pip
           python -m pip install build
-      -
-        name: Build binary wheel and source tarbal
+      - name: Build binary wheel and source tarbal
         run: python -m build --sdist --wheel --outdir dist/ .

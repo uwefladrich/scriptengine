@@ -1,87 +1,79 @@
 [build-system]
-    requires = ["setuptools>=58", "wheel"]
-    build-backend = "setuptools.build_meta"
+requires = ["setuptools>=60", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [project]
-    name = "scriptengine"
-    version = "0.14.4"
-    authors = [{ name = "Uwe Fladrich", email = "uwe.fladrich@protonmail.com" }]
-    description = "A lightweight and extensible framework for executing scripts written in YAML"
-    readme = "README.md"
-    requires-python = ">=3.6"
-    classifiers = [
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
-        "Operating System :: OS Independent",
-    ]
-    dependencies = [
-        "python-dateutil",
-        "deepmerge",
-        "deepdiff>=5.7.0,!=6.2.0,!=6.2.1",
-        "PyYAML",
-        "jinja2",
-    ]
+name = "scriptengine"
+version = "0.14.4"
+authors = [{ name = "Uwe Fladrich", email = "uwe.fladrich@protonmail.com" }]
+description = "A lightweight and extensible framework for executing scripts written in YAML"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "importlib_metadata; python_version<'3.8'",
+    "python-dateutil",
+    "deepmerge",
+    "deepdiff>=5.7.0,!=6.2.0,!=6.2.1",
+    "PyYAML",
+    "jinja2",
+]
 
-    [project.optional-dependencies]
-        tests = [
-            "coverage",
-            "coveralls",
-            "pytest"
-        ]
+[project.optional-dependencies]
+tests = ["coverage", "coveralls", "pytest"]
 
-        docs = [
-            "sphinx",
-            "sphinx-rtd-theme"
-        ]
+docs = ["sphinx", "sphinx-rtd-theme"]
 
-        all = [
-            "scriptengine[tests,docs]"
-        ]
+all = ["scriptengine[tests,docs]"]
 
-    [project.urls]
-        "Homepage" = "https://github.com/uwefladrich/scriptengine"
-        "Bug Tracker" = "https://github.com/uwefladrich/scriptengine/issues"
+[project.urls]
+"Homepage" = "https://github.com/uwefladrich/scriptengine"
+"Bug Tracker" = "https://github.com/uwefladrich/scriptengine/issues"
 
-    [project.scripts]
-        se = "scriptengine.cli.se:main"
+[project.scripts]
+se = "scriptengine.cli.se:main"
 
-    [project.entry-points."scriptengine.tasks"]
-        # Legacy task names, deprecated
-        "chdir" = "scriptengine.tasks.base.chdir:Chdir"
-        "command" = "scriptengine.tasks.base.command:Command"
-        "context" = "scriptengine.tasks.base.context:Context"
-        "context.from" = "scriptengine.tasks.base.context:ContextFrom"
-        "copy" = "scriptengine.tasks.base.file.copy:Copy"
-        "echo" = "scriptengine.tasks.base.echo:Echo"
-        "exit" = "scriptengine.tasks.base.exit:Exit"
-        "find" = "scriptengine.tasks.base.find:Find"
-        "getenv" = "scriptengine.tasks.base.envvars:Getenv"
-        "include" = "scriptengine.tasks.base.include:Include"
-        "link" = "scriptengine.tasks.base.file.link:Link"
-        "make_dir" = "scriptengine.tasks.base.file.make_dir:MakeDir"
-        "move" = "scriptengine.tasks.base.file.move:Move"
-        "remove" = "scriptengine.tasks.base.file.remove:Remove"
-        "setenv" = "scriptengine.tasks.base.envvars:Setenv"
-        "task_timer" = "scriptengine.tasks.base.task_timer:TaskTimer"
-        "template" = "scriptengine.tasks.base.template:Template"
-        "time" = "scriptengine.tasks.base.time:Time"
-        #
-        # Valid task names
-        "base.chdir" = "scriptengine.tasks.base.chdir:Chdir"
-        "base.command" = "scriptengine.tasks.base.command:Command"
-        "base.context" = "scriptengine.tasks.base.context:Context"
-        "base.context.from" = "scriptengine.tasks.base.context:ContextFrom"
-        "base.copy" = "scriptengine.tasks.base.file.copy:Copy"
-        "base.echo" = "scriptengine.tasks.base.echo:Echo"
-        "base.exit" = "scriptengine.tasks.base.exit:Exit"
-        "base.find" = "scriptengine.tasks.base.find:Find"
-        "base.getenv" = "scriptengine.tasks.base.envvars:Getenv"
-        "base.include" = "scriptengine.tasks.base.include:Include"
-        "base.link" = "scriptengine.tasks.base.file.link:Link"
-        "base.make_dir" = "scriptengine.tasks.base.file.make_dir:MakeDir"
-        "base.move" = "scriptengine.tasks.base.file.move:Move"
-        "base.remove" = "scriptengine.tasks.base.file.remove:Remove"
-        "base.setenv" = "scriptengine.tasks.base.envvars:Setenv"
-        "base.task_timer" = "scriptengine.tasks.base.task_timer:TaskTimer"
-        "base.template" = "scriptengine.tasks.base.template:Template"
-        "base.time" = "scriptengine.tasks.base.time:Time"
+[project.entry-points."scriptengine.tasks"]
+# Legacy task names, deprecated
+"chdir" = "scriptengine.tasks.base.chdir:Chdir"
+"command" = "scriptengine.tasks.base.command:Command"
+"context" = "scriptengine.tasks.base.context:Context"
+"context.from" = "scriptengine.tasks.base.context:ContextFrom"
+"copy" = "scriptengine.tasks.base.file.copy:Copy"
+"echo" = "scriptengine.tasks.base.echo:Echo"
+"exit" = "scriptengine.tasks.base.exit:Exit"
+"find" = "scriptengine.tasks.base.find:Find"
+"getenv" = "scriptengine.tasks.base.envvars:Getenv"
+"include" = "scriptengine.tasks.base.include:Include"
+"link" = "scriptengine.tasks.base.file.link:Link"
+"make_dir" = "scriptengine.tasks.base.file.make_dir:MakeDir"
+"move" = "scriptengine.tasks.base.file.move:Move"
+"remove" = "scriptengine.tasks.base.file.remove:Remove"
+"setenv" = "scriptengine.tasks.base.envvars:Setenv"
+"task_timer" = "scriptengine.tasks.base.task_timer:TaskTimer"
+"template" = "scriptengine.tasks.base.template:Template"
+"time" = "scriptengine.tasks.base.time:Time"
+#
+# Valid task names
+"base.chdir" = "scriptengine.tasks.base.chdir:Chdir"
+"base.command" = "scriptengine.tasks.base.command:Command"
+"base.context" = "scriptengine.tasks.base.context:Context"
+"base.context.from" = "scriptengine.tasks.base.context:ContextFrom"
+"base.copy" = "scriptengine.tasks.base.file.copy:Copy"
+"base.echo" = "scriptengine.tasks.base.echo:Echo"
+"base.exit" = "scriptengine.tasks.base.exit:Exit"
+"base.find" = "scriptengine.tasks.base.find:Find"
+"base.getenv" = "scriptengine.tasks.base.envvars:Getenv"
+"base.include" = "scriptengine.tasks.base.include:Include"
+"base.link" = "scriptengine.tasks.base.file.link:Link"
+"base.make_dir" = "scriptengine.tasks.base.file.make_dir:MakeDir"
+"base.move" = "scriptengine.tasks.base.file.move:Move"
+"base.remove" = "scriptengine.tasks.base.file.remove:Remove"
+"base.setenv" = "scriptengine.tasks.base.envvars:Setenv"
+"base.task_timer" = "scriptengine.tasks.base.task_timer:TaskTimer"
+"base.template" = "scriptengine.tasks.base.template:Template"
+"base.time" = "scriptengine.tasks.base.time:Time"

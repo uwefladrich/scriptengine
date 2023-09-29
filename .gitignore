@@ -1,6 +1,5 @@
 # Python virtual environment
-.se-devel.
-.activate
+.conda
 
 # Vim files
 .*.swp
