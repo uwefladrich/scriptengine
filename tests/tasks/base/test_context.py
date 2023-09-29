@@ -1,7 +1,7 @@
 import pytest
 import yaml
 
-from scriptengine.context import ContextUpdate
+from scriptengine.context import Context
 from scriptengine.exceptions import ScriptEngineTaskError, ScriptEngineTaskRunError
 from scriptengine.tasks.base.context import Context
 from scriptengine.yaml.parser import parse
@@ -35,7 +35,7 @@ def test_context_run_returns_dict():
     ctx = {}
     ctx_upd = t.run(ctx)
     ctx += ctx_upd
-    assert type(ctx_upd) is ContextUpdate
+    assert type(ctx_upd) is Context
     assert "foo" in ctx
     assert ctx["foo"] == 1
 
