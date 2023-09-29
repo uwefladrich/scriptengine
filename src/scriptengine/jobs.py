@@ -6,10 +6,11 @@ be given to a ScriptEngine, for execution.
 """
 
 import ast
+import copy
 import logging
 import uuid
 
-from scriptengine.context import Context, ContextUpdate, save_copy
+from scriptengine.context import Context
 from scriptengine.exceptions import (
     ScriptEngineJobParseError,
     ScriptEngineParseJinjaError,
@@ -138,7 +139,8 @@ class Job:
 
     def run(self, context):
         if self.when(context):
-            local_context = Context(save_copy(context))
+            local_context = Context(copy.deepcopy(context))
+            context_update = Context()
             for items in self.loop(local_context):
                 if set(items) & set(local_context):
                     self.log_warning(
@@ -146,10 +148,11 @@ class Job:
                         f"context: {set(items) & set(local_context)}"
                     )
                 for t in self.todo:
-                    context_update = t.run(Context({**local_context, **items}))
-                    if context_update:
-                        local_context += context_update
-            return ContextUpdate(context, local_context)
+                    c = t.run(Context({**local_context, **items}))
+                    if c:
+                        local_context += c
+                        context_update += c
+            return context_update or None
 
     def _log(self, level, msg):
         logging.getLogger("se.job").log(level, msg, extra={"id": self.shortid})
