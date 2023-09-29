@@ -25,24 +25,6 @@ if __name__ == "__main__":
                 "se = scriptengine.cli.se:main",
             ],
             "scriptengine.tasks": [
-                # Legacy task names, deprecated
-                "chdir = scriptengine.tasks.base.chdir:Chdir",
-                "command = scriptengine.tasks.base.command:Command",
-                "context = scriptengine.tasks.base.context:Context",
-                "copy = scriptengine.tasks.base.file.copy:Copy",
-                "echo = scriptengine.tasks.base.echo:Echo",
-                "exit = scriptengine.tasks.base.exit:Exit",
-                "find = scriptengine.tasks.base.find:Find",
-                "include = scriptengine.tasks.base.include:Include",
-                "link = scriptengine.tasks.base.file.link:Link",
-                "make_dir = scriptengine.tasks.base.file.make_dir:MakeDir",
-                "move = scriptengine.tasks.base.file.move:Move",
-                "remove = scriptengine.tasks.base.file.remove:Remove",
-                "task_timer = scriptengine.tasks.base.task_timer:TaskTimer",
-                "template = scriptengine.tasks.base.template:Template",
-                "time = scriptengine.tasks.base.time:Time",
-                #
-                # Valid task names
                 "base.chdir = scriptengine.tasks.base.chdir:Chdir",
                 "base.command = scriptengine.tasks.base.command:Command",
                 "base.context = scriptengine.tasks.base.context:Context",
