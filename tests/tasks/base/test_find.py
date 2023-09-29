@@ -1,5 +1,6 @@
 import yaml
 
+from scriptengine.context import Context
 from scriptengine.yaml.parser import parse
 
 
@@ -23,8 +24,7 @@ def test_find_basic(tmp_path):
             pattern: 'bar-?.txt'
         """
     )
-    ctx = {}
-    ctx += t.run(ctx)
+    ctx = t.run(Context())
     assert set(ctx["result"]) == {
         f"{tmp_path}/bar-0.txt",
         f"{subdir}/bar-1.txt",
@@ -38,8 +38,7 @@ def test_find_basic(tmp_path):
             pattern: 'bar-?.txt'
         """
     )
-    ctx = {}
-    ctx += t.run(ctx)
+    ctx = t.run(Context())
     assert set(ctx["result"]) == {
         f"{subdir}/bar-1.txt",
         f"{subdir}/bar-2.txt",
@@ -62,8 +61,7 @@ def test_find_with_set(tmp_path):
             set: foobar
         """
     )
-    ctx = {}
-    ctx += t.run(ctx)
+    ctx = t.run(Context())
     assert set(ctx["foobar"]) == {
         f"{subdir}/bar-1.txt",
         f"{subdir}/bar-2.txt",
@@ -86,8 +84,7 @@ def test_find_with_depth(tmp_path):
             depth: 1
         """
     )
-    ctx = {}
-    ctx += t.run(ctx)
+    ctx = t.run(Context())
     assert ctx["result"] == []
 
 
@@ -106,8 +103,7 @@ def test_find_with_file_type(tmp_path):
             pattern: 'bar-?.txt'
         """
     )
-    ctx = {}
-    ctx += t.run(ctx)
+    ctx = t.run(Context())
     assert set(ctx["result"]) == {
         f"{subdir}/bar-1.txt",
     }
@@ -120,8 +116,7 @@ def test_find_with_file_type(tmp_path):
             type: dir
         """
     )
-    ctx = {}
-    ctx += t.run(ctx)
+    ctx = t.run(Context())
     assert set(ctx["result"]) == {
         f"{subdir}/bar-2.txt",
     }

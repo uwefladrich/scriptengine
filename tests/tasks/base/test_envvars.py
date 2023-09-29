@@ -2,7 +2,7 @@ import os
 
 import yaml
 
-from scriptengine.engines import SimpleScriptEngine
+from scriptengine.context import Context
 from scriptengine.yaml.parser import parse
 
 
@@ -17,7 +17,7 @@ def tests_setenv():
             FOO: foo
         """
     )
-    t.run({})
+    t.run(Context())
     assert os.environ["FOO"] == "foo"
 
 
@@ -30,9 +30,7 @@ def test_getenv():
             foo: FOO
         """
     )
-    ctxt = {}
-    ctxt_upd = t.run(ctxt)
-    ctxt += ctxt_upd
+    ctxt = t.run(Context())
     assert ctxt["foo"] == "foo"
 
 
@@ -43,7 +41,5 @@ def test_getenv_not_exists():
             bar: BAR
         """
     )
-    ctxt = {}
-    ctxt_upd = t.run(ctxt)
-    ctxt += ctxt_upd
+    ctxt = t.run(Context())
     assert "bar" not in ctxt

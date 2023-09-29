@@ -1,5 +1,6 @@
 import yaml
 
+from scriptengine.context import Context
 from scriptengine.yaml.parser import parse
 
 
@@ -19,7 +20,7 @@ def test_simple_run(capsys):
                 msg: {msg2}
     """
     )
-    j.run({})
+    j.run(Context())
     captured = capsys.readouterr()
     assert msg1 in captured.out
     assert msg2 in captured.out
@@ -33,7 +34,7 @@ def test_updates_dict_simple():
                 foo: 1
     """
     )
-    c = {} + j.run({})
+    c = j.run(Context())
     assert "foo" in c
     assert c["foo"] == 1
 
@@ -51,10 +52,15 @@ def test_updates_dict_nested():
                     c: 3
     """
     )
-    c = {} + j.run({})
+    c = j.run(Context())
+    # test explicit access
     assert c["foo"]["a"] == 1
     assert c["foo"]["b"] == 2
     assert c["foo"]["c"] == 3
+    # test dotted access
+    assert c["foo.a"] == 1
+    assert c["foo.b"] == 2
+    assert c["foo.c"] == 3
 
 
 def test_adds_to_list():
@@ -70,5 +76,5 @@ def test_adds_to_list():
                     - 3
     """
     )
-    c = {} + j.run({})
+    c = j.run(Context())
     assert c["foo"] == [1, 2, 3]

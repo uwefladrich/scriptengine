@@ -1,9 +1,9 @@
 import pytest
 import yaml
 
-from scriptengine.context import Context
+from scriptengine.context import Context as SEContext
 from scriptengine.exceptions import ScriptEngineTaskError, ScriptEngineTaskRunError
-from scriptengine.tasks.base.context import Context
+from scriptengine.tasks.base.context import Context as ContextTask
 from scriptengine.yaml.parser import parse
 
 
@@ -12,7 +12,7 @@ def from_yaml(string):
 
 
 def test_context_create():
-    assert type(Context({"foo": 1})) is Context
+    assert type(ContextTask({"foo": 1})) is ContextTask
 
 
 def test_context_create_from_yaml():
@@ -22,7 +22,7 @@ def test_context_create_from_yaml():
             foo: 1
     """
     )
-    assert type(t) is Context
+    assert type(t) is ContextTask
 
 
 def test_context_run_returns_dict():
@@ -32,10 +32,10 @@ def test_context_run_returns_dict():
             foo: 1
         """
     )
-    ctx = {}
+    ctx = SEContext()
     ctx_upd = t.run(ctx)
     ctx += ctx_upd
-    assert type(ctx_upd) is Context
+    assert type(ctx_upd) is SEContext
     assert "foo" in ctx
     assert ctx["foo"] == 1
 
@@ -48,9 +48,7 @@ def test_context_simple_set():
             bar: 2
         """
     )
-    ctx = {}
-    ctx_upd = t.run(ctx)
-    ctx += ctx_upd
+    ctx = t.run(SEContext())
     assert ctx["foo"] == 1
     assert ctx["bar"] == 2
 
@@ -62,9 +60,7 @@ def test_context_from_dict():
             dict: {'foo': 1, 'bar': 2}
         """
     )
-    ctx = {}
-    ctx_upd = t.run(ctx)
-    ctx += ctx_upd
+    ctx = t.run(SEContext())
     assert ctx["foo"] == 1
     assert ctx["bar"] == 2
 
@@ -84,11 +80,9 @@ def test_context_from_context_dict():
             dict: '{{update}}'
         """
     )
-    ctx = {}
-    ctx_upd = t1.run(ctx)
-    ctx += ctx_upd
-    ctx_upd = t2.run(ctx)
-    ctx += ctx_upd
+    ctx = SEContext()
+    ctx += t1.run(ctx)
+    ctx += t2.run(ctx)
     assert ctx["foo"] == 1
     assert ctx["bar"] == 2
 
@@ -114,13 +108,10 @@ def test_context_update_from_context_dict():
             dict: '{{update}}'
         """
     )
-    ctx = {}
-    ctx_upd = t1.run(ctx)
-    ctx += ctx_upd
-    ctx_upd = t2.run(ctx)
-    ctx += ctx_upd
-    ctx_upd = t3.run(ctx)
-    ctx += ctx_upd
+    ctx = SEContext()
+    ctx += t1.run(ctx)
+    ctx += t2.run(ctx)
+    ctx += t3.run(ctx)
     assert ctx["foo"] == 5
     assert ctx["bar"] == 2
 
@@ -139,9 +130,7 @@ def test_context_from_file(tmp_path):
             file: {f}
         """
     )
-    ctx = {}
-    ctx_upd = t.run(ctx)
-    ctx += ctx_upd
+    ctx = t.run(SEContext())
     assert ctx["foo"] == 1
     assert ctx["bar"] == 2
 
@@ -153,7 +142,7 @@ def test_context_from_no_args():
         """
     )
     with pytest.raises(ScriptEngineTaskError):
-        t.run({})
+        t.run(SEContext())
 
 
 def test_context_from_double_args():
@@ -165,7 +154,7 @@ def test_context_from_double_args():
         """
     )
     with pytest.raises(ScriptEngineTaskError):
-        t.run({})
+        t.run(SEContext())
 
 
 def test_context_from_dict_not_a_dict():
@@ -176,7 +165,7 @@ def test_context_from_dict_not_a_dict():
         """
     )
     with pytest.raises(ScriptEngineTaskRunError):
-        t.run({})
+        t.run(SEContext())
 
 
 def test_context_from_file_not_found():
@@ -187,7 +176,7 @@ def test_context_from_file_not_found():
         """
     )
     with pytest.raises(ScriptEngineTaskRunError):
-        t.run({})
+        t.run(SEContext())
 
 
 def test_context_from_file_not_yaml(tmp_path):
@@ -204,7 +193,7 @@ def test_context_from_file_not_yaml(tmp_path):
         """
     )
     with pytest.raises(ScriptEngineTaskRunError):
-        t.run({})
+        t.run(SEContext())
 
 
 def test_context_from_file_not_dict(tmp_path):
@@ -222,4 +211,4 @@ def test_context_from_file_not_dict(tmp_path):
         """
     )
     with pytest.raises(ScriptEngineTaskRunError):
-        t.run({})
+        t.run(SEContext())
