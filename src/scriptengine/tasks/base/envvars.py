@@ -2,7 +2,7 @@
 
 import os
 
-from scriptengine.context import ContextUpdate
+from scriptengine.context import Context
 from scriptengine.tasks.core import Task, timed_runner
 
 
@@ -33,7 +33,7 @@ class Getenv(Task):
                 valid[n] = os.environ[v]
             except KeyError:
                 self.log_warning(f"Environment variable {v} does not exist")
-        return ContextUpdate(valid)
+        return Context(valid)
 
 
 class Setenv(Task):
