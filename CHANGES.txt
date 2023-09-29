@@ -1,7 +1,16 @@
 Next release
 ============
 
-IMPORTANT: This release will drop Python3.6 support! (#88, #95)
+IMPORTANT NOTES:
+
+1. This release will drop Python3.6 support! (#88, #95)
+2. This release will drop support for legacy task names! (#96)
+
+
+Features
+--------
+- #96: Drop legacy task names
+
 
 Fixes
 -----
