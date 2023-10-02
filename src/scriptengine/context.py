@@ -9,6 +9,12 @@ KEY_SEP = "."
 
 
 class Context(UserDict):
+    """ScriptEngine Context class
+    This is basically a dict that implements
+     (1) dotted keys (i.e. c['foo.bar'] is equivalent to c['foo']['bar'])
+     (2) deep merges (via deepmerge.always_merger) available as '.merge' method and '+' operator
+    """
+
     def __getitem__(self, key: Any) -> Any:
         def _iter_search(data, subkey):
             try:
