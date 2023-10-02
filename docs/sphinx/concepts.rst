@@ -113,9 +113,9 @@ is passed to every task that is executed.  Usually, the context will be
 populated with information as tasks are processed.
 
 We have already seen the usage of the context in the "Hello world" example
-above. The ``context`` task stored a parameter named ``planet`` in the context
-and the ``echo`` task used the information from the context to display its
-message.
+above. The ``base.context`` task stored a parameter named ``planet`` in the
+context and the ``base.echo`` task used the information from the context to
+display its message.
 
 Since the context is a Python dictionary, it can store any Python data types.
 This is, for example, often used to structure information by storing further
