@@ -106,10 +106,11 @@ An important concept in ScriptEngine is the task context, or short, the
 key, value pairs. ScriptEngine tasks can store and retrieve information from the
 context.
 
-When a ScriptEngine instance is created, the context is initialised. Some
-information about the execution environment is stored by the ScriptEngine
-instance in the new context. Then, it is passed to every task that is executed.
-Usually, the context will be populated with information as tasks are processed.
+When a ScriptEngine :ref:`instance <concepts:scriptengine instances>` is
+created, the context is initialised. Some information about the execution
+environment is stored by the ScriptEngine instance in the new context. Then, it
+is passed to every task that is executed.  Usually, the context will be
+populated with information as tasks are processed.
 
 We have already seen the usage of the context in the "Hello world" example
 above. The ``context`` task stored a parameter named ``planet`` in the context
@@ -124,6 +125,9 @@ data types for context information.
 
 YAML
 ----
+
+Short examples of important YAML structures follow below. For further
+explanation and links, refer to the `YAML homepage <https://yaml.org/>`_.
 
 YAML syntax for lists::
 
@@ -182,3 +186,5 @@ example::
 
 Jinja2 Templating
 -----------------
+
+`Jinja homepage and documentation <https://jinja.palletsprojects.com>`_
