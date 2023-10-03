@@ -50,9 +50,9 @@ tasks in two ways:
     * jobs can add conditionals and loops to tasks.
 
 Corresponding to these two cases, jobs use the special ``do`` keyword to specify
-sequences of tasks (see :ref:`scripts:Do`), and/or ``when`` or ``loop`` clauses
-clauses to specify :ref:`scripts:conditionals` and :ref:`scripts:loops`,
-respectively.
+sequences of tasks (see :ref:`do <scripts:do>`), and/or ``when`` or ``loop``
+clauses clauses to specify :ref:`conditionals <scripts:conditionals>` and
+:ref:`loops <scripts:loops>`, respectively.
 
 
 Scripts
