@@ -122,6 +122,32 @@ This is, for example, often used to structure information by storing further
 dictionaries in the context. Numbers and dates are other examples for useful
 data types for context information.
 
+The ScriptEngine task context extends the functionality of a Python dictionary
+in two important aspects:
+
+- allow for "dotted keys" in order to access nested dictionary values,
+- allow for merging of contexts with the help of `deepmerge
+  <https://deepmerge.readthedocs.io/en/latest/>`_,
+- allow to store and load the context from/to a file.
+
+Dotted keys are helpful for writing ScriptEngine scripts in YAML, because they
+can substantially shorten the syntax when working with the context. See the
+description of the :ref:`base-tasks:``base.context``` task for examples. Using
+dotted keys can also simplify the access to context parameters in Jinja
+experssions.
+
+Context merging is a central concept for ScriptEngine. When tasks are executed,
+they are allowed to update the context. These updates are implemented as deep
+merges of the context dictionary, which makes it possible to add keys to nested
+levels of the dictionary, or add items to lists.
+
+Last not least, storing the context in, and loading from, a file, allows
+ScriptEngine to achieve persistency. This enables, among other possibilities, to
+pick off the context from a previous run.
+
+.. versionadded:: 1.0
+    Dotted keys and context load/store.
+
 
 YAML
 ----
