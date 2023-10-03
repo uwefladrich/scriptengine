@@ -16,7 +16,7 @@ class Context(UserDict):
     """
 
     def __getitem__(self, key: Any) -> Any:
-        def _iter_search(data, subkey):
+        def iter_getitem(data, subkey):
             try:
                 return data[subkey]
             except TypeError:  # dotted key with too many components
@@ -27,10 +27,10 @@ class Context(UserDict):
                 first, _, remain = subkey.partition(KEY_SEP)
             except AttributeError:
                 raise KeyError(subkey)
-            return _iter_search(data[first], remain)
+            return iter_getitem(data[first], remain)
 
         try:
-            return _iter_search(self.data, key)
+            return iter_getitem(self.data, key)
         except KeyError as e:
             raise KeyError(
                 f"{key} (subkey {e} not found)" if str(key) != str(e) else key
@@ -49,6 +49,20 @@ class Context(UserDict):
                     d[k] = {}
                 d = d[k]
             d[keys[-1]] = item
+
+    def __contains__(self, key: object) -> bool:
+        def iter_contains(data, subkey):
+            if subkey in data:
+                return True
+            try:
+                first, _, remain = subkey.partition(KEY_SEP)
+            except AttributeError:
+                return False
+            if first in data:
+                return iter_contains(data[first], remain)
+            return False
+
+        return iter_contains(self.data, key)
 
     def __str__(self) -> str:
         return f"Context({self.data})"
