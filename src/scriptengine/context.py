@@ -81,6 +81,15 @@ class Context(UserDict):
         else:
             raise TypeError(f"can not merge Context and {type(other).__name__}")
 
+    def reset(self, keep=None):
+        save_copy = Context()
+        for k in keep or []:
+            if k in self:
+                save_copy[k] = self[k]
+        self.data.clear()
+        for k in save_copy:
+            self[k] = save_copy[k]
+
     def load(self, stream):
         self.data = yaml.safe_load(stream)
 
