@@ -15,7 +15,6 @@ if __name__ == "__main__":
             "importlib_metadata; python_version<'3.8'",
             "python-dateutil",
             "deepmerge",
-            "deepdiff>=5.7.0,!=6.2.0,!=6.2.1",
             "PyYAML",
             "jinja2",
         ],
