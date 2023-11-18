@@ -9,13 +9,32 @@ KEY_SEP = "."
 
 
 class Context(UserDict):
-    """ScriptEngine Context class
-    This is basically a dict that implements
-     (1) dotted keys (i.e. c['foo.bar'] is equivalent to c['foo']['bar'])
-     (2) deep merges (via deepmerge.always_merger) available as '.merge' method and '+' operator
+    """
+    The ScriptEngine Context provides context information for Tasks
+
+    https://scriptengine.readthedocs.io/en/latest/concepts.html#task-context
+    The Context is a special dict that allows
+    * dotted keys, i.e. c["foo.bar"] is equivalent to c["foo"]["bar"]
+    * deep merges of other Mappings (via deepmerge.always_merger)
+    * save and load the data to/from a file-like object
+
+    Methods
+    -------
+    merge(other)
+        Deep merges other into the context
+
+    reset(keep=None)
+        Deletes all data from the context, except for the keys listed in 'keep'
+
+    save(stream)
+        ...
+
+    load(stream)
+        ...
     """
 
     def __getitem__(self, key: Any) -> Any:
+        """Return x[key] where key is possibly a dotted key"""
         def iter_getitem(data, subkey):
             try:
                 return data[subkey]
@@ -37,6 +56,7 @@ class Context(UserDict):
             ) from None
 
     def __setitem__(self, key: Any, item: Any) -> None:
+        """Set x[key]=item where key is possibly a dotted key"""
         try:
             keys = key.split(KEY_SEP)
         except AttributeError:
