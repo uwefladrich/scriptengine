@@ -65,13 +65,13 @@ class SimpleScriptEngine:
         sys.exit()
 
     def run(self, script, context):
-        local_context = Context(copy.deepcopy(context))
+        local_context = Context(context)
         context_update = Context()
         for todo in script if isinstance(script, list) else [script]:
             c = self._guarded_run(todo, local_context)
             if c:
                 local_context += c
-                context_update += c
+                context_update += copy.deepcopy(c)
         return context_update or None
 
     def _log(self, level, msg):
