@@ -20,6 +20,13 @@ def test_set_dotted_key():
     assert c["foo"]["bar"] == 1
 
 
+def test_set_nested_dotted_keys():
+    dotted_dict = {"f1": {"g1.h1": 1, "g2": {"h2.i1": 2}}}
+    expanded_dict = {"f1": {"g1": {"h1": 1}, "g2": {"h2": {"i1": 2}}}}
+    c = Context(dotted_dict)
+    assert c == expanded_dict
+
+
 def test_set_int_key():
     c = Context()
     c[1] = "foo"

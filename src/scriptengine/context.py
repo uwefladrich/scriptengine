@@ -68,7 +68,8 @@ class Context(UserDict):
                 if k not in d or not isinstance(d[k], Mapping):
                     d[k] = {}
                 d = d[k]
-            d[keys[-1]] = item
+            # Make sure that nested dotted keys are resolved!
+            d[keys[-1]] = Context(item).data if isinstance(item, Mapping) else item
 
     def __contains__(self, key: object) -> bool:
         def iter_contains(data, subkey):
