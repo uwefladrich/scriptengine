@@ -5,20 +5,17 @@ Provides the base class for all tasks.
 
 import logging
 import uuid
+
 import yaml
 
 import scriptengine.jinja
-from scriptengine.yaml.noparse_strings import (
-    NoParseJinjaString,
-    NoParseYamlString,
-)
 import scriptengine.yaml
-
 from scriptengine.exceptions import (
+    ScriptEngineParseJinjaError,
     ScriptEngineTaskArgumentInvalidError,
     ScriptEngineTaskArgumentMissingError,
 )
-
+from scriptengine.yaml.noparse_strings import NoParseJinjaString, NoParseYamlString
 
 _SENTINEL = object()
 
@@ -127,9 +124,13 @@ class Task:
 
             if isinstance(arg_, str):
                 if parse_jinja and not isinstance(arg_, NoParseJinjaString):
-                    # Make sure that a NoParseString is still a NoParseString
-                    # after this!
-                    arg_ = type(arg_)(scriptengine.jinja.render(arg_, context))
+                    try:
+                        # Make sure that a NoParseString is still a NoParseString
+                        # after this!
+                        arg_ = type(arg_)(scriptengine.jinja.render(arg_, context))
+                    except ScriptEngineParseJinjaError as e:
+                        self.log_error(e)
+                        raise ScriptEngineTaskArgumentInvalidError
 
                 if parse_yaml and not isinstance(arg_, NoParseYamlString):
                     try:
