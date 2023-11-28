@@ -12,7 +12,6 @@ if __name__ == "__main__":
         name="scriptengine",
         version="1.0.0rc1",
         install_requires=[
-            "importlib_metadata; python_version<'3.8'",
             "python-dateutil",
             "deepmerge",
             "PyYAML",
