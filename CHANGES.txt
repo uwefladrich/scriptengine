@@ -19,6 +19,7 @@ Fixes
 - #87: Update deepdiff dependencies
 - #89, #92, #93: Fix typos in sources and docs (thanks @kinow)
 - #90: Add and install optional/extra dependencies (thanks @kinow)
+- #98: Fix errors in base.command tests
 
 
 Internal changes
