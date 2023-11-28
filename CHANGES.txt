@@ -14,6 +14,7 @@ Features
 - #96: Drop legacy task names
 - #97: Better context class. This allows dotted keys!
 - #99: Add support for Python 3.12 (and drop 3.6, 3.7)
+- #100: Better error messages for Jinja2 errors
 
 
 Fixes
