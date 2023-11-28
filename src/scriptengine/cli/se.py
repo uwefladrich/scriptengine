@@ -136,9 +136,7 @@ def main():
         logger.critical("Could not parse all script files")
         return os.EX_DATAERR
 
-    # Note that the following removal of duplicates does not guarantee the
-    # order of entries before Python 3.7! We'll accept this in favour of the
-    # easier implementation.
+    # Collect paths (and remove duplicates)
     script_path = tuple(
         dict.fromkeys((os.path.dirname(file) for file in parsed_args.files))
     )
