@@ -1,13 +1,15 @@
 """Template task for ScriptEngine."""
 
-from pathlib import Path
 import os
 import stat
+from pathlib import Path
+
 import jinja2
 
-from scriptengine.tasks.core import Task, timed_runner
-from scriptengine.jinja import render as j2render
+from scriptengine.exceptions import ScriptEngineTaskRunError
 from scriptengine.jinja import filters as j2filters
+from scriptengine.jinja import render as j2render
+from scriptengine.tasks.core import Task, timed_runner
 
 
 class Template(Task):
@@ -54,7 +56,12 @@ class Template(Task):
         for name, function in j2filters().items():
             j2env.filters[name] = function
 
-        output = j2render(j2env.get_template(src).render(context), context)
+        try:
+            output = j2render(j2env.get_template(src).render(context), context)
+        except jinja2.TemplateError as e:
+            self.log_error(f"Jinja2 error {type(e).__name__}: {e}")
+            raise ScriptEngineTaskRunError
+
         with dst.open(mode="w") as f:
             f.write(output + "\n")
 
