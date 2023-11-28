@@ -11,7 +11,7 @@ def from_yaml(string):
     return parse(yaml.load(string, Loader=yaml.SafeLoader))
 
 
-def test_command_ls(tmp_path, caplog):
+def test_command_ls(tmp_path):
     os.chdir(tmp_path)
     f = tmp_path / "foo"
     f.touch()
@@ -22,12 +22,12 @@ def test_command_ls(tmp_path, caplog):
         base.command:
           name: ls
           args: [ {f.name} ]
+          stdout: ls_stdout
         """
     )
 
-    with caplog.at_level(logging.INFO, logger="se.task"):
-        t.run({})
-        assert "foo" in [rec.message for rec in caplog.records]
+    c = t.run({})
+    assert "foo" in c["ls_stdout"]
 
     f.unlink()
 
@@ -41,11 +41,13 @@ def test_command_ls_not_exists(tmp_path, caplog):
           name: ls
           args: [ foo ]
           ignore_error: true
+          stderr: ls_stderr
         """
     )
 
     with caplog.at_level(logging.WARN, logger="se.task"):
-        t.run({})
+        c = t.run({})
         assert "Command returned error code 2" in [
             rec.message for rec in caplog.records
         ]
+        assert len(c["ls_stderr"]) > 1

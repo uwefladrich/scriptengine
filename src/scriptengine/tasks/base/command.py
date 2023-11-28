@@ -124,12 +124,20 @@ class Command(Task):
             except subprocess.CalledProcessError as e:
                 if ignore_error:
                     self.log_warning(f"Command returned error code {e.returncode}")
+                    stdout = e.stdout
+                    stderr = e.stderr
                 else:
                     self.log_error(f"Command returned error code {e.returncode}")
                     raise ScriptEngineTaskRunError
             else:
-                if isinstance(stdout_mode, str):
-                    context_update[stdout_mode] = cmd_proc.stdout.split("\n")
-                if isinstance(stderr_mode, str):
-                    context_update[stderr_mode] = cmd_proc.stderr.split("\n")
+                stdout = cmd_proc.stdout
+                stderr = cmd_proc.stderr
+
+            if isinstance(stdout_mode, str):
+                self.log_debug(f"Store stdout in context under {stdout_mode}")
+                context_update[stdout_mode] = stdout.split("\n")
+            if isinstance(stderr_mode, str):
+                self.log_debug(f"Store stderr in context under {stderr_mode}")
+                context_update[stderr_mode] = stderr.split("\n")
+
         return context_update or None
