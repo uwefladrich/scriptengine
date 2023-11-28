@@ -2,7 +2,9 @@
 
 import yaml
 
-from scriptengine.context import ContextUpdate
+from scriptengine.context import (
+    Context as SEContext,
+)  # avoid name clashes between se.context.Context and se.tasks.base.Context
 from scriptengine.exceptions import ScriptEngineTaskError, ScriptEngineTaskRunError
 from scriptengine.tasks.core import Task, timed_runner
 
@@ -18,7 +20,7 @@ class Context(Task):
 
     @timed_runner
     def run(self, context):
-        context_update = ContextUpdate(
+        context_update = SEContext(
             {n: self.getarg(n, context) for n in vars(self) if not n.startswith("_")}
         )
         self.log_info(f"Context update: {context_update}")
@@ -48,7 +50,6 @@ class ContextFrom(Task):
 
     @timed_runner
     def run(self, context):
-
         dict_arg = self.getarg("dict", context, default=False)
         file_arg = self.getarg("file", context, default=False)
 
@@ -93,4 +94,4 @@ class ContextFrom(Task):
             self.log_error("Missing argument: either 'dict' or 'file' is needed")
             raise ScriptEngineTaskError
 
-        return ContextUpdate(context_update_d)
+        return SEContext(context_update_d)

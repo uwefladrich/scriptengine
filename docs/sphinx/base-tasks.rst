@@ -79,12 +79,34 @@ current values in the ScriptEngine context. This can be used to clean data::
             - two
     # mylist is ['one', 'two']
     - base.context:
-        mylist: null  # "remove" the value if mylist
+        mylist: null  # "remove" the value of mylist
     - base.context:
         mylist:
             - 3
             - 4
     # mylist is now [3, 4]
+
+Since the ScriptEngine context will usually hold a lot of information, it is
+most of the time helpful to structure the parameters in nested levels. However,
+this can lead to overly verbose scripts, such as::
+
+    - base.context:
+        my:
+          deeply:
+            nested:
+              parameter: value
+
+It is therefore allowed in ScriptEngine scripts to refer to context parameters
+using "dotted keys", as in::
+
+    - base.context:
+        my.deeply.nested.parameter: value
+
+This feature allows a shorter notation wherever context parameters are accessed
+by their names.
+
+.. versionadded:: 1.0
+    Dotted key access.
 
 
 ``base.context.from``

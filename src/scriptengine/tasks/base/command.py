@@ -11,7 +11,7 @@ import subprocess
 import threading
 from contextlib import contextmanager
 
-from scriptengine.context import ContextUpdate
+from scriptengine.context import Context
 from scriptengine.exceptions import (
     ScriptEngineTaskArgumentInvalidError,
     ScriptEngineTaskRunError,
@@ -111,7 +111,7 @@ class Command(Task):
             f'{stderr_mode if stderr_mode in (True, False) else "context"}'
         )
         with log_pipe(stdout_mode) as stdout, log_pipe(stderr_mode) as stderr:
-            context_update = {}
+            context_update = Context()
             try:
                 cmd_proc = subprocess.run(
                     map(str, (command, *args)),
@@ -132,4 +132,4 @@ class Command(Task):
                     context_update[stdout_mode] = cmd_proc.stdout.split("\n")
                 if isinstance(stderr_mode, str):
                     context_update[stderr_mode] = cmd_proc.stderr.split("\n")
-        return ContextUpdate(context_update)
+        return context_update or None

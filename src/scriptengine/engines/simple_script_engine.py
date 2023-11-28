@@ -5,11 +5,12 @@ on the local machine, without consideration of job contexts. The
 SimpleScriptEngine relies on the Job class to run the actual tasks/jobs.
 """
 
+import copy
 import logging
 import sys
 from pprint import pprint
 
-from scriptengine.context import Context, ContextUpdate, save_copy
+from scriptengine.context import Context
 from scriptengine.exceptions import (
     ScriptEngineJobError,
     ScriptEngineStopException,
@@ -64,12 +65,14 @@ class SimpleScriptEngine:
         sys.exit()
 
     def run(self, script, context):
-        local_context = Context(save_copy(context))
+        local_context = Context(context)
+        context_update = Context()
         for todo in script if isinstance(script, list) else [script]:
-            context_update = self._guarded_run(todo, local_context)
-            if context_update:
-                local_context += context_update
-        return ContextUpdate(context, local_context)
+            c = self._guarded_run(todo, local_context)
+            if c:
+                local_context += c
+                context_update += copy.deepcopy(c)
+        return context_update or None
 
     def _log(self, level, msg):
         self.logger.log(level, msg)

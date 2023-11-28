@@ -5,11 +5,13 @@ IMPORTANT NOTES:
 
 1. This release will drop Python3.6 support! (#88, #95)
 2. This release will drop support for legacy task names! (#96)
+3. This release introduces dotted keys (#97)
 
 
 Features
 --------
 - #96: Drop legacy task names
+- #97: Better context class. This allows dotted keys!
 
 
 Fixes

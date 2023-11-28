@@ -73,11 +73,10 @@ switched of with the ``--nocolor`` argument.
 
 As seen in the output of ``se --help`` above, ScriptEngine lists all
 available task in the current installation. ScriptEngine uses dynamic task
-loading (see :ref:`Concepts`) and additional task can be installed from
+loading (see :ref:`concepts:concepts`) and additional task can be installed from
 Python packages. In the example above, all tasks from the build-in ``base.*``
-package are available. Furthermore, the ``hpc.slurm.sbatch`` task is
-provided, which comes from the ``scriptengine-tasks-hpc`` (go `there`_) Python
-package.
+package are available. Furthermore, the ``hpc.slurm.sbatch`` task is provided,
+which comes from the ``scriptengine-tasks-hpc`` (go `there`_) Python package.
 
 Note that ScriptEngine task names follow a namespace scheme to prevent name
 clashes for tasks from different packages.

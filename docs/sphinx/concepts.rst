@@ -50,9 +50,9 @@ tasks in two ways:
     * jobs can add conditionals and loops to tasks.
 
 Corresponding to these two cases, jobs use the special ``do`` keyword to specify
-sequences of tasks (see :ref:`scripts:Do`), and/or ``when`` or ``loop`` clauses
-clauses to specify :ref:`scripts:conditionals` and :ref:`scripts:loops`,
-respectively.
+sequences of tasks (see :ref:`do <scripts:do>`), and/or ``when`` or ``loop``
+clauses clauses to specify :ref:`conditionals <scripts:conditionals>` and
+:ref:`loops <scripts:loops>`, respectively.
 
 
 Scripts
@@ -106,24 +106,54 @@ An important concept in ScriptEngine is the task context, or short, the
 key, value pairs. ScriptEngine tasks can store and retrieve information from the
 context.
 
-When a ScriptEngine instance is created, the context is initialised. Some
-information about the execution environment is stored by the ScriptEngine
-instance in the new context. Then, it is passed to every task that is executed.
-Usually, the context will be populated with information as tasks are processed.
+When a ScriptEngine :ref:`instance <concepts:scriptengine instances>` is
+created, the context is initialised. Some information about the execution
+environment is stored by the ScriptEngine instance in the new context. Then, it
+is passed to every task that is executed.  Usually, the context will be
+populated with information as tasks are processed.
 
 We have already seen the usage of the context in the "Hello world" example
-above. The ``context`` task stored a parameter named ``planet`` in the context
-and the ``echo`` task used the information from the context to display its
-message.
+above. The ``base.context`` task stored a parameter named ``planet`` in the
+context and the ``base.echo`` task used the information from the context to
+display its message.
 
 Since the context is a Python dictionary, it can store any Python data types.
 This is, for example, often used to structure information by storing further
 dictionaries in the context. Numbers and dates are other examples for useful
 data types for context information.
 
+The ScriptEngine task context extends the functionality of a Python dictionary
+in two important aspects:
+
+- allow for "dotted keys" in order to access nested dictionary values,
+- allow for merging of contexts with the help of `deepmerge
+  <https://deepmerge.readthedocs.io/en/latest/>`_,
+- allow to store and load the context from/to a file.
+
+Dotted keys are helpful for writing ScriptEngine scripts in YAML, because they
+can substantially shorten the syntax when working with the context. See the
+description of the :ref:`base-tasks:``base.context``` task for examples. Using
+dotted keys can also simplify the access to context parameters in Jinja
+experssions.
+
+Context merging is a central concept for ScriptEngine. When tasks are executed,
+they are allowed to update the context. These updates are implemented as deep
+merges of the context dictionary, which makes it possible to add keys to nested
+levels of the dictionary, or add items to lists.
+
+Last not least, storing the context in, and loading from, a file, allows
+ScriptEngine to achieve persistency. This enables, among other possibilities, to
+pick off the context from a previous run.
+
+.. versionadded:: 1.0
+    Dotted keys and context load/store.
+
 
 YAML
 ----
+
+Short examples of important YAML structures follow below. For further
+explanation and links, refer to the `YAML homepage <https://yaml.org/>`_.
 
 YAML syntax for lists::
 
@@ -182,3 +212,5 @@ example::
 
 Jinja2 Templating
 -----------------
+
+`Jinja homepage and documentation <https://jinja.palletsprojects.com>`_

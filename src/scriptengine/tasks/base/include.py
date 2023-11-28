@@ -4,9 +4,10 @@
    ScriptEngine script and lets the active ScriptEngine instance execute it.
 """
 
+import copy
 from pathlib import Path
 
-from scriptengine.context import Context, ContextUpdate, save_copy
+from scriptengine.context import Context
 from scriptengine.exceptions import ScriptEngineTaskRunError
 from scriptengine.tasks.core import Task, timed_runner
 from scriptengine.yaml.parser import parse_file
@@ -67,10 +68,8 @@ class Include(Task):
         script = parse_file(inc_file)
 
         self.log_debug(f"Execute include script: {inc_file}")
-        local_context = Context(save_copy(context))
+        local_context = Context(copy.deepcopy(context))
         context_update = local_context["se"]["instance"].run(script, local_context)
-        if context_update:
-            local_context += context_update
         self.log_debug(f"Finished executing include script: {inc_file}")
 
-        return ContextUpdate(context, local_context)
+        return context_update or None

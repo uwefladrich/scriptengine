@@ -1,5 +1,6 @@
 import yaml
 
+from scriptengine.context import Context
 from scriptengine.engines import SimpleScriptEngine
 from scriptengine.yaml.parser import parse
 
@@ -16,7 +17,7 @@ def test_simple_loop(capsys):
         loop: [1, 2, 3]
     """
     )
-    j.run({})
+    j.run(Context())
     captured = capsys.readouterr()
     assert "Hello 1" in captured.out
     assert "Hello 2" in captured.out
@@ -32,7 +33,7 @@ def test_loop_in(capsys):
             in: [1, 2, 3]
     """
     )
-    j.run({})
+    j.run(Context())
     captured = capsys.readouterr()
     assert "Hello 1" in captured.out
     assert "Hello 2" in captured.out
@@ -49,7 +50,7 @@ def test_loop_with_in(capsys):
             in: [1, 2, 3]
     """
     )
-    j.run({})
+    j.run(Context())
     captured = capsys.readouterr()
     assert "Hello 1" in captured.out
     assert "Hello 2" in captured.out
@@ -83,7 +84,7 @@ def test_loop_in_dict(capsys):
                 baz: 3
     """
     )
-    j.run({})
+    j.run(Context())
     captured = capsys.readouterr()
     assert "foo is 1" in captured.out
     assert "bar is 2" in captured.out
@@ -103,7 +104,7 @@ def test_loop_with_in_dict(capsys):
                 baz: 3
     """
     )
-    j.run({})
+    j.run(Context())
     captured = capsys.readouterr()
     assert "foo is 1" in captured.out
     assert "bar is 2" in captured.out
@@ -142,7 +143,7 @@ def test_loop_over_list_of_dicts(capsys):
           loop: "{{list}}"
         """
     )
-    SimpleScriptEngine().run(s, context={})
+    SimpleScriptEngine().run(s, context=Context())
     captured = capsys.readouterr()
     assert "1 - 2" in captured.out
     assert "3 - 4" in captured.out
@@ -158,7 +159,7 @@ def test_loop_over_lists(capsys):
             - [3, 4]
         """
     )
-    SimpleScriptEngine().run(s, context={})
+    SimpleScriptEngine().run(s, context=Context())
     captured = capsys.readouterr()
     assert "1 - 2" in captured.out
     assert "3 - 4" in captured.out

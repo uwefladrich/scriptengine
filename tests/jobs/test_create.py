@@ -1,7 +1,6 @@
 import pytest
 import yaml
 
-from scriptengine.context import ContextUpdate
 from scriptengine.jobs import Job
 from scriptengine.tasks.base.echo import Echo
 from scriptengine.yaml.parser import parse
@@ -30,14 +29,3 @@ def test_create_from_yaml():
     )
     assert type(j) is Job
     assert type(j.todo[0]) is Echo
-
-
-def test_returns_delta():
-    j = from_yaml(
-        """
-        do:
-            - base.context:
-                foo: 1
-    """
-    )
-    assert type(j.run({})) is ContextUpdate
