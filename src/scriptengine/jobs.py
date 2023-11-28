@@ -75,29 +75,26 @@ class Job:
     def when(self, context):
         try:
             return self._when is None or j2render(self._when, context, boolean=True)
-        except ScriptEngineParseJinjaError:
+        except ScriptEngineParseJinjaError as e:
             self.log_error(
-                "Error while parsing (Jinja2) invalid when clause "
-                f'"{self._when}" with context "{context}"'
+                f"Jinja2 error in *when* clause '{self._when}' (full error: {e})"
             )
             raise ScriptEngineJobParseError
 
     def loop_spec(self, context):
         try:
             iter = j2render(self._loop, context)
-        except ScriptEngineParseJinjaError:
+        except ScriptEngineParseJinjaError as e:
             self.log_error(
-                "Error while parsing (Jinja2) invalid loop expression "
-                f'"{self._loop}" with context "{context}"'
+                f"Jinja2 error in *loop* spec '{self._loop}' (full error: {e})"
             )
             raise ScriptEngineJobParseError
         if isinstance(iter, str):
             try:
                 iter = ast.literal_eval(iter or "None")
-            except (SyntaxError, ValueError):
+            except (SyntaxError, ValueError) as e:
                 self.log_error(
-                    "Error while evaluating (AST) invalid loop expression "
-                    f'"{iter}" with context "{context}"'
+                    f"AST evaluation error in *loop* spec '{iter}' (full error: {e})"
                 )
                 raise ScriptEngineJobParseError
         if isinstance(iter, dict):
