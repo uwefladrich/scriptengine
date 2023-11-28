@@ -10,7 +10,7 @@ if __name__ == "__main__":
         # pyproject.toml. Hence, we have to keep this redundancy until
         # ScriptEngine drops support for Python 3.6
         name="scriptengine",
-        version="0.14.4",
+        version="1.0.0rc1",
         install_requires=[
             "importlib_metadata; python_version<'3.8'",
             "python-dateutil",
