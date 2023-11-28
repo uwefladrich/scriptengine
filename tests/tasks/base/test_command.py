@@ -30,6 +30,8 @@ def test_command_ls(tmp_path, caplog):
 
 
 def test_command_ls_not_exists(tmp_path, caplog):
+    os.chdir(tmp_path)
+
     t = from_yaml(
         """
         base.command:
