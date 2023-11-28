@@ -4,21 +4,21 @@ Installation
 Prerequisites
 -------------
 
-ScriptEngine needs Python version 3.7 or newer. To check the version of your
+ScriptEngine needs Python version 3.8 or newer. To check the version of your
 default Python installation, run:
 
 .. code-block:: shell
 
     > python --version
 
-If the version is 3.7 or larger, everything is fine. If the default Python
+If the version is 3.8 or larger, everything is fine. If the default Python
 version is 2, check if Python3 is still available:
 
 .. code-block:: shell
 
     > python3 --version
 
-If that returns a version >=3.7, you need to specify the Python3 interpreter
+If that returns a version >=3.8, you need to specify the Python3 interpreter
 explicitly in the installation below.
 
 

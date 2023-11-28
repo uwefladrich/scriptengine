@@ -1,7 +1,6 @@
 """ScriptEngine helpers: Jinja2 rendering"""
 
 import datetime
-import distutils.util
 import os
 
 import jinja2
@@ -57,6 +56,14 @@ for name, function in filters().items():
     _param_env.filters[name] = function
 
 
+def _strtobool(value):
+    if value in ("y", "yes", "t", "true", "on", "1"):
+        return True
+    elif value in ("n", "no", "f", "false", "off", "0"):
+        return False
+    raise ValueError(f"Cannot convert '{value}' to a boolean value")
+
+
 def render(arg, context, recursive=True, boolean=False):
     """Renders a string with Jinja2.
 
@@ -103,7 +110,7 @@ def render(arg, context, recursive=True, boolean=False):
                 next_rendered_string = render_with_context(rendered_string)
         if boolean:
             expr = f"{{% if {rendered_string} %}}1{{% else %}}0{{% endif %}}"
-            return bool(distutils.util.strtobool(render_with_context(expr)))
+            return _strtobool(render_with_context(expr))
         return rendered_string
     else:
         return arg

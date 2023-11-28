@@ -26,21 +26,19 @@ along with ScriptEngine. If not, see <https://www.gnu.org/licenses/>.
 __license__ = "GPLv3+"
 
 
-import os
 import argparse
+import importlib.metadata
 import logging
-import pkg_resources
+import os
 
 import scriptengine.helpers.terminal_colors
 import scriptengine.logging
-
+from scriptengine.engines import SimpleScriptEngine
+from scriptengine.exceptions import ScriptEngineParseError, ScriptEngineParseFileError
 from scriptengine.tasks.core.loader import load as load_tasks
 from scriptengine.yaml.parser import parse_file as parse_yaml_file
 
-from scriptengine.engines import SimpleScriptEngine
-from scriptengine.exceptions import ScriptEngineParseError, ScriptEngineParseFileError
-
-__version__ = pkg_resources.get_distribution("scriptengine").version
+__version__ = importlib.metadata.version("scriptengine")
 
 
 def parse_cmd_line_args():
@@ -138,9 +136,7 @@ def main():
         logger.critical("Could not parse all script files")
         return os.EX_DATAERR
 
-    # Note that the following removal of duplicates does not guarantee the
-    # order of entries before Python 3.7! We'll accept this in favour of the
-    # easier implementation.
+    # Collect paths (and remove duplicates)
     script_path = tuple(
         dict.fromkeys((os.path.dirname(file) for file in parsed_args.files))
     )
