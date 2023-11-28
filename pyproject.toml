@@ -8,14 +8,13 @@ version = "0.14.4"
 authors = [{ name = "Uwe Fladrich", email = "uwe.fladrich@protonmail.com" }]
 description = "A lightweight and extensible framework for executing scripts written in YAML"
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "importlib_metadata; python_version<'3.8'",
     "python-dateutil",
     "deepmerge",
     "PyYAML",
