@@ -13,20 +13,23 @@ def from_yaml(string):
 
 def test_command_ls(tmp_path, caplog):
     os.chdir(tmp_path)
-    (tmp_path / "foo").touch()
+    f = tmp_path / "foo"
+    f.touch()
     time.sleep(2)
 
     t = from_yaml(
-        """
+        f"""
         base.command:
           name: ls
-          args: [ foo ]
+          args: [ {f.name} ]
         """
     )
 
     with caplog.at_level(logging.INFO, logger="se.task"):
         t.run({})
         assert "foo" in [rec.message for rec in caplog.records]
+
+    f.unlink()
 
 
 def test_command_ls_not_exists(tmp_path, caplog):
