@@ -4,6 +4,7 @@ Next release
 Internal changes
 ----------------
 - #102: Remove duplicated packaging info in setup.py
+- #103: Use Python 3.10 in Github actions
 
 
 ScriptEngine 1.0.0rc1
