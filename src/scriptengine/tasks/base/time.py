@@ -9,9 +9,9 @@ from scriptengine.context import Context
 
 
 class Time(Task):
-    """Task class for measuring time in ScriptEngine
-    """
-    _required_arguments = ('set', )
+    """Task class for measuring time in ScriptEngine"""
+
+    _required_arguments = ("set",)
 
     def __init__(self, arguments):
         Time.check_arguments(arguments)
