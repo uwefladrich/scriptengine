@@ -1,5 +1,6 @@
 """TaskTimer for ScriptEngine."""
 
+from scriptengine.context import Context
 from scriptengine.exceptions import ScriptEngineTaskRunError
 from scriptengine.tasks.core import Task
 
@@ -32,7 +33,6 @@ class TaskTimer(Task):
         super().__init__(arguments)
 
     def run(self, context):
-
         mode = self.getarg("mode", context)
         if mode not in (False, "basic", "classes", "instances"):
             msg = (
@@ -58,5 +58,6 @@ class TaskTimer(Task):
             logging = False
             self.log_info("Task timing is switched off")
 
-        context["se"]["tasks"]["timing"]["mode"] = mode
-        context["se"]["tasks"]["timing"]["logging"] = logging
+        return Context(
+            {"se": {"tasks": {"timing": {"mode": mode, "logging": logging}}}}
+        )
