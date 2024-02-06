@@ -1,5 +1,5 @@
-Next release
-============
+ScriptEngine 1.0.0rc3
+=====================
 
 Fixes
 -----
