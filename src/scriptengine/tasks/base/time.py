@@ -5,12 +5,13 @@
 import datetime
 
 from scriptengine.tasks.core import Task, timed_runner
+from scriptengine.context import Context
 
 
 class Time(Task):
-    """Task class for measuring time in ScriptEngine
-    """
-    _required_arguments = ('set', )
+    """Task class for measuring time in ScriptEngine"""
+
+    _required_arguments = ("set",)
 
     def __init__(self, arguments):
         Time.check_arguments(arguments)
@@ -29,7 +30,4 @@ class Time(Task):
 
         now = datetime.datetime.now()
 
-        if since:
-            context[key] = now - since
-        else:
-            context[key] = now
+        return Context({key: now - since if since else now})
