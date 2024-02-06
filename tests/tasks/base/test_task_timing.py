@@ -2,6 +2,7 @@ from time import sleep
 
 import pytest
 
+from scriptengine.context import Context
 from scriptengine.exceptions import ScriptEngineTaskArgumentMissingError
 from scriptengine.tasks.base.task_timer import TaskTimer
 from scriptengine.tasks.core import Task, timed_runner
@@ -39,18 +40,20 @@ def test_task_timing():
     timer = TaskTimer({"mode": timer_mode, "logging": timer_logging})
     timed = WaitASecond()
 
-    context = {
-        "se": {
-            "tasks": {
-                "timing": {
-                    "mode": False,
-                    "logging": None,
-                    "timers": {},
+    context = Context(
+        {
+            "se": {
+                "tasks": {
+                    "timing": {
+                        "mode": False,
+                        "logging": None,
+                        "timers": {},
+                    }
                 }
             }
         }
-    }
-    timer.run(context)
+    )
+    context += timer.run(context)
     timed.run(context)
 
     assert context["se"]["tasks"]["timing"]["mode"] == timer_mode
