@@ -1,3 +1,12 @@
+Next release
+============
+
+Fixes
+-----
+- #106, #108: Make base.time return proper Context (thanks @oloapinivad)
+  (base.time did not work properly under "do")
+
+
 ScriptEngine 1.0.0rc2
 =====================
 
