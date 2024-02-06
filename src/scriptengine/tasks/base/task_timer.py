@@ -58,6 +58,4 @@ class TaskTimer(Task):
             logging = False
             self.log_info("Task timing is switched off")
 
-        return Context(
-            {"se": {"tasks": {"timing": {"mode": mode, "logging": logging}}}}
-        )
+        return Context({"se.tasks.timing": {"mode": mode, "logging": logging}})
