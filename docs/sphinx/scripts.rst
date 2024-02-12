@@ -97,6 +97,17 @@ The list can also be specified in a separate ``base.context`` task, as in::
 Note that the string defining the loop list must be enclosed in quotes because
 of the braces.
 
+As the previous examples illustrate, the loop specifier must be a valid YAML list. There is,
+however, some freedom in the way that list is constructed. For example, a common pattern is to
+loop over a contiguous range of numbers. This can be accomplished by combining the Jinja
+``range()`` function and ``list`` filter::
+
+  - base.echo:
+      msg: "Looping from one to five, now at {{item+1}}"
+    loop: "{{range(5)|list}}"
+
+In general, it is often useful to use the power of Jinja in order to contruct loops.
+
 In all of the above examples, the loop index variable was not explicitly
 named, which means it takes on its default name, ``item``. The ``item``
 variable is added to the context for all jobs or tasks within the loop and can

@@ -1,3 +1,11 @@
+Next release
+============
+
+Fixes
+-----
+- #107: Add loop-over-range example to docs
+
+
 ScriptEngine 1.0.0rc3
 =====================
 
