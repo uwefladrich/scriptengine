@@ -53,10 +53,10 @@ def test_context_simple_set():
     assert ctx["bar"] == 2
 
 
-def test_context_from_dict():
+def test_context_load_dict():
     t = from_yaml(
         """
-        base.context.from:
+        base.context.load:
             dict: {'foo': 1, 'bar': 2}
         """
     )
@@ -65,7 +65,7 @@ def test_context_from_dict():
     assert ctx["bar"] == 2
 
 
-def test_context_from_context_dict():
+def test_context_load_context_dict():
     t1 = from_yaml(
         """
         base.context:
@@ -76,7 +76,7 @@ def test_context_from_context_dict():
     )
     t2 = from_yaml(
         """
-        base.context.from:
+        base.context.load:
             dict: '{{update}}'
         """
     )
@@ -104,7 +104,7 @@ def test_context_update_from_context_dict():
     )
     t3 = from_yaml(
         """
-        base.context.from:
+        base.context.load:
             dict: '{{update}}'
         """
     )
@@ -116,7 +116,7 @@ def test_context_update_from_context_dict():
     assert ctx["bar"] == 2
 
 
-def test_context_from_file(tmp_path):
+def test_context_load_file(tmp_path):
     f = tmp_path / "f.yml"
     f.write_text(
         """
@@ -126,7 +126,7 @@ def test_context_from_file(tmp_path):
     )
     t = from_yaml(
         f"""
-        base.context.from:
+        base.context.load:
             file: {f}
         """
     )
@@ -135,20 +135,20 @@ def test_context_from_file(tmp_path):
     assert ctx["bar"] == 2
 
 
-def test_context_from_no_args():
+def test_context_load_no_args():
     t = from_yaml(
         """
-        base.context.from:
+        base.context.load:
         """
     )
     with pytest.raises(ScriptEngineTaskError):
         t.run(SEContext())
 
 
-def test_context_from_double_args():
+def test_context_load_double_args():
     t = from_yaml(
         """
-        base.context.from:
+        base.context.load:
             dict: foo
             file: bar
         """
@@ -157,10 +157,10 @@ def test_context_from_double_args():
         t.run(SEContext())
 
 
-def test_context_from_dict_not_a_dict():
+def test_context_load_dict_not_a_dict():
     t = from_yaml(
         """
-        base.context.from:
+        base.context.load:
             dict: [1, 2, 3]
         """
     )
@@ -168,10 +168,10 @@ def test_context_from_dict_not_a_dict():
         t.run(SEContext())
 
 
-def test_context_from_file_not_found():
+def test_context_load_file_not_found():
     t = from_yaml(
         """
-        base.context.from:
+        base.context.load:
             file: foo
         """
     )
@@ -179,7 +179,7 @@ def test_context_from_file_not_found():
         t.run(SEContext())
 
 
-def test_context_from_file_not_yaml(tmp_path):
+def test_context_load_file_not_yaml(tmp_path):
     f = tmp_path / "f.yml"
     f.write_text(
         """
@@ -188,7 +188,7 @@ def test_context_from_file_not_yaml(tmp_path):
     )
     t = from_yaml(
         f"""
-        base.context.from:
+        base.context.load:
             file: {f}
         """
     )
@@ -196,7 +196,7 @@ def test_context_from_file_not_yaml(tmp_path):
         t.run(SEContext())
 
 
-def test_context_from_file_not_dict(tmp_path):
+def test_context_load_file_not_dict(tmp_path):
     f = tmp_path / "f.yml"
     f.write_text(
         """
@@ -206,7 +206,7 @@ def test_context_from_file_not_dict(tmp_path):
     )
     t = from_yaml(
         f"""
-        base.context.from:
+        base.context.load:
             file: {f}
         """
     )
