@@ -106,7 +106,7 @@ This feature allows a shorter notation wherever context parameters are accessed
 by their names.
 
 .. versionadded:: 1.0
-    Dotted key access.
+    Allow for dotted keys for nested context parameters.
 
 
 ``base.context.load``
@@ -297,9 +297,8 @@ for example::
 When a requested environment variable does not exist, a warning is given and no
 corresponding context changes are made.
 
-.. warning::
-   Only simple, non-nested context parameters (without dots) can be used in
-   ``base.getenv``
+.. versionadded:: 1.0
+   Allow dotted keys for nested context parameters.
 
 
 ``base.setenv``
@@ -328,8 +327,8 @@ will set the environment variables ``$LD_LIBRARY_PATH`` to
    converted to the string ``"1"`` before it is assigned to the environment
    variable ``$FOO``.
 
-.. warning::
-   Only simple, non-nested context parameters can be used in ``base.setenv``
+.. versionadded:: 1.0
+   Allow dotted keys for nested context parameters.
 
 
 Basic file operations

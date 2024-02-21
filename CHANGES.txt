@@ -4,6 +4,7 @@ Next release
 Features
 --------
 - #112: Rename base.context.from to base.context.load
+- #113: Update docs on nested (dotted) keys
 
 Fixes
 -----
