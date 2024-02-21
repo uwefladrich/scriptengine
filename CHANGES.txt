@@ -1,6 +1,10 @@
 Next release
 ============
 
+Features
+--------
+- #112: Rename base.context.from to base.context.load
+
 Fixes
 -----
 - #107: Add loop-over-range example to docs
