@@ -27,7 +27,7 @@ class Context(Task):
         return context_update
 
 
-class ContextFrom(Task):
+class ContextLoad(Task):
     """
     This task updates the context, just as the Context task, but from sources
     other than direct arguments.
@@ -38,13 +38,13 @@ class ContextFrom(Task):
     - base.context:
         upd:
             foo: 1
-    - base.context.from:
+    - base.context.load:
         dict: "{{upd}}"
 
     If the 'file' argument is given, the argument value must be a file name and
     the context is updated from the file context. The file format must be YAML:
 
-    - base.context.from:
+    - base.context.load:
         file: update.yml
     """
 
@@ -58,7 +58,7 @@ class ContextFrom(Task):
             raise ScriptEngineTaskError
 
         if dict_arg:
-            self.log_info(f"Context update from dict: {dict_arg}")
+            self.log_info(f"Load context update from dict: {dict_arg}")
             if not isinstance(dict_arg, dict):
                 self.log_error(
                     "The 'dict' argument must be a dictionary "
@@ -68,7 +68,7 @@ class ContextFrom(Task):
             context_update_d = dict_arg
 
         elif file_arg:
-            self.log_info(f"Context update from file: {file_arg}")
+            self.log_info(f"Load context update from file: {file_arg}")
             try:
                 with open(file_arg) as f:
                     dict_from_file = yaml.load(f, Loader=yaml.SafeLoader)
@@ -78,9 +78,7 @@ class ContextFrom(Task):
             except yaml.scanner.ScannerError as e:
                 self.log_error("Error reading the file as YAML, error message follows:")
                 self.log_error(f"  {''.join(str(e).splitlines())}")
-                self.log_error(
-                    "Note that only YAML file are supported by base.context.from"
-                )
+                self.log_error("Note: base.context.load supports only YAML files")
                 raise ScriptEngineTaskRunError
             if not isinstance(dict_from_file, dict):
                 self.log_error(
