@@ -19,10 +19,7 @@ def timed_runner(func):
     @functools.wraps(func)
     def wrap_timed(self, context):
 
-        try:
-            mode = context["se.tasks.timing.mode"]
-        except KeyError:
-            mode = False
+        mode = context.get("se.tasks.timing.mode")
 
         if mode in ("basic", "classes", "instances"):
 
