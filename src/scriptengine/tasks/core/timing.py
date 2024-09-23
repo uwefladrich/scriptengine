@@ -1,8 +1,11 @@
 """ScriptEngine timing for tasks: provides timing of Task classes .run() method
 """
 
+import copy
 import functools
 import time
+
+from scriptengine.context import Context
 
 
 def timed_runner(func):
@@ -25,7 +28,7 @@ def timed_runner(func):
 
             # timed function call
             start_tic = time.perf_counter()
-            func_return_value = func(self, context)
+            context_update = func(self, context) or Context()
             elapsed_time = time.perf_counter() - start_tic
 
             # logging
@@ -36,7 +39,7 @@ def timed_runner(func):
 
             # update timers
             if mode in ("classes", "instances"):
-                timers = context["se.tasks.timing.timers"]
+                timers = copy.deepcopy(context["se.tasks.timing.timers"])
 
                 class_t = timers.setdefault("classes", {})
                 class_t.setdefault(self.__class__.__name__, 0)
@@ -47,7 +50,12 @@ def timed_runner(func):
                     instance_t.setdefault(self.id, 0)
                     instance_t[self.id] += elapsed_time
 
-            return func_return_value
+                timer_update = Context()
+                timer_update["se.tasks.timing.timers"] = timers
+
+                context_update += timer_update
+
+            return context_update
 
         # if no timing, just return the function
         return func(self, context)
