@@ -1,6 +1,13 @@
 Next release
 ============
 
+...
+
+
+
+ScriptEngine 1.0.0rc4
+=====================
+
 Features
 --------
 - #112: Rename base.context.from to base.context.load
