@@ -1,8 +1,9 @@
 Next release
 ============
 
-...
-
+Fixes
+-----
+- #117: Fix: ReadTheDocs does not build
 
 
 ScriptEngine 1.0.0rc4
