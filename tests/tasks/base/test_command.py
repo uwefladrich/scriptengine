@@ -51,3 +51,17 @@ def test_command_ls_not_exists(tmp_path, caplog):
             rec.message for rec in caplog.records
         ]
         assert len(c["ls_stderr"]) > 1
+
+
+def test_command_cwd_sets_pwd(tmp_path):
+    os.chdir(tmp_path)
+    t = from_yaml(
+        f"""
+        base.command:
+            name: env
+            cwd: {tmp_path}
+            stdout: env_output
+        """
+    )
+    c = t.run({})
+    assert f"PWD={tmp_path}" in c["env_output"]

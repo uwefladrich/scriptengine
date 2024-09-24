@@ -10,6 +10,7 @@ Fixes
 -----
 - #107: Add loop-over-range example to docs
 - #115: Fix: task timing in jobs does not work
+- #114: Update $PWD in environment for base.command processes
 
 
 ScriptEngine 1.0.0rc3
