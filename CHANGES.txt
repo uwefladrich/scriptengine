@@ -1,6 +1,12 @@
 Next release
 ============
 
+...
+
+
+ScriptEngine 1.0.0
+==================
+
 Fixes
 -----
 - #117: Fix: ReadTheDocs does not build
