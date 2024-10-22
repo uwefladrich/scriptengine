@@ -10,5 +10,5 @@ This module provides
   - a timing wrapper for Task.run() functions
 """
 
-from .task import Task
-from .timing import timed_runner
+from .task import Task as Task
+from .timing import timed_runner as timed_runner
