@@ -382,6 +382,13 @@ datetime
         base.context:
             date_time: "{{ '2022/01/01 00:00:00' | datetime('%Y/%m/%d %H:%M:%S') }}""
 
+increment_datetime
+    Increment a ``datetime.datetime`` object by a number of days, hours, minutes
+    or seconds, for example::
+
+        base.context:
+            date_time: "{{ '2022-01-01 00:00:00' | datetime | increment_datetime(days=1, hours=6)}}""
+
 date
     Converts a string to a ``datetime.date`` object::
 

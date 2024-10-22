@@ -1,7 +1,10 @@
 Next release
 ============
 
-...
+Features
+--------
+- #119: New Jinja filter: increment_datetime (thanks @jmrgonza)
+
 
 
 ScriptEngine 1.0.0
