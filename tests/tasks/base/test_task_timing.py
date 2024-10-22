@@ -32,7 +32,7 @@ def test_create_task_timing():
         {"mode": "instances"},
     )
     for t in tests:
-        assert type(TaskTimer(t)) == TaskTimer
+        assert isinstance(TaskTimer(t), TaskTimer)
 
 
 def test_create_task_timing_with_missing_argument():

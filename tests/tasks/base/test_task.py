@@ -8,11 +8,11 @@ from scriptengine.tasks.core import Task
 
 
 def test_create_task():
-    assert type(Task()) == Task
+    assert isinstance(Task(), Task)
 
 
 def test_create_task_with_args():
-    assert type(Task({"foo": 1, "bar": 2})) == Task
+    assert isinstance(Task({"foo": 1, "bar": 2}), Task)
 
 
 def test_create_task_with_invalid_args():
