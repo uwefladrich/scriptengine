@@ -6,9 +6,9 @@ from scriptengine.tasks.core import Task, timed_runner
 
 
 class Chdir(Task):
-    """Chdir task, changes the current working directory
-    """
-    _required_arguments = ('path', )
+    """Chdir task, changes the current working directory"""
+
+    _required_arguments = ("path",)
 
     def __init__(self, arguments):
         Chdir.check_arguments(arguments)
@@ -16,6 +16,6 @@ class Chdir(Task):
 
     @timed_runner
     def run(self, context):
-        path = self.getarg('path', context)
+        path = self.getarg("path", context)
         self.log_info(f"Change path to {path}")
         os.chdir(path)

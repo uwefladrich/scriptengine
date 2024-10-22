@@ -9,7 +9,6 @@ def test_context_contains_simple():
     assert 1 not in c
 
 
-
 def test_context_contains_nested():
     c = Context({"foo": {"bar": 1}})
     assert "foo" in c

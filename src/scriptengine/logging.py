@@ -35,105 +35,97 @@ def configure(log_level=logging.INFO):
     }
 
     formats = {
-        'basic': {
-            lvl: f'{colors[lvl]}{{asctime}} '
-                 f'{tc.BOLD}{{levelname}}{tc.RESET}{colors[lvl]} '
-                 f'[{{name}}] {{message}}'
-                 f'{tc.RESET}'
+        "basic": {
+            lvl: f"{colors[lvl]}{{asctime}} "
+            f"{tc.BOLD}{{levelname}}{tc.RESET}{colors[lvl]} "
+            f"[{{name}}] {{message}}"
+            f"{tc.RESET}"
             for lvl in levels
         },
-        'with_id': {
-            lvl: f'{colors[lvl]}{{asctime}} '
-                 f'{tc.BOLD}{{levelname}}{tc.RESET}{colors[lvl]} '
-                 f'[{{name}} <{{id}}>] {{message}}'
-                 f'{tc.RESET}'
+        "with_id": {
+            lvl: f"{colors[lvl]}{{asctime}} "
+            f"{tc.BOLD}{{levelname}}{tc.RESET}{colors[lvl]} "
+            f"[{{name}} <{{id}}>] {{message}}"
+            f"{tc.RESET}"
             for lvl in levels
         },
-        'with_id_and_type': {
-            lvl: f'{colors[lvl]}{{asctime}} '
-                 f'{tc.BOLD}{{levelname}}{tc.RESET}{colors[lvl]} '
-                 f'[{{name}}:{{type}} <{{id}}>] {{message}}'
-                 f'{tc.RESET}'
+        "with_id_and_type": {
+            lvl: f"{colors[lvl]}{{asctime}} "
+            f"{tc.BOLD}{{levelname}}{tc.RESET}{colors[lvl]} "
+            f"[{{name}}:{{type}} <{{id}}>] {{message}}"
+            f"{tc.RESET}"
             for lvl in levels
         },
     }
 
-    date_format = '%Y-%m-%d %H:%M:%S'
+    date_format = "%Y-%m-%d %H:%M:%S"
 
     configuration = dict(
-
         version=1,
-
         formatters={
-            'basic': {
-                '()': 'scriptengine.logging.LogLevelFormatter',
-                'formatters': {
+            "basic": {
+                "()": "scriptengine.logging.LogLevelFormatter",
+                "formatters": {
                     lvl: logging.Formatter(
-                            fmt=formats['basic'][lvl],
-                            style='{',
-                            datefmt=date_format
-                         )
+                        fmt=formats["basic"][lvl], style="{", datefmt=date_format
+                    )
                     for lvl in levels
-                }
+                },
             },
-            'job': {
-                '()': 'scriptengine.logging.LogLevelFormatter',
-                'formatters': {
+            "job": {
+                "()": "scriptengine.logging.LogLevelFormatter",
+                "formatters": {
                     lvl: logging.Formatter(
-                            fmt=formats['with_id'][lvl],
-                            style='{',
-                            datefmt=date_format
-                         )
+                        fmt=formats["with_id"][lvl], style="{", datefmt=date_format
+                    )
                     for lvl in levels
-                }
+                },
             },
-            'task': {
-                '()': 'scriptengine.logging.LogLevelFormatter',
-                'formatters': {
+            "task": {
+                "()": "scriptengine.logging.LogLevelFormatter",
+                "formatters": {
                     lvl: logging.Formatter(
-                            fmt=formats['with_id_and_type'][lvl],
-                            style='{',
-                            datefmt=date_format
-                         )
+                        fmt=formats["with_id_and_type"][lvl],
+                        style="{",
+                        datefmt=date_format,
+                    )
                     for lvl in levels
-                }
+                },
             },
         },
-
         handlers={
-            'default': {
-                'class': 'logging.StreamHandler',
-                'formatter': 'basic',
-                },
-            'job': {
-                'class': 'logging.StreamHandler',
-                'formatter': 'job',
-                },
-            'task': {
-                'class': 'logging.StreamHandler',
-                'formatter': 'task',
-                },
+            "default": {
+                "class": "logging.StreamHandler",
+                "formatter": "basic",
+            },
+            "job": {
+                "class": "logging.StreamHandler",
+                "formatter": "job",
+            },
+            "task": {
+                "class": "logging.StreamHandler",
+                "formatter": "task",
+            },
         },
-
         loggers={
-            'se': {
-                'handlers': ['default'],
-                'level': log_level,
+            "se": {
+                "handlers": ["default"],
+                "level": log_level,
             },
-            'se.job': {
-                'handlers': ['job'],
-                'level': log_level,
-                'propagate': False,
+            "se.job": {
+                "handlers": ["job"],
+                "level": log_level,
+                "propagate": False,
             },
-            'se.task': {
-                'handlers': ['task'],
-                'level': log_level,
-                'propagate': False,
+            "se.task": {
+                "handlers": ["task"],
+                "level": log_level,
+                "propagate": False,
             },
-            'se.task.loader': {
-                'handlers': ['default'],
-                'level': log_level,
-                'propagate': False,
+            "se.task.loader": {
+                "handlers": ["default"],
+                "level": log_level,
+                "propagate": False,
             },
         },
     )

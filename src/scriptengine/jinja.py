@@ -17,9 +17,13 @@ def string_to_date(string, format="%Y-%m-%d %H:%M:%S"):
     """Jinja2 filter to convert a string to datetime.date"""
     return datetime.datetime.strptime(string, format).date()
 
+
 def increment_datetime(dt, days=0, hours=0, minutes=0, seconds=0):
     """Jinja2 filter to increment datetime by a number of days/hours/minutes/seconds"""
-    return dt + datetime.timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds)
+    return dt + datetime.timedelta(
+        days=days, hours=hours, minutes=minutes, seconds=seconds
+    )
+
 
 def basename(path):
     """Jinja2 filter that returns a path's base name"""

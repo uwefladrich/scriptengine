@@ -35,6 +35,7 @@ class Context(UserDict):
 
     def __getitem__(self, key: Any) -> Any:
         """Return x[key] where key is possibly a dotted key"""
+
         def iter_getitem(data, subkey):
             try:
                 return data[subkey]

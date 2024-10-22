@@ -4,8 +4,8 @@
 
 import datetime
 
-from scriptengine.tasks.core import Task, timed_runner
 from scriptengine.context import Context
+from scriptengine.tasks.core import Task, timed_runner
 
 
 class Time(Task):

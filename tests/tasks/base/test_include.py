@@ -1,12 +1,12 @@
 from pathlib import Path
-import pytest
 
+import pytest
 import yaml
 
 from scriptengine.context import Context
-from scriptengine.yaml.parser import parse
 from scriptengine.engines import SimpleScriptEngine
 from scriptengine.exceptions import ScriptEngineTaskRunError
+from scriptengine.yaml.parser import parse
 
 
 def from_yaml(string):
