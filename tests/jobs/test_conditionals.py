@@ -40,7 +40,7 @@ def test_when_clause_parses_noparse_parameter(capsys):
         - base.context:
             foo: me
             bar: !noparse_jinja "{{ foo }}"
-        - when: "{{ bar == 'me' }}"
+        - when: "{{ bar|render == 'me' }}"
           base.echo:
             msg: Hello!
         """
