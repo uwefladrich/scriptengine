@@ -45,6 +45,11 @@ def path_join(pathlist):
     return os.path.join(*pathlist)
 
 
+@jinja2.pass_context
+def render_filter(context, expression):
+    return render(expression, context)
+
+
 def filters():
     """Return all defined Jinja2 filters by their name and corresponding function"""
     return {
@@ -55,6 +60,7 @@ def filters():
         "dirname": dirname,
         "exists": exists,
         "path_join": path_join,
+        "render": render_filter,
     }
 
 

@@ -18,7 +18,7 @@ dependencies = [
     "python-dateutil",
     "deepmerge",
     "PyYAML",
-    "jinja2",
+    "jinja2>=3.0.0",
 ]
 
 [project.optional-dependencies]

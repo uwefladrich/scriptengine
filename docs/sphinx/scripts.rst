@@ -389,6 +389,9 @@ increment_datetime
         base.context:
             date_time: "{{ '2022-01-01 00:00:00' | datetime | increment_datetime(days=1, hours=6)}}""
 
+.. versionadded:: 1.1
+    ``increment_datetime`` filter added.
+
 date
     Converts a string to a ``datetime.date`` object::
 
@@ -436,6 +439,26 @@ path_join
 
         base.echo:
             msg: "{{ ['foo', 'bar.txt'] | path_join }}"
+
+Other filters
+^^^^^^^^^^^^^
+
+render
+    Renders the expression (e.g. a variable) with Jinja2 and the current context. This can be used, for
+    example, to explicitly render context parameters that have been set with the ``!noparse`` tag::
+
+        - base.context:
+            foo: me
+            bar: !noparse "{{ foo }}"
+        - when: "{{ bar|render == 'me' }}"
+          base.echo:
+            msg: "It is {{ bar }}!"
+
+    Without using the ``render`` filter in the example, the ``when`` clause would evaluate to ``false``
+    because the value of ``bar`` would still be ``"{{ foo }}"`` as a consequence of ``!noparse``.
+
+.. versionadded:: 1.1
+    ``render`` filter added.
 
 
 .. _PyYAML: https://pyyaml.org

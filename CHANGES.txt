@@ -4,6 +4,7 @@ Next release
 Features
 --------
 - #119: New Jinja filter: increment_datetime (thanks @jmrgonza)
+- #122: New Jinja filter: render (solves #121)
 
 Internal changes
 ----------------
