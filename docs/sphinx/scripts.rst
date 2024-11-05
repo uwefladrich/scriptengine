@@ -437,6 +437,23 @@ path_join
         base.echo:
             msg: "{{ ['foo', 'bar.txt'] | path_join }}"
 
+Other filters
+^^^^^^^^^^^^^
+
+render
+    Renders the expression (e.g. a variable) with Jinja2 and the current context. This can be used, for
+    example, to explicitly render context parameters that have been set with the `!noparse` tag::
+
+        - base.context:
+            foo: me
+            bar: !noparse "{{ foo }}"
+        - when "{{ bar|render == 'me' }}"
+          base.echo:
+            msg: "It is {{ bar }}!"
+
+    Without using the `render` filter in the example, the `when` clause would evaluate to `false` because
+    the value of `bar` would still be `"{{ foo }}"` because of `!noparse`.
+
 
 .. _PyYAML: https://pyyaml.org
 .. _RFC5545: https://tools.ietf.org/html/rfc5545
