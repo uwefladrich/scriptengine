@@ -389,6 +389,9 @@ increment_datetime
         base.context:
             date_time: "{{ '2022-01-01 00:00:00' | datetime | increment_datetime(days=1, hours=6)}}""
 
+.. versionadded:: 1.1
+    ``increment_datetime`` filter added.
+
 date
     Converts a string to a ``datetime.date`` object::
 
