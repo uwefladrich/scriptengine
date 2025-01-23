@@ -55,3 +55,28 @@ class Setenv(Task):
         self.log_info(f'Set environment variables ({", ".join(vars_.keys())})')
         self.log_debug(vars_)
         os.environ.update(vars_)
+
+class Unsetenv(Task):
+    """Unsetenv task, unsets environment variables.
+    Unsetenv.run() takes a list of names, and unsets the environment variables
+    with the given names. For example,
+        base.unsetenv:
+            vars:
+              - foo
+              - bar
+    will unset $foo $bar.
+    """
+
+    _required_arguments = ("vars",)
+
+    @timed_runner
+    def run(self, context):
+        vars_ = self.getarg("vars", context, default=[])
+        vars_ = vars_ if isinstance(vars_, list) else [vars_]
+        self.log_info(f'Unset environment variables ({", ".join(vars_)})')
+        self.log_debug(vars_)
+        for v in vars_:
+            if v in os.environ:
+                del os.environ[v]
+            else:
+                self.log_info(f'Environment variable not found: {str(v)}')
