@@ -11,7 +11,7 @@ The base task package contains the following tasks, described in more detail bel
     base.echo, base.chdir, base.command, base.context, base.context.from,
     base.copy, base.exit, base.find, base.getenv, base.include, base.link,
     base.make_dir, base.move, base.remove, base.setenv, base.task_timer,
-    base.template, base.time
+    base.template, base.time, base.unsetenv
 
 
 ``base.echo``
@@ -330,6 +330,24 @@ will set the environment variables ``$LD_LIBRARY_PATH`` to
 .. versionadded:: 1.0
    Allow dotted keys for nested context parameters.
 
+``base.unsetenv``
+^^^^^^^^^^^^^^^
+Unsets one or more environment variables::
+
+    - base.unsetenv:
+        vars:
+          - <ENV_VAR_NAME_1>
+          - <ENV_VAR_NAME_2>
+          [...]
+
+The following example::
+
+    - base.unsetenv:
+        vars:
+          - SLURM_HOSTFILE
+          - LD_LIBRARY_PATH
+
+will unset the environment variables ``$SLURM_HOSTFILE`` and ``$LD_LIBRARY_PATH``.
 
 Basic file operations
 ---------------------
