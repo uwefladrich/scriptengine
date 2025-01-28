@@ -32,7 +32,7 @@ class Getenv(Task):
             try:
                 valid[n] = os.environ[v]
             except KeyError:
-                self.log_warning(f"Environment variable {v} does not exist")
+                self.log_warning(f"Environment variable '{v}' does not exist")
         return Context(valid)
 
 
@@ -52,7 +52,7 @@ class Setenv(Task):
         vars_ = {
             n: str(self.getarg(n, context)) for n in vars(self) if not n.startswith("_")
         }
-        self.log_info(f'Set environment variables ({", ".join(vars_.keys())})')
+        self.log_info(f"Set environment variables ({', '.join(vars_.keys())})")
         self.log_debug(vars_)
         os.environ.update(vars_)
 
@@ -74,11 +74,11 @@ class Unsetenv(Task):
     def run(self, context):
         vars_ = self.getarg("vars", context, default=[])
         vars_ = vars_ if isinstance(vars_, list) else [vars_]
-        self.log_info(f'Unset environment variables ({", ".join(vars_)})')
+        self.log_info(f"Unset environment variables ({', '.join(vars_)})")
         self.log_debug(vars_)
         for v in vars_:
             v = str(v)
             if v in os.environ:
                 del os.environ[v]
             else:
-                self.log_warning(f"Environment variable {v} does not exist")
+                self.log_warning(f"Environment variable '{v}' does not exist")

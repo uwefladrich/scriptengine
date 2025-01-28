@@ -86,6 +86,6 @@ def test_unsetenv_not_exists(caplog):
     )
     with caplog.at_level(logging.WARN, logger="se.task"):
         t.run(Context())
-        assert "Environment variable FOO does not exist" in [
+        assert "Environment variable 'FOO' does not exist" in [
             rec.message for rec in caplog.records
         ]
