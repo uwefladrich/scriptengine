@@ -77,8 +77,7 @@ class Unsetenv(Task):
         self.log_info(f"Unset environment variables ({', '.join(vars_)})")
         self.log_debug(vars_)
         for v in vars_:
-            v = str(v)
-            if v in os.environ:
-                del os.environ[v]
-            else:
+            try:
+                del os.environ[str(v)]
+            except KeyError:
                 self.log_warning(f"Environment variable '{v}' does not exist")
