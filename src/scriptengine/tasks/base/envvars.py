@@ -1,4 +1,4 @@
-"""Getenv (base.getenv) and Setenv (base.setenv) tasks for ScriptEngine"""
+"""Getenv (base.getenv), Setenv (base.setenv) and Unsetenv (base.unsetenv) tasks for ScriptEngine"""
 
 import os
 
@@ -8,6 +8,7 @@ from scriptengine.tasks.core import Task, timed_runner
 
 class Getenv(Task):
     """Getenv task, reads environment variables.
+
     Getenv.run() takes the list of argument name, value pairs, reads the
     environment variables given by the argument values and stores the values of
     the environment variables as context parameters with the argument names.
@@ -38,6 +39,7 @@ class Getenv(Task):
 
 class Setenv(Task):
     """Setenv task, sets environment variables from context.
+
     Setenv.run() takes the list of argument name, value pairs, and sets the
     environment variables given by the argument names to the values given by the
     argument values. For example,
@@ -58,6 +60,7 @@ class Setenv(Task):
 
 class Unsetenv(Task):
     """Unsetenv task, unsets environment variables.
+
     Unsetenv.run() takes a list of names, and unsets the environment variables
     with the given names. For example,
         base.unsetenv:
