@@ -72,7 +72,7 @@ class Unsetenv(Task):
 
     @timed_runner
     def run(self, context):
-        vars_ = self.getarg("vars", context, default=[])
+        vars_ = self.getarg("vars", context)
         vars_ = vars_ if isinstance(vars_, list) else [vars_]
         self.log_info(f"Unset environment variables ({', '.join(vars_)})")
         self.log_debug(vars_)
