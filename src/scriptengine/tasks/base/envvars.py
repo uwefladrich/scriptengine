@@ -53,7 +53,6 @@ class Setenv(Task):
             n: str(self.getarg(n, context)) for n in vars(self) if not n.startswith("_")
         }
         self.log_info(f"Set environment variables ({', '.join(vars_.keys())})")
-        self.log_debug(vars_)
         os.environ.update(vars_)
 
 
@@ -75,7 +74,6 @@ class Unsetenv(Task):
         vars_ = self.getarg("vars", context)
         vars_ = vars_ if isinstance(vars_, list) else [vars_]
         self.log_info(f"Unset environment variables ({', '.join(vars_)})")
-        self.log_debug(vars_)
         for v in vars_:
             try:
                 del os.environ[str(v)]
