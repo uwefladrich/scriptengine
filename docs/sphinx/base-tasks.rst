@@ -340,6 +340,11 @@ Unsets one or more environment variables::
           - <ENV_VAR_NAME_2>
           [...]
 
+If just one environment variable should be unset, no list is required, i.e.::
+
+    - base.unsetenv:
+        vars: FOO
+
 The following example::
 
     - base.unsetenv:
@@ -348,6 +353,10 @@ The following example::
           - LD_LIBRARY_PATH
 
 will unset the environment variables ``$SLURM_HOSTFILE`` and ``$LD_LIBRARY_PATH``.
+
+.. versionadded:: 1.2.0
+    New base task ``base.unsetenv`` added.
+
 
 Basic file operations
 ---------------------
