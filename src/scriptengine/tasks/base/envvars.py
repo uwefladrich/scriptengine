@@ -56,6 +56,7 @@ class Setenv(Task):
         self.log_debug(vars_)
         os.environ.update(vars_)
 
+
 class Unsetenv(Task):
     """Unsetenv task, unsets environment variables.
     Unsetenv.run() takes a list of names, and unsets the environment variables
@@ -80,4 +81,4 @@ class Unsetenv(Task):
             if v in os.environ:
                 del os.environ[v]
             else:
-                self.log_warning(f'Environment variable {v} does not exist')
+                self.log_warning(f"Environment variable {v} does not exist")
