@@ -1,6 +1,12 @@
 Next release
 ============
 
+- ...
+
+
+ScriptEngine 1.2.0
+==================
+
 Features
 --------
 - #124: New base.unsetenv task (thanks @jmrgonza)
