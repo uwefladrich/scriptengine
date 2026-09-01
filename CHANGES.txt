@@ -1,6 +1,12 @@
 Next release
 ============
 
+...
+
+
+ScriptEngine 1.3.0
+==================
+
 Features
 --------
 - New base.context.dump task (thanks @vlap)
