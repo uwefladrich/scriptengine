@@ -8,10 +8,10 @@ with just the base task package.
 
 The base task package contains the following tasks, described in more detail below::
 
-    base.echo, base.chdir, base.command, base.context, base.context.from,
-    base.copy, base.exit, base.find, base.getenv, base.include, base.link,
-    base.make_dir, base.move, base.remove, base.setenv, base.task_timer,
-    base.template, base.time, base.unsetenv
+    base.echo, base.chdir, base.command, base.context, base.context.load,
+    base.context.dump, base.copy, base.exit, base.find, base.getenv,
+    base.include, base.link, base.make_dir, base.move, base.remove,
+    base.setenv, base.task_timer, base.template, base.time, base.unsetenv
 
 
 ``base.echo``
@@ -160,6 +160,47 @@ possibly nested, dictionary (i.e. single values or lists are not allowed).
 
 .. versionadded:: 1.0
     This task has been renamed to ``base.context.load`` (the old name was ``base.context.from``).
+
+
+``base.context.dump``
+^^^^^^^^^^^^^^^^^^^^^
+Dumps the current ScriptEngine context data, or a subset of context keys, to a YAML file::
+
+    base.context.dump:
+        file: <FILE_NAME>  # required
+        keys: <KEY_OR_LIST_OF_KEYS>  # optional
+        root: <ROOT_KEY>  # optional
+
+This task exports the evaluated runtime state of the context. Note that it dumps the context data
+dictionary, not the ScriptEngine script definitions or execution structure. Dynamic constructs
+(like ``base.include`` or task logic) and internal engine parameters (the ``se`` namespace) are not
+part of the output.
+
+By default (if ``keys`` is not specified), ``base.context.dump`` dumps the full context data to the
+given ``file``::
+
+    - base.context.dump:
+        file: all_context.yml
+
+To dump only specific context keys, use the ``keys`` argument::
+
+    - base.context.dump:
+        file: experiment-config.yml
+        keys:
+          - experiment
+          - model_config
+
+The ``root`` argument wraps the dumped dictionary under an optional top-level key::
+
+    - base.context.dump:
+        file: experiment-config.yml
+        root: "ic_meta"
+        keys:
+          - experiment
+          - model_config
+
+.. versionadded:: 1.3
+    Add ``base.context.dump`` task.
 
 
 Control flow
@@ -331,7 +372,7 @@ will set the environment variables ``$LD_LIBRARY_PATH`` to
    Allow dotted keys for nested context parameters.
 
 ``base.unsetenv``
-^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
 Unsets one or more environment variables::
 
     - base.unsetenv:

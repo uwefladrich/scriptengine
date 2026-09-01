@@ -49,6 +49,19 @@ def rrule_constructor(loader, node):
 yaml.add_constructor("!rrule", rrule_constructor)
 
 
+def string_class_representer(tag):
+    return lambda dumper, node: dumper.represent_scalar(tag, str(node))
+
+
+yaml.add_representer(NoParseString, string_class_representer("!noparse"))
+yaml.add_representer(NoParseYamlString, string_class_representer("!noparse_yaml"))
+yaml.add_representer(NoParseJinjaString, string_class_representer("!noparse_jinja"))
+yaml.add_representer(
+    dateutil.rrule.rrule,
+    lambda dumper, node: dumper.represent_scalar("!rrule", str(node), style="|"),
+)
+
+
 def parse(data):
     """Recursively parses data and returns a ScriptEngine Task or Job, or a list of those.
     The data is supposed to come from YAML-parsing a ScriptEngine script."""

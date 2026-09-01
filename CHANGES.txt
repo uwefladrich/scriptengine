@@ -1,7 +1,9 @@
 Next release
 ============
 
-- ...
+Features
+--------
+- New base.context.dump task (thanks @vlap)
 
 
 ScriptEngine 1.2.0

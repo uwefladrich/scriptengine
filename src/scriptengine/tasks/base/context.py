@@ -70,7 +70,7 @@ class ContextLoad(Task):
         elif file_arg:
             self.log_info(f"Load context update from file: {file_arg}")
             try:
-                with open(file_arg) as f:
+                with open(str(file_arg)) as f:
                     dict_from_file = yaml.load(f, Loader=yaml.SafeLoader)
             except (FileNotFoundError, PermissionError, IsADirectoryError) as e:
                 self.log_error(e)
@@ -93,3 +93,52 @@ class ContextLoad(Task):
             raise ScriptEngineTaskError
 
         return SEContext(context_update_d)
+
+
+class ContextDump(Task):
+    """
+    This task dumps the context, or a subset of context keys, to a YAML file.
+
+    Examples:
+    - base.context.dump:
+        file: saveic/experiment-config.yml
+        root: "ic_meta"
+        keys:
+          - experiment
+          - model_config
+
+    - base.context.dump:
+        file: all_context.yml
+    """
+
+    _required_arguments = ("file",)
+
+    @timed_runner
+    def run(self, context):
+        file_arg = self.getarg("file", context)
+        keys_arg = self.getarg("keys", context, default=None)
+        root_arg = self.getarg("root", context, default=None)
+
+        self.log_info(f"Dump context to file: {file_arg}")
+
+        if keys_arg is not None:
+            keys_list = [keys_arg] if isinstance(keys_arg, str) else keys_arg
+            if not isinstance(keys_list, list):
+                self.log_error(
+                    f"The 'keys' argument must be a string or list (was a '{type(keys_arg).__name__}')"
+                )
+                raise ScriptEngineTaskRunError
+            data = {k: context[k] for k in keys_list if k in context}
+        else:
+            # Dump full context excluding internal 'se' namespace
+            data = {k: v for k, v in context.items() if k != "se"}
+
+        if root_arg is not None:
+            data = {str(root_arg): data}
+
+        try:
+            with open(str(file_arg), "w") as f:
+                yaml.dump(data, f, sort_keys=False)
+        except (FileNotFoundError, PermissionError, IsADirectoryError, OSError) as e:
+            self.log_error(e)
+            raise ScriptEngineTaskRunError
