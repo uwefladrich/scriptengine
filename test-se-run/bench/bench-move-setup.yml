@@ -1,0 +1,9 @@
+# Setup for base.move benchmark: copy source files into workdir
+- base.make_dir:
+    path: "{{workdir}}"
+- base.chdir:
+    path: "{{workdir}}"
+- base.copy:
+    src: "{{srcdir}}/{{item}}"
+    dst: .
+  loop: "{{files}}"

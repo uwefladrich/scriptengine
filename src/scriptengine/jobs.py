@@ -6,6 +6,7 @@ be given to a ScriptEngine, for execution.
 """
 
 import ast
+import concurrent.futures
 import copy
 import logging
 import uuid
@@ -134,21 +135,46 @@ class Job:
         self._todo.extend(todo_list)
         self.log_debug(f'Append: {",".join(t.shortid for t in todo_list)}')
 
+    def _run_iteration(self, context, items):
+        for t in self.todo:
+            c = t.run(Context({**context, **items}))
+            if c:
+                self.log_warning(
+                    f"Context update from {t.shortid} discarded in parallel loop"
+                )
+
     def run(self, context):
         if self.when(context):
             local_context = Context(copy.deepcopy(context))
             context_update = Context()
-            for items in self.loop(local_context):
-                if set(items) & set(local_context):
-                    self.log_warning(
-                        "The following loop variables collide with the "
-                        f"context: {set(items) & set(local_context)}"
-                    )
-                for t in self.todo:
-                    c = t.run(Context({**local_context, **items}))
-                    if c:
-                        local_context += c
-                        context_update += c
+
+            parallel = (
+                self._loop
+                and context.get("se", {}).get("cli", {}).get("parallel", False)
+            )
+
+            if parallel:
+                all_items = list(self.loop(local_context))
+                with concurrent.futures.ThreadPoolExecutor() as pool:
+                    futures = [
+                        pool.submit(self._run_iteration, local_context, items)
+                        for items in all_items
+                    ]
+                    for f in concurrent.futures.as_completed(futures):
+                        f.result()
+            else:
+                for items in self.loop(local_context):
+                    if set(items) & set(local_context):
+                        self.log_warning(
+                            "The following loop variables collide with the "
+                            f"context: {set(items) & set(local_context)}"
+                        )
+                    for t in self.todo:
+                        c = t.run(Context({**local_context, **items}))
+                        if c:
+                            local_context += c
+                            context_update += c
+
             return context_update or None
 
     def _log(self, level, msg):

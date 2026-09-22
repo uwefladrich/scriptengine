@@ -105,8 +105,9 @@ def render(arg, context, recursive=True, boolean=False):
     """
 
     def render_with_context(string_arg):
+        if "{" not in string_arg:
+            return string_arg
         try:
-            # Render string in parameter environment using context
             return _param_env.from_string(string_arg).render(context)
         except jinja2.TemplateError as e:
             raise ScriptEngineParseJinjaError(

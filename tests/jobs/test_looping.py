@@ -163,3 +163,33 @@ def test_loop_over_lists(capsys):
     captured = capsys.readouterr()
     assert "1 - 2" in captured.out
     assert "3 - 4" in captured.out
+
+
+def test_parallel_loop(capsys):
+    j = from_yaml(
+        """
+        base.echo:
+            msg: 'Hello {{item}}'
+        loop: [1, 2, 3]
+    """
+    )
+    j.run(Context({"se": {"cli": {"parallel": True}}}))
+    captured = capsys.readouterr()
+    assert "Hello 1" in captured.out
+    assert "Hello 2" in captured.out
+    assert "Hello 3" in captured.out
+
+
+def test_parallel_loop_with_context_var(capsys):
+    j = from_yaml(
+        """
+        base.echo:
+            msg: 'File {{item}}'
+        loop: '{{files}}'
+    """
+    )
+    j.run(Context({"files": ["a.nc", "b.nc", "c.nc"], "se": {"cli": {"parallel": True}}}))
+    captured = capsys.readouterr()
+    assert "File a.nc" in captured.out
+    assert "File b.nc" in captured.out
+    assert "File c.nc" in captured.out

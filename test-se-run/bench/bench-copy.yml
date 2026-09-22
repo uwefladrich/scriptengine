@@ -1,0 +1,9 @@
+# Benchmark: base.copy loop
+- base.make_dir:
+    path: "{{workdir}}"
+- base.chdir:
+    path: "{{workdir}}"
+- base.copy:
+    src: "{{srcdir}}/{{item}}"
+    dst: .
+  loop: "{{files}}"

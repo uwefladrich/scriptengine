@@ -1,0 +1,10 @@
+# Benchmark: base.move loop
+# Assumes files are already present in workdir (copied by bench-move-setup.yml)
+- base.make_dir:
+    path: "{{workdir}}/dest"
+- base.chdir:
+    path: "{{workdir}}"
+- base.move:
+    src: "{{item}}"
+    dst: dest/
+  loop: "{{files}}"
