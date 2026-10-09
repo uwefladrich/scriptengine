@@ -108,6 +108,18 @@ by their names.
 .. versionadded:: 1.0
     Allow for dotted keys for nested context parameters.
 
+Keys can also contain Jinja expressions, which is particularly useful when dynamically setting
+context variables inside loops::
+
+    - base.context:
+        "experiment.initial_state.{{ comp }}.source": "{{ 'saveic' if comp in experiment.initial_state.saveic.components else 'inidata' }}"
+      loop:
+        with: [comp, _]
+        in: "{{ model_config.components }}"
+
+.. versionadded:: 1.4
+    Allow Jinja templating in key names for ``base.context``.
+
 
 ``base.context.load``
 ^^^^^^^^^^^^^^^^^^^^^

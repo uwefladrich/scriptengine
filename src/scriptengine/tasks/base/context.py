@@ -5,7 +5,12 @@ import yaml
 from scriptengine.context import (
     Context as SEContext,
 )  # avoid name clashes between se.context.Context and se.tasks.base.Context
-from scriptengine.exceptions import ScriptEngineTaskError, ScriptEngineTaskRunError
+from scriptengine.exceptions import (
+    ScriptEngineParseJinjaError,
+    ScriptEngineTaskError,
+    ScriptEngineTaskRunError,
+)
+import scriptengine.jinja
 from scriptengine.tasks.core import Task, timed_runner
 
 
@@ -20,9 +25,20 @@ class Context(Task):
 
     @timed_runner
     def run(self, context):
-        context_update = SEContext(
-            {n: self.getarg(n, context) for n in vars(self) if not n.startswith("_")}
-        )
+        try:
+            rendered_items = {
+                (
+                    scriptengine.jinja.render(n, context)
+                    if "{{" in n
+                    else n
+                ): self.getarg(n, context)
+                for n in vars(self)
+                if not n.startswith("_")
+            }
+        except ScriptEngineParseJinjaError as e:
+            self.log_error(e)
+            raise ScriptEngineTaskRunError
+        context_update = SEContext(rendered_items)
         self.log_info(f"Context update: {context_update}")
         return context_update
 

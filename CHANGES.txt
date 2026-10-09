@@ -1,7 +1,9 @@
 Next release
 ============
 
-...
+Features
+--------
+- Allow Jinja templating in key names for ``base.context``
 
 
 ScriptEngine 1.3.0
