@@ -108,6 +108,60 @@ by their names.
 .. versionadded:: 1.0
     Allow for dotted keys for nested context parameters.
 
+.. versionadded:: 1.4
+    ``base.context.set`` is available as an alias for ``base.context``.
+
+
+``base.context.setdefault``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+This task is similar to ``base.context``, but it sets context parameters only if they
+are not already defined (analogous to Python's ``dict.setdefault``).
+
+When a nested dictionary is provided, ``base.context.setdefault`` checks keys recursively.
+Existing leaves (scalars, lists) are preserved and skipped without evaluation, while
+missing keys are initialized::
+
+    - base.context.setdefault:
+        experiment:
+          timestep: 900
+          name: "standard_run"
+          components: ["oifs", "nemo"]
+
+If ``experiment.timestep`` and ``experiment.components`` were already defined (e.g. from an earlier user configuration),
+their values are preserved, and only ``experiment.name`` is added. Note that lists are treated as atomic leaves
+and are not merged.
+
+Because defaults for existing keys are evaluated lazily, Jinja expressions in unused default values
+will not be rendered and will not raise errors if dependent variables are absent.
+
+Dotted keys are also supported::
+
+    - base.context.setdefault:
+        experiment.timestep: 900
+        experiment.name: "standard_run"
+
+.. versionadded:: 1.4
+    Added ``base.context.setdefault`` task.
+
+
+``base.context.default``
+^^^^^^^^^^^^^^^^^^^^^^^^
+This task is similar to ``base.context.setdefault``, but in addition to undefined parameters,
+it also sets defaults for parameters that are defined as ``null`` (None in Python). This is
+particularly convenient for YAML templates where optional fields are left blank::
+
+    - base.context.default:
+        experiment:
+          timestep: 900
+          name: "standard_run"
+
+If ``experiment.timestep`` was left blank or explicitly set to ``null`` in an earlier configuration,
+``base.context.default`` populates it with ``900``. Existing parameters with non-null values
+(including ``false``, ``0``, ``""``, and ``[]``) are preserved and not overwritten.
+
+.. versionadded:: 1.4
+    Added ``base.context.default`` task.
+
 
 ``base.context.load``
 ^^^^^^^^^^^^^^^^^^^^^

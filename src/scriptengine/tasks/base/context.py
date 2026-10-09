@@ -1,12 +1,60 @@
-"""Context task for ScriptEngine."""
-
+from collections.abc import Mapping
 import yaml
 
 from scriptengine.context import (
     Context as SEContext,
 )  # avoid name clashes between se.context.Context and se.tasks.base.Context
-from scriptengine.exceptions import ScriptEngineTaskError, ScriptEngineTaskRunError
+from scriptengine.exceptions import (
+    ScriptEngineParseJinjaError,
+    ScriptEngineTaskError,
+    ScriptEngineTaskRunError,
+)
+import scriptengine.jinja
 from scriptengine.tasks.core import Task, timed_runner
+from scriptengine.yaml.noparse_strings import NoParseJinjaString, NoParseYamlString
+
+
+def _parse_val(task, arg, context):
+    """Recursively parse task arguments with Jinja and YAML."""
+    if isinstance(arg, list):
+        return [_parse_val(task, item, context) for item in arg]
+    if isinstance(arg, dict):
+        return {k: _parse_val(task, v, context) for k, v in arg.items()}
+    if isinstance(arg, str):
+        if not isinstance(arg, NoParseJinjaString):
+            try:
+                arg = type(arg)(scriptengine.jinja.render(arg, context))
+            except ScriptEngineParseJinjaError as e:
+                task.log_error(e)
+                raise ScriptEngineTaskRunError
+        if not isinstance(arg, NoParseYamlString):
+            try:
+                return yaml.full_load(arg)
+            except (
+                yaml.scanner.ScannerError,
+                yaml.parser.ParserError,
+                yaml.constructor.ConstructorError,
+            ):
+                pass
+        return str(arg)
+    return arg
+
+
+def _resolve_defaults(task, raw, existing, context, overwrite_null=False):
+    """Recursively resolve defaults against existing context, parsing only missing values."""
+    result = {}
+    for k, v in raw.items():
+        if k in existing and (not overwrite_null or existing[k] is not None):
+            if isinstance(v, Mapping) and isinstance(existing[k], Mapping):
+                nested = _resolve_defaults(
+                    task, v, existing[k], context, overwrite_null=overwrite_null
+                )
+                if nested:
+                    result[k] = nested
+            # If leaf already exists in context (and not overwriting null), skip it without evaluating v
+        else:
+            result[k] = _parse_val(task, v, context)
+    return result
 
 
 class Context(Task):
@@ -25,6 +73,50 @@ class Context(Task):
         )
         self.log_info(f"Context update: {context_update}")
         return context_update
+
+
+class ContextSetdefault(Task):
+    """Context task that sets/updates the SE context only for undefined parameters.
+    Parameters (or nested dictionary keys) that already exist in the context
+    are preserved and not overwritten. Default values for existing keys are
+    not evaluated.
+    """
+
+    overwrite_null = False
+
+    @timed_runner
+    def run(self, context):
+        existing = (
+            context.data
+            if isinstance(context, SEContext)
+            else SEContext(context).data
+        )
+
+        raw_items = {
+            n: getattr(self, n)
+            for n in vars(self)
+            if not n.startswith("_")
+        }
+
+        # Expand dotted keys into nested dicts with SEContext before resolving
+        raw_tree = SEContext(raw_items).data
+
+        filtered = _resolve_defaults(
+            self, raw_tree, existing, context, overwrite_null=self.overwrite_null
+        )
+        context_update = SEContext(filtered)
+        task_name = "default" if self.overwrite_null else "setdefault"
+        self.log_info(f"Context {task_name} update: {context_update}")
+        return context_update
+
+
+class ContextDefault(ContextSetdefault):
+    """Context task that sets default values for undefined or null context parameters.
+    Existing parameters with non-null values are preserved. Default values for existing
+    non-null keys are not evaluated.
+    """
+
+    overwrite_null = True
 
 
 class ContextLoad(Task):
