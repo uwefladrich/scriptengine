@@ -209,13 +209,14 @@ context::
         with: [name, age]
         in: '{{people}}'
 
-To loop over only keys or only values with custom variable names, variable unpacking can be used with a dummy variable (e.g. ``_``)::
+To access only the key or only the value of each dictionary entry with a custom variable name, variable
+unpacking can be used with a dummy variable (e.g. ``_``)::
 
     - base.echo:
-        msg: 'Processing component {{comp}}'
+        msg: 'Processing {{name}}'
       loop:
-        with: [comp, _]
-        in: '{{model_config}}'
+        with: [name, _]
+        in: '{{people}}'
 
 
 Conditionals
