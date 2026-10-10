@@ -17,22 +17,18 @@ def test_context_create():
 
 
 def test_context_create_from_yaml():
-    t = from_yaml(
-        """
+    t = from_yaml("""
         base.context:
             foo: 1
-    """
-    )
+    """)
     assert type(t) is ContextTask
 
 
 def test_context_run_returns_dict():
-    t = from_yaml(
-        """
+    t = from_yaml("""
         base.context:
             foo: 1
-        """
-    )
+        """)
     ctx = SEContext()
     ctx_upd = t.run(ctx)
     ctx += ctx_upd
@@ -42,45 +38,37 @@ def test_context_run_returns_dict():
 
 
 def test_context_simple_set():
-    t = from_yaml(
-        """
+    t = from_yaml("""
         base.context:
             foo: 1
             bar: 2
-        """
-    )
+        """)
     ctx = t.run(SEContext())
     assert ctx["foo"] == 1
     assert ctx["bar"] == 2
 
 
 def test_context_load_dict():
-    t = from_yaml(
-        """
+    t = from_yaml("""
         base.context.load:
             dict: {'foo': 1, 'bar': 2}
-        """
-    )
+        """)
     ctx = t.run(SEContext())
     assert ctx["foo"] == 1
     assert ctx["bar"] == 2
 
 
 def test_context_load_context_dict():
-    t1 = from_yaml(
-        """
+    t1 = from_yaml("""
         base.context:
             update:
                 foo: 1
                 bar: 2
-        """
-    )
-    t2 = from_yaml(
-        """
+        """)
+    t2 = from_yaml("""
         base.context.load:
             dict: '{{update}}'
-        """
-    )
+        """)
     ctx = SEContext()
     ctx += t1.run(ctx)
     ctx += t2.run(ctx)
@@ -89,26 +77,20 @@ def test_context_load_context_dict():
 
 
 def test_context_update_from_context_dict():
-    t1 = from_yaml(
-        """
+    t1 = from_yaml("""
         base.context:
             update:
                 foo: 5
-        """
-    )
-    t2 = from_yaml(
-        """
+        """)
+    t2 = from_yaml("""
         base.context:
             foo: 1
             bar: 2
-        """
-    )
-    t3 = from_yaml(
-        """
+        """)
+    t3 = from_yaml("""
         base.context.load:
             dict: '{{update}}'
-        """
-    )
+        """)
     ctx = SEContext()
     ctx += t1.run(ctx)
     ctx += t2.run(ctx)
@@ -119,117 +101,93 @@ def test_context_update_from_context_dict():
 
 def test_context_load_file(tmp_path):
     f = tmp_path / "f.yml"
-    f.write_text(
-        """
+    f.write_text("""
         foo: 1
         bar: 2
-        """
-    )
-    t = from_yaml(
-        f"""
+        """)
+    t = from_yaml(f"""
         base.context.load:
             file: {f}
-        """
-    )
+        """)
     ctx = t.run(SEContext())
     assert ctx["foo"] == 1
     assert ctx["bar"] == 2
 
 
 def test_context_load_no_args():
-    t = from_yaml(
-        """
+    t = from_yaml("""
         base.context.load:
-        """
-    )
+        """)
     with pytest.raises(ScriptEngineTaskError):
         t.run(SEContext())
 
 
 def test_context_load_double_args():
-    t = from_yaml(
-        """
+    t = from_yaml("""
         base.context.load:
             dict: foo
             file: bar
-        """
-    )
+        """)
     with pytest.raises(ScriptEngineTaskError):
         t.run(SEContext())
 
 
 def test_context_load_dict_not_a_dict():
-    t = from_yaml(
-        """
+    t = from_yaml("""
         base.context.load:
             dict: [1, 2, 3]
-        """
-    )
+        """)
     with pytest.raises(ScriptEngineTaskRunError):
         t.run(SEContext())
 
 
 def test_context_load_file_not_found():
-    t = from_yaml(
-        """
+    t = from_yaml("""
         base.context.load:
             file: foo
-        """
-    )
+        """)
     with pytest.raises(ScriptEngineTaskRunError):
         t.run(SEContext())
 
 
 def test_context_load_file_not_yaml(tmp_path):
     f = tmp_path / "f.yml"
-    f.write_text(
-        """
+    f.write_text("""
         @@@
-        """
-    )
-    t = from_yaml(
-        f"""
+        """)
+    t = from_yaml(f"""
         base.context.load:
             file: {f}
-        """
-    )
+        """)
     with pytest.raises(ScriptEngineTaskRunError):
         t.run(SEContext())
 
 
 def test_context_load_file_not_dict(tmp_path):
     f = tmp_path / "f.yml"
-    f.write_text(
-        """
+    f.write_text("""
         - foo
         - bar
-        """
-    )
-    t = from_yaml(
-        f"""
+        """)
+    t = from_yaml(f"""
         base.context.load:
             file: {f}
-        """
-    )
+        """)
     with pytest.raises(ScriptEngineTaskRunError):
         t.run(SEContext())
 
 
 def test_context_dump_file(tmp_path):
     f = tmp_path / "f.yml"
-    t1 = from_yaml(
-        """
+    t1 = from_yaml("""
         base.context:
             foo: 1
             bar: 2
-        """
-    )
-    t2 = from_yaml(
-        f"""
+        """)
+    t2 = from_yaml(f"""
         base.context.dump:
             file: {f}
-        """
-    )
+        """)
     ctx = SEContext()
     ctx += t1.run(ctx)
     t2.run(ctx)
@@ -239,23 +197,19 @@ def test_context_dump_file(tmp_path):
 
 def test_context_dump_keys(tmp_path):
     f = tmp_path / "f.yml"
-    t1 = from_yaml(
-        """
+    t1 = from_yaml("""
         base.context:
             foo: 1
             bar: 2
             baz: 3
-        """
-    )
-    t2 = from_yaml(
-        f"""
+        """)
+    t2 = from_yaml(f"""
         base.context.dump:
             file: {f}
             keys:
                 - foo
                 - bar
-        """
-    )
+        """)
     ctx = SEContext()
     ctx += t1.run(ctx)
     t2.run(ctx)
@@ -265,22 +219,18 @@ def test_context_dump_keys(tmp_path):
 
 def test_context_dump_root(tmp_path):
     f = tmp_path / "f.yml"
-    t1 = from_yaml(
-        """
+    t1 = from_yaml("""
         base.context:
             foo: 1
             bar: 2
-        """
-    )
-    t2 = from_yaml(
-        f"""
+        """)
+    t2 = from_yaml(f"""
         base.context.dump:
             file: {f}
             root: ic_meta
             keys:
                 - foo
-        """
-    )
+        """)
     ctx = SEContext()
     ctx += t1.run(ctx)
     t2.run(ctx)
@@ -289,31 +239,25 @@ def test_context_dump_root(tmp_path):
 
 
 def test_context_dump_no_args():
-    t = from_yaml(
-        """
+    t = from_yaml("""
         base.context.dump:
-        """
-    )
+        """)
     with pytest.raises(ScriptEngineTaskError):
         t.run(SEContext())
 
 
 def test_context_dump_keys_string(tmp_path):
     f = tmp_path / "f.yml"
-    t1 = from_yaml(
-        """
+    t1 = from_yaml("""
         base.context:
             foo: 1
             bar: 2
-        """
-    )
-    t2 = from_yaml(
-        f"""
+        """)
+    t2 = from_yaml(f"""
         base.context.dump:
             file: {f}
             keys: foo
-        """
-    )
+        """)
     ctx = SEContext()
     ctx += t1.run(ctx)
     t2.run(ctx)
@@ -323,48 +267,40 @@ def test_context_dump_keys_string(tmp_path):
 
 def test_context_dump_keys_invalid_type(tmp_path):
     f = tmp_path / "f.yml"
-    t = from_yaml(
-        f"""
+    t = from_yaml(f"""
         base.context.dump:
             file: {f}
             keys:
                 a: 1
-        """
-    )
+        """)
     with pytest.raises(ScriptEngineTaskRunError):
         t.run(SEContext())
 
 
 def test_context_dynamic_keys():
-    t = from_yaml(
-        """
+    t = from_yaml("""
         base.context:
             "experiment.initial_state.{{ item }}": {}
-        """
-    )
+        """)
     upd = t.run(SEContext({"item": "oifs"}))
     assert upd["experiment"]["initial_state"]["oifs"] == {}
 
 
 def test_context_dynamic_keys_in_loop():
-    s = from_yaml(
-        """
+    s = from_yaml("""
         - base.context:
             "experiment.initial_state.{{ item }}.source": "{{ 'saveic' if item == 'oifs' else 'inidata' }}"
           loop: ["oifs", "nemo"]
-        """
-    )
+        """)
     res = SimpleScriptEngine().run(s, context=SEContext())
     assert res["experiment"]["initial_state"]["oifs"]["source"] == "saveic"
     assert res["experiment"]["initial_state"]["nemo"]["source"] == "inidata"
 
 
 def test_context_dynamic_keys_invalid_jinja():
-    t = from_yaml(
-        """
+    t = from_yaml("""
         base.context:
             "experiment.{{ unclosed": 1
-        """
-    )
+        """)
     with pytest.raises(ScriptEngineTaskRunError):
         t.run(SEContext())

@@ -2,6 +2,7 @@
 
 import yaml
 
+import scriptengine.jinja
 from scriptengine.context import (
     Context as SEContext,
 )  # avoid name clashes between se.context.Context and se.tasks.base.Context
@@ -10,7 +11,6 @@ from scriptengine.exceptions import (
     ScriptEngineTaskError,
     ScriptEngineTaskRunError,
 )
-import scriptengine.jinja
 from scriptengine.tasks.core import Task, timed_runner
 
 
@@ -28,9 +28,7 @@ class Context(Task):
         try:
             rendered_items = {
                 (
-                    scriptengine.jinja.render(n, context)
-                    if "{{" in n
-                    else n
+                    scriptengine.jinja.render(n, context) if "{{" in n else n
                 ): self.getarg(n, context)
                 for n in vars(self)
                 if not n.startswith("_")
