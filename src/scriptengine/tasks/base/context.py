@@ -8,6 +8,7 @@ from scriptengine.context import (
 )  # avoid name clashes between se.context.Context and se.tasks.base.Context
 from scriptengine.exceptions import (
     ScriptEngineParseJinjaError,
+    ScriptEngineTaskArgumentInvalidError,
     ScriptEngineTaskError,
     ScriptEngineTaskRunError,
 )
@@ -35,7 +36,7 @@ class Context(Task):
             }
         except ScriptEngineParseJinjaError as e:
             self.log_error(e)
-            raise ScriptEngineTaskRunError
+            raise ScriptEngineTaskArgumentInvalidError
         context_update = SEContext(rendered_items)
         self.log_info(f"Context update: {context_update}")
         return context_update

@@ -3,7 +3,11 @@ import yaml
 
 from scriptengine.context import Context as SEContext
 from scriptengine.engines import SimpleScriptEngine
-from scriptengine.exceptions import ScriptEngineTaskError, ScriptEngineTaskRunError
+from scriptengine.exceptions import (
+    ScriptEngineTaskArgumentInvalidError,
+    ScriptEngineTaskError,
+    ScriptEngineTaskRunError,
+)
 from scriptengine.tasks.base.context import Context as ContextTask
 from scriptengine.yaml.parser import parse
 
@@ -302,5 +306,14 @@ def test_context_dynamic_keys_invalid_jinja():
         base.context:
             "experiment.{{ unclosed": 1
         """)
-    with pytest.raises(ScriptEngineTaskRunError):
+    with pytest.raises(ScriptEngineTaskArgumentInvalidError):
+        t.run(SEContext())
+
+
+def test_context_invalid_jinja_value():
+    t = from_yaml("""
+        base.context:
+            foo: "{{ unclosed"
+        """)
+    with pytest.raises(ScriptEngineTaskArgumentInvalidError):
         t.run(SEContext())
