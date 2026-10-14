@@ -27,13 +27,17 @@ class Context(Task):
     @timed_runner
     def run(self, context):
         try:
-            rendered_items = {
-                (
-                    scriptengine.jinja.render(n, context) if "{{" in n else n
-                ): self.getarg(n, context)
-                for n in vars(self)
-                if not n.startswith("_")
-            }
+            rendered_items = {}
+            for n in vars(self):
+                if n.startswith("_"):
+                    continue
+                rendered_key = scriptengine.jinja.render(n, context)
+                if rendered_key in rendered_items:
+                    self.log_error(
+                        f"Duplicate context key '{rendered_key}' after rendering '{n}'"
+                    )
+                    raise ScriptEngineTaskArgumentInvalidError
+                rendered_items[rendered_key] = self.getarg(n, context)
         except ScriptEngineParseJinjaError as e:
             self.log_error(e)
             raise ScriptEngineTaskArgumentInvalidError
@@ -140,7 +144,8 @@ class ContextDump(Task):
             keys_list = [keys_arg] if isinstance(keys_arg, str) else keys_arg
             if not isinstance(keys_list, list):
                 self.log_error(
-                    f"The 'keys' argument must be a string or list (was a '{type(keys_arg).__name__}')"
+                    f"The 'keys' argument must be a string or list "
+                    f"(was a '{type(keys_arg).__name__}')"
                 )
                 raise ScriptEngineTaskRunError
             data = {k: context[k] for k in keys_list if k in context}

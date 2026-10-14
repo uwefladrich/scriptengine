@@ -293,7 +293,8 @@ def test_context_dynamic_keys():
 def test_context_dynamic_keys_in_loop():
     s = from_yaml("""
         - base.context:
-            "experiment.initial_state.{{ item }}.source": "{{ 'saveic' if item == 'oifs' else 'inidata' }}"
+            "experiment.initial_state.{{ item }}.source": >-
+                {{ 'saveic' if item == 'oifs' else 'inidata' }}
           loop: ["oifs", "nemo"]
         """)
     res = SimpleScriptEngine().run(s, context=SEContext())
@@ -317,3 +318,22 @@ def test_context_invalid_jinja_value():
         """)
     with pytest.raises(ScriptEngineTaskArgumentInvalidError):
         t.run(SEContext())
+
+
+def test_context_dynamic_keys_jinja_block():
+    t = from_yaml("""
+        base.context:
+            "{% if flag %}enabled_var{% else %}disabled_var{% endif %}": 42
+        """)
+    upd = t.run(SEContext({"flag": True}))
+    assert upd["enabled_var"] == 42
+
+
+def test_context_dynamic_keys_duplicate_collision():
+    t = from_yaml("""
+        base.context:
+            "key_{{ a }}": 1
+            "key_{{ b }}": 2
+        """)
+    with pytest.raises(ScriptEngineTaskArgumentInvalidError):
+        t.run(SEContext({"a": "same", "b": "same"}))

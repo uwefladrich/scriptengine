@@ -323,6 +323,10 @@ parsing is sometimes needed. It is possible to avoid either Jinja2 or YAML
 parsing exclusively by using ``!noparse_jinja`` or ``!noparse_yaml``,
 respectively.
 
+.. note::
+    The ``!noparse*`` constructors are supported only in task argument *values*.
+    They cannot be used on task argument or context key *names*.
+
 
 RRULEs
 """"""
