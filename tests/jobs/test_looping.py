@@ -111,6 +111,40 @@ def test_loop_with_in_dict(capsys):
     assert "baz is 3" in captured.out
 
 
+def test_loop_with_in_dict_dummy_variable(capsys):
+    j = from_yaml(
+        """
+        base.echo:
+            msg: 'Processing {{name}}'
+        loop:
+            with: [name, _]
+            in: '{{people}}'
+    """
+    )
+    j.run({"people": {"foo": 1, "bar": 2, "baz": 3}})
+    captured = capsys.readouterr()
+    assert "Processing foo" in captured.out
+    assert "Processing bar" in captured.out
+    assert "Processing baz" in captured.out
+
+
+def test_loop_with_in_dict_dummy_key(capsys):
+    j = from_yaml(
+        """
+        base.echo:
+            msg: 'Processing {{value}}'
+        loop:
+            with: [_, value]
+            in: '{{people}}'
+    """
+    )
+    j.run({"people": {"foo": 1, "bar": 2, "baz": 3}})
+    captured = capsys.readouterr()
+    assert "Processing 1" in captured.out
+    assert "Processing 2" in captured.out
+    assert "Processing 3" in captured.out
+
+
 def test_loop_in_dict_from_context(capsys):
     j = from_yaml(
         """
