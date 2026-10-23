@@ -209,6 +209,15 @@ context::
         with: [name, age]
         in: '{{people}}'
 
+To access only the key or only the value of each dictionary entry with a custom variable name, variable
+unpacking can be used with a dummy variable (e.g. ``_``)::
+
+    - base.echo:
+        msg: 'Processing {{name}}'
+      loop:
+        with: [name, _]
+        in: '{{people}}'
+
 
 Conditionals
 ------------
@@ -313,6 +322,10 @@ While ``!noparse`` solves problems in most cases, a finer control over the
 parsing is sometimes needed. It is possible to avoid either Jinja2 or YAML
 parsing exclusively by using ``!noparse_jinja`` or ``!noparse_yaml``,
 respectively.
+
+.. note::
+    The ``!noparse*`` constructors are supported only in task argument *values*.
+    They cannot be used on task argument or context key *names*.
 
 
 RRULEs
