@@ -3,7 +3,7 @@ Next release
 
 Features
 --------
-- Allow Jinja templating in key names for ``base.context``
+- #133: Allow Jinja templating in key names for `base.context` (thanks @vlap)
 
 
 ScriptEngine 1.3.0
@@ -11,7 +11,7 @@ ScriptEngine 1.3.0
 
 Features
 --------
-- New base.context.dump task (thanks @vlap)
+- #131: New base.context.dump task (thanks @vlap)
 
 
 ScriptEngine 1.2.0
