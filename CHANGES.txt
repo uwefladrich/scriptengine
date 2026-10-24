@@ -1,7 +1,10 @@
 Next release
 ============
 
-- ...
+Improvements
+------------
+- Load tasks lazily on demand to avoid importing unneeded modules at startup
+
 
 ScriptEngine 1.4.0
 ==================
