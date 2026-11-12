@@ -75,6 +75,3 @@ def _discover_tasks():
 @functools.lru_cache(maxsize=None)
 def load():
     return _LazyTaskMap(_discover_tasks())
-
-
-load_and_register = load

@@ -12,7 +12,7 @@ from scriptengine.exceptions import (
     ScriptEngineParseYAMLError,
 )
 from scriptengine.jobs import Job
-from scriptengine.tasks.core.loader import load_and_register
+from scriptengine.tasks.core.loader import load as load_tasks
 from scriptengine.yaml.noparse_strings import (
     NoParseJinjaString,
     NoParseString,
@@ -102,7 +102,7 @@ def parse(data):
 
     log = logging.getLogger("se.yaml")
 
-    tasks = load_and_register()
+    tasks = load_tasks()
     job_keys = {"do"}
 
     try:
