@@ -67,11 +67,16 @@ def _discover_tasks():
     return discovered
 
 
-# The load function goes through entry points, searching for ScriptEngine
-# tasks. Since the function can be called quite frequently and modules are
-# *usually* not loaded while SE is run, the result is cached.
-# Note that this means that dynamic module is *not supported* by the loading
-# mechanism!
 @functools.lru_cache(maxsize=None)
 def load():
+    """Return the lazily populated mapping of available tasks.
+
+    Entry points are discovered once and cached. Task modules are imported
+    and registered under their entry-point name only when that name is first
+    accessed through the returned mapping, so unused tasks do not incur
+    import costs.
+
+    Because discovery is cached, tasks installed or added dynamically after
+    the first call are not picked up in the same process.
+    """
     return _LazyTaskMap(_discover_tasks())
