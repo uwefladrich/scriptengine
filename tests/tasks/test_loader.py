@@ -1,9 +1,9 @@
 from importlib.metadata import EntryPoint
+
 import pytest
 
 from scriptengine.exceptions import ScriptEngineTaskLoaderError
-from scriptengine.tasks.core import Task
-from scriptengine.tasks.core import loader
+from scriptengine.tasks.core import Task, loader
 from scriptengine.yaml.parser import parse
 
 
