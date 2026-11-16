@@ -1,7 +1,14 @@
 Next release
 ============
 
-- ...
+Improvements
+------------
+- #136: Load tasks lazily on demand to avoid importing unneeded modules at startup (thanks @vlap)
+
+Internal changes
+----------------
+- #136: Remove the redundant `load_and_register` alias; call `load()` directly
+
 
 ScriptEngine 1.4.0
 ==================

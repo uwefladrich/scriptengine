@@ -119,13 +119,6 @@ def main():
     logger = logging.getLogger("se.cli")
     logger.info("Logging configured and started")
 
-    # Log all loaded tasks if debugging
-    if logger.level <= logging.DEBUG:
-        for name, task in load_tasks().items():
-            logger.debug(
-                f"Loaded task {name}: {task.__name__} " f"from {task.__module__}"
-            )
-
     # Create script by parsing the files given on the command line
     try:
         script = parse_files(logger, parsed_args.files)
