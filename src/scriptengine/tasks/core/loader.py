@@ -1,11 +1,7 @@
 import collections.abc
 import functools
 import logging
-
-try:
-    from importlib.metadata import entry_points
-except ModuleNotFoundError:  # Python prior to 3.8
-    from importlib_metadata import entry_points
+from importlib.metadata import entry_points
 
 from scriptengine.exceptions import ScriptEngineTaskLoaderError
 
@@ -44,10 +40,7 @@ class _LazyTaskMap(collections.abc.Mapping):
 
 
 def _task_entry_points():
-    try:
-        return list(entry_points(group="scriptengine.tasks"))
-    except TypeError:  # importlib.metadata prior to Python 3.10
-        return list(entry_points().get("scriptengine.tasks", []))
+    return list(entry_points(group="scriptengine.tasks"))
 
 
 def _discover_tasks():

@@ -112,18 +112,6 @@ class Command(Task):
             f'{stderr_mode if stderr_mode in (True, False) else "context"}'
         )
 
-        # Update $PWD in the environment of the command
-        # Once support for Python<=3.8 is dropped, this can be done directly in the
-        # call to subprocess.run() below:
-        # subprocess.run(
-        #   ...
-        #   env=os.environ | {"PWD": Path(cwd).resolve()} if cwd else {},
-        #   ...
-        # )
-        cmd_env = os.environ.copy()
-        if cwd:
-            cmd_env["PWD"] = Path(cwd).resolve()
-
         with log_pipe(stdout_mode) as stdout, log_pipe(stderr_mode) as stderr:
             context_update = Context()
             try:
@@ -133,7 +121,11 @@ class Command(Task):
                     stderr=stderr,
                     cwd=cwd,
                     check=True,
-                    env=cmd_env,
+                    env=(
+                        os.environ | {"PWD": str(Path(cwd).resolve())}
+                        if cwd
+                        else os.environ
+                    ),
                     errors="replace",
                 )
             except subprocess.CalledProcessError as e:
