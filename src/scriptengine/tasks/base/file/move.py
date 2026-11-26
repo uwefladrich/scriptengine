@@ -72,5 +72,4 @@ class Move(Task):
 
         for src in (Path(s) for s in sources):
             self.log_debug(f"Move '{src} --> {dst}")
-            # shutil.move prior to 3.9 accepts only strings, not path-like objects
-            shutil.move(str(src), str(dst))
+            shutil.move(src, dst)

@@ -4,22 +4,19 @@ Installation
 Prerequisites
 -------------
 
-ScriptEngine needs Python version 3.8 or newer. To check the version of your
-default Python installation, run:
+ScriptEngine needs Python version 3.11 or newer.
+
+.. versionadded:: 1.5
+   Python 3.11 is now the minimum supported version.
+
+To check the version of your default Python installation, run:
 
 .. code-block:: shell
 
     > python --version
 
-If the version is 3.8 or larger, everything is fine. If the default Python
-version is 2, check if Python3 is still available:
-
-.. code-block:: shell
-
-    > python3 --version
-
-If that returns a version >=3.8, you need to specify the Python3 interpreter
-explicitly in the installation below.
+If the version is 3.11 or larger, everything is fine. Otherwise, install a
+supported Python version before continuing.
 
 
 Install in a Python Virtual Environment
