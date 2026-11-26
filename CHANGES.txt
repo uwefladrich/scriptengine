@@ -1,6 +1,15 @@
 Next release
 ============
 
+- ...
+
+
+ScriptEngine 1.5.0 (#139)
+=========================
+
+This release includes a breaking change: The supported (and tested) Python versions are now 3.11 to 3.15!
+Older Python versions (3.8 - 3.10) are no longer supported.
+
 Improvements
 ------------
 - #136: Load tasks lazily on demand to avoid importing unneeded modules at startup (thanks @vlap)
